@@ -34,6 +34,8 @@ fontes oficiais consultadas, está em `../../../docs/MEMORIA.md` §5.
 | **029** | Terraform | Op. Excelência | Aceita |
 | **030** | Aurora I/O-Optimized e TTL de 35 dias no DynamoDB | Custo | Aceita |
 | **031** | API Gateway criado por importação do OpenAPI; oasdiff barra breaking change | Op. Excelência, Confiabilidade | Aceita |
+| **032–035** | Agendamento de verificação, reconciliação e expiração (ver implementação e `docs/MEMORIA.md`) | Confiabilidade | Existentes no ZIP, catalogação completa pendente |
+| **036** | [Hardening da compensação e conciliação](036-hardening-compensacao.md) | Confiabilidade, Segurança | Implementação revisada; testes integrais pendentes |
 
 ---
 

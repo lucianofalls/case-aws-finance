@@ -133,8 +133,10 @@ public final class JanelaDeConciliacao {
                 WHERE l.dt = '%2$s'
                   AND l.chaves.sk.s LIKE 'OPERACAO#%%'
                   AND coalesce(l.nova_imagem.estado.s, '') <> 'REVERTIDA'
-                  AND substr(l.chaves.sk.s, %3$d) NOT IN (
-                    SELECT chaves.id_autorizacao.s FROM "%1$s"."autorizacoes_exportadas" WHERE dt = '%2$s')"""
+                  AND NOT EXISTS (
+                    SELECT 1 FROM "%1$s"."autorizacoes_exportadas" a
+                    WHERE a.dt = '%2$s'
+                      AND a.chaves.id_autorizacao.s = substr(l.chaves.sk.s, %3$d))"""
                 .formatted(configuracao.bancoGlue(), dt, "OPERACAO#".length() + 1);
     }
 }

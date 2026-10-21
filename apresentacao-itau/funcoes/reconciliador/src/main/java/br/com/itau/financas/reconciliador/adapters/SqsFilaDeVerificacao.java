@@ -2,12 +2,15 @@ package br.com.itau.financas.reconciliador.adapters;
 
 import br.com.itau.financas.reconciliador.AgendarVerificacoes.FilaDeVerificacao;
 import br.com.itau.financas.reconciliador.AgendarVerificacoes.OperacaoGravada;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.BatchResultErrorEntry;
 import software.amazon.awssdk.services.sqs.model.SendMessageBatchRequestEntry;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -18,6 +21,7 @@ import java.util.stream.IntStream;
 public final class SqsFilaDeVerificacao implements FilaDeVerificacao {
 
     private static final int LOTE_SQS = 10;
+    private static final ObjectMapper JSON = new ObjectMapper();
 
     private final SqsClient sqs;
     private final String urlDaFila;
@@ -44,11 +48,18 @@ public final class SqsFilaDeVerificacao implements FilaDeVerificacao {
         return falhas;
     }
 
-    private static SendMessageBatchRequestEntry entrada(int indice, OperacaoGravada operacao) {
-        return SendMessageBatchRequestEntry.builder()
-                .id(Integer.toString(indice))
-                .messageBody("{\"id_autorizacao\":\"" + operacao.idOperacao() + "\",\"id_contrato\":\""
-                        + operacao.idContrato() + "\"}")
-                .build();
+    static SendMessageBatchRequestEntry entrada(int indice, OperacaoGravada operacao) {
+        try {
+            String corpo = JSON.writeValueAsString(Map.of(
+                    "id_autorizacao", operacao.idOperacao(),
+                    "id_contrato", operacao.idContrato()));
+            return SendMessageBatchRequestEntry.builder()
+                    .id(Integer.toString(indice))
+                    .messageBody(corpo)
+                    .build();
+        } catch (JsonProcessingException e) {
+            // Garante reprocessamento do lote ao invés de reconhecer uma mensagem inválida.
+            throw new IllegalStateException("erro ao serializar verificação de autorização", e);
+        }
     }
 }

@@ -33,8 +33,11 @@ public final class VerificarAutorizacaoIncerta {
         if (autorizacoes.existe(idAutorizacao)) {
             return Desfecho.AUTORIZACAO_REGISTRADA;
         }
-        return "REVERTIDA".equals(limites.reverter(idContrato, idAutorizacao))
-                ? Desfecho.OPERACAO_REVERTIDA
-                : Desfecho.NADA_A_REVERTER;
+        String resposta = limites.reverter(idContrato, idAutorizacao);
+        return switch (resposta) {
+            case "REVERTIDA" -> Desfecho.OPERACAO_REVERTIDA;
+            case "JA_REVERTIDA", "NAO_ENCONTRADA" -> Desfecho.NADA_A_REVERTER;
+            default -> throw new IllegalStateException("desfecho inesperado ao reverter operação órfã: " + resposta);
+        };
     }
 }

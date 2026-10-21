@@ -48,7 +48,11 @@ class ConciliacaoTest {
     void consultaDeOrfasIgnoraOperacoesRevertidasEExtraiOIdDaChave() {
         String sql = JANELA.diaAnterior(AGORA).get("consulta_orfas");
 
-        assertThat(sql).contains("LIKE 'OPERACAO#%'").contains("substr(l.chaves.sk.s, 10)").contains("<> 'REVERTIDA'");
+        assertThat(sql).contains("LIKE 'OPERACAO#%'")
+                .contains("substr(l.chaves.sk.s, 10)")
+                .contains("<> 'REVERTIDA'")
+                .contains("NOT EXISTS")
+                .doesNotContain("NOT IN");
     }
 
     @Test

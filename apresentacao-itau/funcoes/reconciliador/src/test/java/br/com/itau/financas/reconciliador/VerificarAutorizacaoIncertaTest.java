@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class VerificarAutorizacaoIncertaTest {
 
@@ -33,6 +34,20 @@ class VerificarAutorizacaoIncertaTest {
         var casoDeUso = new VerificarAutorizacaoIncerta(id -> false, (contrato, id) -> "NAO_ENCONTRADA");
 
         assertThat(casoDeUso.verificar("AUT-1", "CTR-1")).isEqualTo(Desfecho.NADA_A_REVERTER);
+    }
+
+    @Test
+    void reverterJaAplicadoEhIdempotente() {
+        var casoDeUso = new VerificarAutorizacaoIncerta(id -> false, (contrato, id) -> "JA_REVERTIDA");
+        assertThat(casoDeUso.verificar("AUT-1", "CTR-1")).isEqualTo(Desfecho.NADA_A_REVERTER);
+    }
+
+    @Test
+    void desfechoDesconhecidoNaoPodeConfirmarMensagemDaFila() {
+        var casoDeUso = new VerificarAutorizacaoIncerta(id -> false, (contrato, id) -> "ERRO_DESCONHECIDO");
+        assertThatThrownBy(() -> casoDeUso.verificar("AUT-1", "CTR-1"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("desfecho inesperado");
     }
 
     private String reverter(String contrato, String id) {
