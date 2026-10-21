@@ -16,7 +16,7 @@ services:
   localstack:
     image: localstack/localstack:4.0
     ports:
-      - "4566:4566"
+      - "127.0.0.1:4566:4566"
     environment:
       SERVICES: dynamodb,dynamodbstreams,kinesis,sqs,events,lambda,iam,sts,logs,cloudwatch,s3,sns
       LAMBDA_DOCKER_NETWORK: financas_default
@@ -38,7 +38,7 @@ services:
       POSTGRES_USER: contabilizacao
       POSTGRES_PASSWORD: contabilizacao
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "contabilizacao"]
       interval: 5s
@@ -47,8 +47,8 @@ services:
   jaeger:
     image: jaegertracing/all-in-one:1.62.0
     ports:
-      - "16686:16686"   # UI de traces (correlation_id ponta a ponta)
-      - "4317:4317"
+      - "127.0.0.1:16686:16686"   # UI de traces (correlation_id ponta a ponta)
+      - "127.0.0.1:4317:4317"
 
   limites:
     build:
@@ -61,7 +61,7 @@ services:
       TABELA_LIMITES: limites
       FILA_LIMITES_CONCEDIDOS: limites-concedidos
     ports:
-      - "8082:8080"
+      - "127.0.0.1:8082:8080"
     depends_on:
       localstack:
         condition: service_healthy
@@ -78,7 +78,7 @@ services:
       LIMITES_URL: http://limites:8080
       FILA_RESERVAS_A_EXPIRAR: reservas-a-expirar   # ADR 035 (no LocalStack a entrega é simulada)
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     depends_on:
       - limites
 
@@ -99,7 +99,7 @@ services:
       KCL_APLICACAO: contabilizacao-service
       FILA_QUARENTENA_URL: http://localstack:4566/000000000000/contabilizacao-quarentena
     ports:
-      - "8083:8080"
+      - "127.0.0.1:8083:8080"
     depends_on:
       postgres:
         condition: service_healthy
