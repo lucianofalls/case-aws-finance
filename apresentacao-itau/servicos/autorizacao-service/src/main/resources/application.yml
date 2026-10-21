@@ -1,0 +1,55 @@
+server:
+  port: 8080
+  shutdown: graceful   # conclui requisições em andamento no scale-in/deploy (reduz autorizações incertas)
+
+spring:
+  application:
+    name: autorizacao-service
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: non_null
+  threads:
+    virtual:
+      enabled: true
+  cloud:
+    aws:
+      region:
+        static: ${AWS_REGION:sa-east-1}
+      sqs:
+        endpoint: ${AWS_ENDPOINT_URL:}
+        listener:
+          max-concurrent-messages: 10    # Java 21: I/O bloqueante (DynamoDB, Limites) sem esgotar threads de plataforma
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+autorizacao:
+  aws:
+    regiao: ${AWS_REGION:sa-east-1}
+    endpoint: ${AWS_ENDPOINT_URL:}
+    tabela-autorizacoes: ${TABELA_AUTORIZACOES:autorizacoes}
+    retencao: ${RETENCAO_AUTORIZACOES:35d}
+  limites:
+    url: ${LIMITES_URL:http://limites:8080}
+    timeout-conexao: 50ms
+    timeout-leitura: 200ms
+    tentativas: 2
+    espera-inicial: 20ms
+    limiar-falhas-percentual: 50
+    espera-circuito-aberto: 5s
+  reserva:
+    validade: ${VALIDADE_RESERVA:P7D}      # pré-autorização expira em 7 dias se não for capturada (ADR 035)
+    fila-expiracao: ${FILA_RESERVAS_A_EXPIRAR:}
+
+logging:
+  pattern:
+    level: "%5p [correlation_id=%X{correlation_id:-}]"

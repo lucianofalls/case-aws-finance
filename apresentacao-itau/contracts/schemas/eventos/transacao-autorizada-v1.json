@@ -1,0 +1,124 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.itau.com.br/financas/autorizacao/transacao-autorizada/v1.json",
+  "title": "transacao-autorizada-v1",
+  "description": "Autorização aprovada (DEBITO, RESERVA, CAPTURA, LIBERACAO ou CREDITO). Kinesis 'transacoes'.",
+  "type": "object",
+  "required": [
+    "specversion",
+    "id",
+    "source",
+    "type",
+    "time",
+    "correlationid",
+    "data"
+  ],
+  "properties": {
+    "specversion": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "description": "único; chave de deduplicação (at-least-once)"
+    },
+    "source": {
+      "type": "string"
+    },
+    "type": {
+      "const": "br.com.itau.financas.autorizacao.transacao-autorizada.v1"
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "datacontenttype": {
+      "const": "application/json"
+    },
+    "dataschema": {
+      "type": "string",
+      "format": "uri"
+    },
+    "traceparent": {
+      "type": "string",
+      "description": "W3C Trace Context"
+    },
+    "correlationid": {
+      "type": "string",
+      "description": "rastreio ponta a ponta (PDF §2.4, não nulo); sem correlação recebida = id do evento"
+    },
+    "partitionkey": {
+      "type": "string",
+      "description": "id_contrato (ordenação por contrato)"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "id_autorizacao",
+        "id_contrato",
+        "id_conta",
+        "tipo_operacao",
+        "valor",
+        "moeda",
+        "saldo_reservado",
+        "limite_disponivel"
+      ],
+      "properties": {
+        "id_autorizacao": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "id_contrato": {
+          "type": "string"
+        },
+        "id_conta": {
+          "type": "string"
+        },
+        "tipo_operacao": {
+          "enum": [
+            "DEBITO",
+            "RESERVA",
+            "CAPTURA",
+            "LIBERACAO",
+            "CREDITO"
+          ]
+        },
+        "valor": {
+          "type": "string",
+          "pattern": "^-?\\d{1,16}\\.\\d{2}$",
+          "description": "decimal(18,2) como string"
+        },
+        "moeda": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "saldo_reservado": {
+          "type": "string",
+          "pattern": "^-?\\d{1,16}\\.\\d{2}$",
+          "description": "decimal(18,2) como string"
+        },
+        "limite_disponivel": {
+          "type": "string",
+          "pattern": "^-?\\d{1,16}\\.\\d{2}$",
+          "description": "decimal(18,2) como string"
+        },
+        "id_estabelecimento": {
+          "type": "string"
+        },
+        "id_autorizacao_original": {
+          "type": "string",
+          "format": "uuid",
+          "description": "reserva movimentada (CAPTURA e LIBERACAO)"
+        },
+        "reserva_expira_em": {
+          "type": "string",
+          "format": "date-time",
+          "description": "expiração do bloqueio (RESERVA; BIAN AmountBlock)"
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

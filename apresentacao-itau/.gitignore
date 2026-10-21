@@ -1,0 +1,9 @@
+target/
+artefatos/
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+.idea/
+*.iml
+.vscode/

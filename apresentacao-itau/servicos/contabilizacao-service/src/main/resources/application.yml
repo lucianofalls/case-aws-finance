@@ -1,0 +1,31 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: contabilizacao-service
+  lifecycle:
+    timeout-per-shutdown-phase: 25s
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/contabilizacao}
+    username: ${DB_USUARIO:contabilizacao}
+    password: ${DB_SENHA:contabilizacao}
+    hikari:
+      maximum-pool-size: 10   # pool fixo por task: o motivo de a contabilização rodar em Fargate (ADR 023)
+  flyway:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+contabilizacao:
+  regiao: ${AWS_REGION:sa-east-1}
+  endpoint: ${AWS_ENDPOINT_URL:}
+  stream: ${STREAM_TRANSACOES:transacoes}
+  nome-aplicacao-kcl: ${KCL_APLICACAO:contabilizacao-service}
+  url-fila-quarentena: ${FILA_QUARENTENA_URL:http://localhost:4566/000000000000/contabilizacao-quarentena}
+  modo-leitura: ${KCL_MODO_LEITURA:fan-out}   # polling no LocalStack (docker-compose)

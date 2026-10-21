@@ -1,0 +1,154 @@
+openapi: 3.0.3
+info:
+  title: API de Autorização de Transações
+  version: 1.0.0
+  description: |
+    Autorização síncrona com verificação e reserva de limite por contrato (PDF §2.3).
+
+    **Idempotência:** toda operação mutante exige `Idempotency-Key` (UUID). O id da autorização é derivado
+    de (cliente, chave): repetir a requisição devolve a decisão original (200, ou o mesmo 402).
+    Mesma chave com outro conteúdo → 422. Retentativas de resultado incerto (503) devem usar a **mesma**
+    chave em até 10 minutos; depois disso a operação é encerrada (409 `operacao-encerrada`).
+
+    **Versionamento:** major no path (`/v1`). Mudanças aditivas não mudam a versão. Breaking change → `/v2`,
+    convivência mínima de 6 meses, headers `Deprecation` e `Sunset` (RFC 9745 / RFC 8594) na versão antiga.
+
+    **Erros:** RFC 7807 (`application/problem+json`) com `codigo` e `correlation_id`.
+  contact:
+    name: POD99 — Plataforma de Finanças
+servers:
+  - url: https://api.itau.com.br/financas
+security:
+  - oauth2: [financas/autorizacoes.write]
+    apiKey: []
+paths:
+  /v1/contratos/{id_contrato}/autorizacoes:
+    post:
+      operationId: autorizarTransacao
+      summary: Autoriza (ou recusa) uma transação no contrato
+      parameters:
+        - $ref: '#/components/parameters/IdContrato'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/Traceparent'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/autorizacao-request.json'
+            examples:
+              debito:
+                value: { id_conta: "0001-123456", valor: 1500.00, moeda: BRL, tipo_operacao: DEBITO, id_estabelecimento: "EST-42" }
+              estorno:
+                value: { id_conta: "0001-123456", valor: 300.00, moeda: BRL, tipo_operacao: ESTORNO,
+                         metadata: { id_autorizacao_original: "9b2e6f0e-4d3c-5a1b-8e7f-0123456789ab" } }
+      responses:
+        '201':
+          description: Autorização aprovada
+          headers:
+            Location: { schema: { type: string } }
+            X-Correlation-Id: { schema: { type: string } }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Autorizacao' }
+        '200':
+          description: Repetição idempotente — resultado original
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Autorizacao' }
+        '402':
+          description: Limite insuficiente (recusa por regra de negócio)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/ProblemaRecusa' }
+        '409':
+          description: Conflito de estado — concorrência na reserva de limite ou operação encerrada
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '422':
+          description: Payload inválido ou regra de domínio violada
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '429':
+          description: Rate limit / cota do plano (usage plan)
+          headers:
+            Retry-After: { schema: { type: integer } }
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '503':
+          description: Degradação — circuit breaker aberto / fail-fast. Retente com a mesma Idempotency-Key.
+          headers:
+            Retry-After: { schema: { type: integer } }
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://financas.auth.sa-east-1.amazoncognito.com/oauth2/token
+          scopes:
+            financas/autorizacoes.write: Solicitar autorizações
+    apiKey:
+      type: apiKey
+      in: header
+      name: x-api-key
+  parameters:
+    IdContrato:
+      name: id_contrato
+      in: path
+      required: true
+      schema: { type: string, maxLength: 64 }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+    CorrelationId:
+      name: X-Correlation-Id
+      in: header
+      required: false
+      schema: { type: string }
+    Traceparent:
+      name: traceparent
+      in: header
+      required: false
+      description: W3C Trace Context
+      schema: { type: string }
+  schemas:
+    Autorizacao:
+      type: object
+      required: [id_autorizacao, estado, tipo_operacao, valor, moeda, saldo_reservado, limite_disponivel, criada_em]
+      properties:
+        id_autorizacao: { type: string, format: uuid }
+        estado: { type: string, enum: [APROVADA, ESTORNADA_PARCIALMENTE, ESTORNADA] }
+        tipo_operacao: { type: string, enum: [DEBITO, CREDITO, RESERVA, ESTORNO] }
+        valor: { type: string, pattern: '^\d{1,16}\.\d{2}$', description: decimal(18,2) como string }
+        moeda: { type: string }
+        saldo_reservado: { type: string, description: Limite comprometido após a operação }
+        limite_disponivel: { type: string }
+        criada_em: { type: string, format: date-time }
+    Problema:
+      type: object
+      required: [type, title, status, codigo]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }
+        codigo: { type: string }
+        correlation_id: { type: string }
+    ProblemaRecusa:
+      allOf:
+        - $ref: '#/components/schemas/Problema'
+        - type: object
+          properties:
+            id_autorizacao: { type: string, format: uuid }
+            limite_disponivel: { type: string }

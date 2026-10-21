@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "AutorizacaoRequest",
+  "type": "object",
+  "required": ["id_conta", "valor", "moeda", "tipo_operacao"],
+  "additionalProperties": false,
+  "properties": {
+    "id_contrato": { "type": "string", "maxLength": 64, "description": "Opcional; se presente, deve ser igual ao path" },
+    "id_conta": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "valor": { "type": "number", "minimum": 0.01, "maximum": 9999999999999999.99, "description": "decimal(18,2) > 0; minimum 0.01 equivale a > 0 com 2 casas (API Gateway não suporta exclusiveMinimum)" },
+    "moeda": { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "tipo_operacao": { "type": "string", "enum": ["DEBITO", "CREDITO", "RESERVA", "ESTORNO"] },
+    "id_estabelecimento": { "type": "string", "maxLength": 64 },
+    "metadata": {
+      "type": "object",
+      "description": "Atributos adicionais (rastreio, geo). Para ESTORNO: id_autorizacao_original.",
+      "properties": {
+        "id_autorizacao_original": { "type": "string", "pattern": "^[0-9a-fA-F-]{36}$" }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+Plataforma de Limites e Autorização de Transações — Itaú POD99 (Arquiteto de Aplicação)
+
+1. Comece por apresentacao-itau/docs/diagramas/poster-solucao.png (a solução em uma página).
+2. Visão completa e aderência ao desafio: apresentacao-itau/docs/visao-da-solucao.md
+3. Como rodar numa máquina nova (sem conta AWS, sem custo): apresentacao-itau/COMO-RODAR.md
+   Antes de tudo, devolva os nomes originais dos scripts (dentro da pasta extraída):
+     find . \( -name "*.sh.txt" -o -name "*.js.txt" \) | while read -r f; do mv "$f" "${f%.txt}"; done
+   Depois:
+     cd apresentacao-itau && bash local/subir.sh && bash local/demo.sh
+4. Roteiro da defesa: apresentacao-itau/docs/roteiro-apresentacao.md
+5. Histórico e decisões: docs/MEMORIA.md
+
+Arquivos renomeados para passar no filtro de e-mail (o comando do item 3 desfaz):
+   apresentacao-itau/contracts/verificar-contrato-api.sh  ->  apresentacao-itau/contracts/verificar-contrato-api.sh.txt
+   apresentacao-itau/local/demo.sh  ->  apresentacao-itau/local/demo.sh.txt
+   apresentacao-itau/local/derrubar.sh  ->  apresentacao-itau/local/derrubar.sh.txt
+   apresentacao-itau/local/subir.sh  ->  apresentacao-itau/local/subir.sh.txt
+   apresentacao-itau/tests/k6/autorizacao.js  ->  apresentacao-itau/tests/k6/autorizacao.js.txt
+Os JARs e demais binários não vão no pacote: são gerados pelo build (mvn install, executado pelo subir.sh).

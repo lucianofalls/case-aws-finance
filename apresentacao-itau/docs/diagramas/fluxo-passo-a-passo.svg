@@ -1,0 +1,223 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1560" viewBox="0 0 1700 1560" font-family="Segoe UI, Helvetica, Arial, sans-serif"><defs><marker id="ponta-123a6b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#123a6b"/></marker><marker id="ponta-ec7000" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ec7000"/></marker><marker id="ponta-b42318" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b42318"/></marker></defs><rect width="1700" height="1560" fill="#ffffff"/>
+<text x="40" y="44" font-size="26" font-weight="700" fill="#123a6b">Plataforma de Limites e Autorização — funcionamento passo a passo</text>
+<text x="40" y="70" font-size="14" fill="#5b6573">POD99 · AWS sa-east-1 · exemplo: débito de R$ 150,00 no contrato CT-123 (os números seguem a ordem do tempo)</text>
+<rect x="250" y="210" width="950" height="340" rx="14" fill="#f5f9ff" stroke="#123a6b" stroke-opacity="0.35" stroke-dasharray="4 4"/>
+<text x="266" y="234" font-size="13" font-weight="700" fill="#123a6b" letter-spacing="0.5">CAMINHO SÍNCRONO — o cliente aguarda (p99 &lt; 100 ms)</text>
+<rect x="250" y="580" width="1430" height="560" rx="14" fill="#fffaf5" stroke="#ec7000" stroke-opacity="0.35" stroke-dasharray="4 4"/>
+<text x="266" y="604" font-size="13" font-weight="700" fill="#ec7000" letter-spacing="0.5">CAMINHO ASSÍNCRONO — eventos de domínio</text>
+<rect x="30" y="260" width="150" height="100" rx="10" fill="#ffffff" stroke="#1d2939" stroke-width="1.6"/>
+<text x="105.0" y="297.0" text-anchor="middle" font-size="15" font-weight="700" fill="#1d2939">Canal / parceiro</text>
+<text x="105.0" y="315.0" text-anchor="middle" font-size="12" fill="#1d2939">app, internet banking,</text>
+<text x="105.0" y="333.0" text-anchor="middle" font-size="12" fill="#1d2939">adquirente (M2M)</text>
+<rect x="30" y="100" width="150" height="76" rx="10" fill="#f2f4f7" stroke="#98a2b3" stroke-width="1.6"/>
+<text x="105.0" y="125.0" text-anchor="middle" font-size="15" font-weight="700" fill="#1d2939">Amazon Cognito</text>
+<text x="105.0" y="143.0" text-anchor="middle" font-size="12" fill="#1d2939">OAuth2</text>
+<text x="105.0" y="161.0" text-anchor="middle" font-size="12" fill="#1d2939">client_credentials</text>
+<rect x="290" y="250" width="210" height="130" rx="10" fill="#f2f4f7" stroke="#98a2b3" stroke-width="1.6"/>
+<text x="395.0" y="293.0" text-anchor="middle" font-size="15" font-weight="700" fill="#1d2939">WAF + API Gateway</text>
+<text x="395.0" y="311.0" text-anchor="middle" font-size="12" fill="#1d2939">REST /v1 · Cognito authorizer</text>
+<text x="395.0" y="329.0" text-anchor="middle" font-size="12" fill="#1d2939">usage plan → 429</text>
+<text x="395.0" y="347.0" text-anchor="middle" font-size="12" fill="#1d2939">validação OpenAPI → 422</text>
+<rect x="590" y="250" width="240" height="130" rx="10" fill="#123a6b" stroke="#123a6b" stroke-width="1.6"/>
+<text x="710.0" y="293.0" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">autorizacao-service</text>
+<text x="710.0" y="311.0" text-anchor="middle" font-size="12" fill="#ffffff">Fargate · ctx Autorização</text>
+<text x="710.0" y="329.0" text-anchor="middle" font-size="12" fill="#ffffff">BIAN Transaction</text>
+<text x="710.0" y="347.0" text-anchor="middle" font-size="12" fill="#ffffff">Authorization</text>
+<rect x="590" y="450" width="240" height="76" rx="10" fill="#eef4fb" stroke="#6f93c2" stroke-width="1.6"/>
+<text x="710.0" y="484.0" text-anchor="middle" font-size="15" font-weight="700" fill="#123a6b">DynamoDB autorizacoes</text>
+<text x="710.0" y="502.0" text-anchor="middle" font-size="12" fill="#123a6b">decisão + evento no mesmo item</text>
+<rect x="950" y="250" width="240" height="130" rx="10" fill="#123a6b" stroke="#123a6b" stroke-width="1.6"/>
+<text x="1070.0" y="293.0" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">limites-service</text>
+<text x="1070.0" y="311.0" text-anchor="middle" font-size="12" fill="#ffffff">Fargate · ctx Limites</text>
+<text x="1070.0" y="329.0" text-anchor="middle" font-size="12" fill="#ffffff">BIAN Position Keeping +</text>
+<text x="1070.0" y="347.0" text-anchor="middle" font-size="12" fill="#ffffff">Limit &amp; Exposure</text>
+<rect x="950" y="450" width="240" height="76" rx="10" fill="#eef4fb" stroke="#6f93c2" stroke-width="1.6"/>
+<text x="1070.0" y="484.0" text-anchor="middle" font-size="15" font-weight="700" fill="#123a6b">DynamoDB limites</text>
+<text x="1070.0" y="502.0" text-anchor="middle" font-size="12" fill="#123a6b">posição · operação · OUT#</text>
+<rect x="590" y="100" width="240" height="76" rx="10" fill="#f2f4f7" stroke="#98a2b3" stroke-width="1.6"/>
+<text x="710.0" y="134.0" text-anchor="middle" font-size="15" font-weight="700" fill="#1d2939">SQS verificação</text>
+<text x="710.0" y="152.0" text-anchor="middle" font-size="12" fill="#1d2939">atraso 15 min</text>
+<rect x="950" y="100" width="240" height="76" rx="10" fill="#fff1e5" stroke="#ec7000" stroke-width="1.6"/>
+<text x="1070.0" y="134.0" text-anchor="middle" font-size="15" font-weight="700" fill="#7a3a00">reconciliador</text>
+<text x="1070.0" y="152.0" text-anchor="middle" font-size="12" fill="#7a3a00">Lambda</text>
+<rect x="590" y="620" width="240" height="70" rx="10" fill="#fff1e5" stroke="#ec7000" stroke-width="1.6"/>
+<text x="710.0" y="651.0" text-anchor="middle" font-size="15" font-weight="700" fill="#7a3a00">outbox-relay (autorizações)</text>
+<text x="710.0" y="669.0" text-anchor="middle" font-size="12" fill="#7a3a00">Lambda · DynamoDB Streams</text>
+<rect x="590" y="750" width="240" height="80" rx="10" fill="#f2f4f7" stroke="#98a2b3" stroke-width="1.6"/>
+<text x="710.0" y="777.0" text-anchor="middle" font-size="15" font-weight="700" fill="#1d2939">Kinesis «transacoes»</text>
+<text x="710.0" y="795.0" text-anchor="middle" font-size="12" fill="#1d2939">8 shards · chave id_contrato</text>
+<text x="710.0" y="813.0" text-anchor="middle" font-size="12" fill="#1d2939">retenção 7 dias</text>
+<rect x="290" y="930" width="250" height="86" rx="10" fill="#123a6b" stroke="#123a6b" stroke-width="1.6"/>
+<text x="415.0" y="960.0" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">contabilizacao-service</text>
+<text x="415.0" y="978.0" text-anchor="middle" font-size="12" fill="#ffffff">Fargate + Spot · KCL</text>
+<text x="415.0" y="996.0" text-anchor="middle" font-size="12" fill="#ffffff">BIAN Financial Accounting</text>
+<rect x="290" y="1050" width="250" height="70" rx="10" fill="#eef4fb" stroke="#6f93c2" stroke-width="1.6"/>
+<text x="415.0" y="1081.0" text-anchor="middle" font-size="15" font-weight="700" fill="#123a6b">Aurora PostgreSQL</text>
+<text x="415.0" y="1099.0" text-anchor="middle" font-size="12" fill="#123a6b">razão · partidas dobradas</text>
+<rect x="600" y="930" width="220" height="86" rx="10" fill="#fff1e5" stroke="#ec7000" stroke-width="1.6"/>
+<text x="710.0" y="960.0" text-anchor="middle" font-size="15" font-weight="700" fill="#7a3a00">antifraude · notificações</text>
+<text x="710.0" y="978.0" text-anchor="middle" font-size="12" fill="#7a3a00">Lambdas (stubs)</text>
+<text x="710.0" y="996.0" text-anchor="middle" font-size="12" fill="#7a3a00">BIAN Fraud Eval. · Correspond.</text>
+<rect x="880" y="930" width="220" height="86" rx="10" fill="#f2f4f7" stroke="#98a2b3" stroke-width="1.6"/>
+<text x="990.0" y="960.0" text-anchor="middle" font-size="15" font-weight="700" fill="#1d2939">Firehose → S3</text>
+<text x="990.0" y="978.0" text-anchor="middle" font-size="12" fill="#1d2939">trilha WORM (Object Lock)</text>
+<text x="990.0" y="996.0" text-anchor="middle" font-size="12" fill="#1d2939">data platform · auditoria</text>
+<rect x="950" y="620" width="240" height="70" rx="10" fill="#fff1e5" stroke="#ec7000" stroke-width="1.6"/>
+<text x="1070.0" y="651.0" text-anchor="middle" font-size="15" font-weight="700" fill="#7a3a00">outbox-relay (limites)</text>
+<text x="1070.0" y="669.0" text-anchor="middle" font-size="12" fill="#7a3a00">Lambda · só itens OUT#</text>
+<rect x="1220" y="750" width="220" height="80" rx="10" fill="#f2f4f7" stroke="#98a2b3" stroke-width="1.6"/>
+<text x="1330.0" y="777.0" text-anchor="middle" font-size="15" font-weight="700" fill="#1d2939">EventBridge «financas»</text>
+<text x="1330.0" y="795.0" text-anchor="middle" font-size="12" fill="#1d2939">regras · archive 90 d</text>
+<text x="1330.0" y="813.0" text-anchor="middle" font-size="12" fill="#1d2939">DLQ</text>
+<rect x="1220" y="450" width="220" height="76" rx="10" fill="#f2f4f7" stroke="#98a2b3" stroke-width="1.6"/>
+<text x="1330.0" y="484.0" text-anchor="middle" font-size="15" font-weight="700" fill="#1d2939">SQS limites-concedidos</text>
+<text x="1330.0" y="502.0" text-anchor="middle" font-size="12" fill="#1d2939">+ DLQ</text>
+<rect x="1220" y="930" width="220" height="86" rx="10" fill="#f2f4f7" stroke="#98a2b3" stroke-width="1.6"/>
+<text x="1330.0" y="960.0" text-anchor="middle" font-size="15" font-weight="700" fill="#1d2939">Firehose → S3</text>
+<text x="1330.0" y="978.0" text-anchor="middle" font-size="12" fill="#1d2939">trilha dos eventos</text>
+<text x="1330.0" y="996.0" text-anchor="middle" font-size="12" fill="#1d2939">de domínio</text>
+<rect x="1480" y="620" width="180" height="70" rx="10" fill="#ffffff" stroke="#1d2939" stroke-width="1.6"/>
+<text x="1570.0" y="651.0" text-anchor="middle" font-size="15" font-weight="700" fill="#1d2939">Core banking</text>
+<text x="1570.0" y="669.0" text-anchor="middle" font-size="12" fill="#1d2939">legado (MQ → SQS)</text>
+<rect x="1480" y="750" width="180" height="80" rx="10" fill="#fff1e5" stroke="#ec7000" stroke-width="1.6"/>
+<text x="1570.0" y="777.0" text-anchor="middle" font-size="15" font-weight="700" fill="#7a3a00">corebanking-acl</text>
+<text x="1570.0" y="795.0" text-anchor="middle" font-size="12" fill="#7a3a00">Lambda · ACL</text>
+<text x="1570.0" y="813.0" text-anchor="middle" font-size="12" fill="#7a3a00">traduz layout posicional</text>
+<polyline points="105,260 105,176" fill="none" stroke="#123a6b" stroke-width="2.4" marker-end="url(#ponta-123a6b)"/>
+<circle cx="105" cy="218" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="105" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">1</text>
+<text x="120" y="196" text-anchor="start" font-size="11.5" fill="#123a6b" font-style="italic">token JWT</text>
+<polyline points="180,315 290,315" fill="none" stroke="#123a6b" stroke-width="2.4" marker-end="url(#ponta-123a6b)"/>
+<circle cx="235" cy="315" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="235" y="320" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">2</text>
+<text x="235" y="276" text-anchor="middle" font-size="11.5" fill="#123a6b" font-style="italic">POST</text>
+<text x="235" y="291" text-anchor="middle" font-size="11.5" fill="#123a6b" font-style="italic">Idempotency-Key</text>
+<polyline points="500,315 590,315" fill="none" stroke="#123a6b" stroke-width="2.4" marker-end="url(#ponta-123a6b)"/>
+<circle cx="545" cy="315" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="545" y="320" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">3</text>
+<text x="545" y="291" text-anchor="middle" font-size="11.5" fill="#123a6b" font-style="italic">+ X-Client-Id</text>
+<text x="545" y="346" text-anchor="middle" font-size="11.5" fill="#123a6b" font-style="italic">VPC Link → NLB</text>
+<polyline points="650,380 650,450" fill="none" stroke="#123a6b" stroke-width="2.4" marker-end="url(#ponta-123a6b)"/>
+<circle cx="650" cy="415" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="650" y="420" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">4</text>
+<text x="668" y="420" text-anchor="start" font-size="11.5" fill="#123a6b" font-style="italic">lê: já decidida?</text>
+<polyline points="830,300 950,300" fill="none" stroke="#123a6b" stroke-width="2.4" marker-end="url(#ponta-123a6b)"/>
+<circle cx="890" cy="300" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="890" y="305" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">5</text>
+<text x="890" y="276" text-anchor="middle" font-size="11.5" fill="#123a6b" font-style="italic">reservar limite</text>
+<text x="890" y="334" text-anchor="middle" font-size="11.5" fill="#123a6b" font-style="italic">timeout 200 ms</text>
+<text x="890" y="349" text-anchor="middle" font-size="11.5" fill="#123a6b" font-style="italic">retry</text>
+<text x="890" y="364" text-anchor="middle" font-size="11.5" fill="#123a6b" font-style="italic">circuit breaker</text>
+<polyline points="1070,380 1070,450" fill="none" stroke="#123a6b" stroke-width="2.4" marker-end="url(#ponta-123a6b)"/>
+<circle cx="1070" cy="415" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="1070" y="420" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">6</text>
+<text x="1088" y="410" text-anchor="start" font-size="11.5" fill="#123a6b" font-style="italic">escrita condicional</text>
+<text x="1088" y="425" text-anchor="start" font-size="11.5" fill="#123a6b" font-style="italic">disponível ≥ valor</text>
+<polyline points="780,380 780,450" fill="none" stroke="#123a6b" stroke-width="2.4" marker-end="url(#ponta-123a6b)"/>
+<circle cx="780" cy="415" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="780" y="420" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">7</text>
+<text x="798" y="410" text-anchor="start" font-size="11.5" fill="#123a6b" font-style="italic">grava decisão</text>
+<text x="798" y="425" text-anchor="start" font-size="11.5" fill="#123a6b" font-style="italic">+ evento</text>
+<polyline points="590,366 500,366" fill="none" stroke="#123a6b" stroke-width="2.4" stroke-dasharray="7 5" marker-end="url(#ponta-123a6b)"/>
+<polyline points="290,350 180,350" fill="none" stroke="#123a6b" stroke-width="2.4" stroke-dasharray="7 5" marker-end="url(#ponta-123a6b)"/>
+<text x="235" y="372" text-anchor="middle" font-size="11.5" fill="#123a6b" font-style="italic">201 / 402</text>
+<polyline points="710,526 710,620" fill="none" stroke="#ec7000" stroke-width="2.4" marker-end="url(#ponta-ec7000)"/>
+<circle cx="710" cy="573" r="15" fill="#ec7000" stroke="#ffffff" stroke-width="2.5"/>
+<text x="710" y="578" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">8</text>
+<text x="728" y="578" text-anchor="start" font-size="11.5" fill="#ec7000" font-style="italic">Stream</text>
+<polyline points="710,690 710,750" fill="none" stroke="#ec7000" stroke-width="2.4" marker-end="url(#ponta-ec7000)"/>
+<text x="728" y="724" text-anchor="start" font-size="11.5" fill="#ec7000" font-style="italic">TransacaoAutorizada</text>
+<polyline points="710,830 710,880 415,880 415,930" fill="none" stroke="#ec7000" stroke-width="2.4" marker-end="url(#ponta-ec7000)"/>
+<polyline points="710,880 710,930" fill="none" stroke="#ec7000" stroke-width="2.4" marker-end="url(#ponta-ec7000)"/>
+<polyline points="710,880 990,880 990,930" fill="none" stroke="#ec7000" stroke-width="2.4" marker-end="url(#ponta-ec7000)"/>
+<circle cx="560" cy="880" r="15" fill="#ec7000" stroke="#ffffff" stroke-width="2.5"/>
+<text x="560" y="885" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">9</text>
+<polyline points="415,1016 415,1050" fill="none" stroke="#ec7000" stroke-width="2.4" marker-end="url(#ponta-ec7000)"/>
+<polyline points="1570,690 1570,750" fill="none" stroke="#ec7000" stroke-width="2.4" marker-end="url(#ponta-ec7000)"/>
+<circle cx="1570" cy="720" r="15" fill="#ec7000" stroke="#ffffff" stroke-width="2.5"/>
+<text x="1570" y="725" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">10</text>
+<polyline points="1480,790 1440,790" fill="none" stroke="#ec7000" stroke-width="2.4" marker-end="url(#ponta-ec7000)"/>
+<text x="1460" y="742" text-anchor="middle" font-size="11.5" fill="#ec7000" font-style="italic">LimiteConcedido</text>
+<polyline points="1330,750 1330,526" fill="none" stroke="#ec7000" stroke-width="2.4" marker-end="url(#ponta-ec7000)"/>
+<text x="1342" y="650" text-anchor="start" font-size="11.5" fill="#ec7000" font-style="italic">regra</text>
+<polyline points="1330,450 1330,300 1190,300" fill="none" stroke="#ec7000" stroke-width="2.4" marker-end="url(#ponta-ec7000)"/>
+<text x="1260" y="290" text-anchor="middle" font-size="11.5" fill="#ec7000" font-style="italic">novo limite</text>
+<polyline points="1070,526 1070,620" fill="none" stroke="#ec7000" stroke-width="2.4" marker-end="url(#ponta-ec7000)"/>
+<circle cx="1070" cy="573" r="15" fill="#ec7000" stroke="#ffffff" stroke-width="2.5"/>
+<text x="1070" y="578" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">11</text>
+<text x="1088" y="578" text-anchor="start" font-size="11.5" fill="#ec7000" font-style="italic">OUT#</text>
+<polyline points="1070,690 1070,790 1220,790" fill="none" stroke="#ec7000" stroke-width="2.4" marker-end="url(#ponta-ec7000)"/>
+<text x="1145" y="780" text-anchor="middle" font-size="11.5" fill="#ec7000" font-style="italic">LimiteAlterado</text>
+<polyline points="1330,830 1330,930" fill="none" stroke="#ec7000" stroke-width="2.4" marker-end="url(#ponta-ec7000)"/>
+<polyline points="800,250 800,176" fill="none" stroke="#b42318" stroke-width="2.4" stroke-dasharray="7 5" marker-end="url(#ponta-b42318)"/>
+<circle cx="800" cy="213" r="15" fill="#b42318" stroke="#ffffff" stroke-width="2.5"/>
+<text x="800" y="218" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">12</text>
+<text x="818" y="200" text-anchor="start" font-size="11.5" fill="#b42318" font-style="italic">só se incerto</text>
+<polyline points="830,138 950,138" fill="none" stroke="#b42318" stroke-width="2.4" stroke-dasharray="7 5" marker-end="url(#ponta-b42318)"/>
+<polyline points="1070,176 1070,250" fill="none" stroke="#b42318" stroke-width="2.4" stroke-dasharray="7 5" marker-end="url(#ponta-b42318)"/>
+<text x="1088" y="218" text-anchor="start" font-size="11.5" fill="#b42318" font-style="italic">reverte órfã</text>
+<text x="1220" y="100" font-size="13" font-weight="700" fill="#1d2939">Legenda</text>
+<rect x="1220" y="116" width="26" height="16" rx="4" fill="#123a6b" stroke="#123a6b"/>
+<text x="1256" y="129" font-size="12" fill="#1d2939">microsserviço (ECS Fargate, Java 21)</text>
+<rect x="1220" y="140" width="26" height="16" rx="4" fill="#fff1e5" stroke="#ec7000"/>
+<text x="1256" y="153" font-size="12" fill="#1d2939">função Lambda (Java 21)</text>
+<rect x="1220" y="164" width="26" height="16" rx="4" fill="#eef4fb" stroke="#6f93c2"/>
+<text x="1256" y="177" font-size="12" fill="#1d2939">banco de dados (database-per-service)</text>
+<rect x="1220" y="188" width="26" height="16" rx="4" fill="#f2f4f7" stroke="#98a2b3"/>
+<text x="1256" y="201" font-size="12" fill="#1d2939">serviço AWS gerenciado</text>
+<line x1="1220" y1="224" x2="1246" y2="224" stroke="#123a6b" stroke-width="2.4"/>
+<text x="1256" y="228" font-size="12" fill="#1d2939">síncrono (request/response)</text>
+<line x1="1220" y1="246" x2="1246" y2="246" stroke="#ec7000" stroke-width="2.4"/>
+<text x="1256" y="250" font-size="12" fill="#1d2939">evento assíncrono</text>
+<line x1="1220" y1="268" x2="1246" y2="268" stroke="#b42318" stroke-width="2.4" stroke-dasharray="6 4"/>
+<text x="1256" y="272" font-size="12" fill="#1d2939">exceção: resultado incerto</text>
+<line x1="40" y1="1170" x2="1660" y2="1170" stroke="#d0d5dd"/>
+<text x="40" y="1204" font-size="18" font-weight="700" fill="#123a6b">Passo a passo</text>
+<circle cx="55" cy="1235" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="55" y="1240" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">1</text>
+<text x="82" y="1240" font-size="14" font-weight="700" fill="#123a6b">Autenticação</text>
+<text x="200" y="1240" font-size="13.5" fill="#1d2939">O canal obtém um token OAuth2 (client_credentials) no Cognito.</text>
+<circle cx="55" cy="1287" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="55" y="1292" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">2</text>
+<text x="82" y="1292" font-size="14" font-weight="700" fill="#123a6b">Requisição</text>
+<text x="200" y="1292" font-size="13.5" fill="#1d2939">POST /v1/contratos/CT-123/autorizacoes com token, x-api-key e Idempotency-Key.</text>
+<circle cx="55" cy="1339" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="55" y="1344" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">3</text>
+<text x="82" y="1344" font-size="14" font-weight="700" fill="#123a6b">Borda</text>
+<text x="200" y="1344" font-size="13.5" fill="#1d2939">WAF filtra; API Gateway valida token, cota (429) e schema (422) e encaminha.</text>
+<circle cx="55" cy="1391" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="55" y="1396" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">4</text>
+<text x="82" y="1396" font-size="14" font-weight="700" fill="#123a6b">Idempotência</text>
+<text x="200" y="1396" font-size="13.5" fill="#1d2939">id = UUIDv5(cliente, chave). Já existe? Devolve a decisão original (200).</text>
+<circle cx="55" cy="1443" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="55" y="1448" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">5</text>
+<text x="82" y="1448" font-size="14" font-weight="700" fill="#123a6b">Reserva</text>
+<text x="200" y="1448" font-size="13.5" fill="#1d2939">Autorização pede ao Limites para debitar R$ 150 (único acoplamento síncrono).</text>
+<circle cx="55" cy="1495" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="55" y="1500" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">6</text>
+<text x="82" y="1500" font-size="14" font-weight="700" fill="#123a6b">Consistência</text>
+<text x="200" y="1500" font-size="13.5" fill="#1d2939">Limites grava só se a versão não mudou e há saldo; senão 402 ou nova tentativa.</text>
+<circle cx="875" cy="1235" r="15" fill="#123a6b" stroke="#ffffff" stroke-width="2.5"/>
+<text x="875" y="1240" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">7</text>
+<text x="902" y="1240" font-size="14" font-weight="700" fill="#123a6b">Decisão</text>
+<text x="1020" y="1240" font-size="13.5" fill="#1d2939">Uma escrita grava a decisão e o evento juntos (outbox) e o cliente recebe 201.</text>
+<circle cx="875" cy="1287" r="15" fill="#ec7000" stroke="#ffffff" stroke-width="2.5"/>
+<text x="875" y="1292" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">8</text>
+<text x="902" y="1292" font-size="14" font-weight="700" fill="#ec7000">Publicação</text>
+<text x="1020" y="1292" font-size="13.5" fill="#1d2939">DynamoDB Streams aciona o relay, que publica TransacaoAutorizada no Kinesis.</text>
+<circle cx="875" cy="1339" r="15" fill="#ec7000" stroke="#ffffff" stroke-width="2.5"/>
+<text x="875" y="1344" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">9</text>
+<text x="902" y="1344" font-size="14" font-weight="700" fill="#ec7000">Consumo</text>
+<text x="1020" y="1344" font-size="13.5" fill="#1d2939">Contabilização lança no razão; antifraude, notificações e trilha S3 consomem.</text>
+<circle cx="875" cy="1391" r="15" fill="#ec7000" stroke="#ffffff" stroke-width="2.5"/>
+<text x="875" y="1396" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">10</text>
+<text x="902" y="1396" font-size="14" font-weight="700" fill="#ec7000">Legado</text>
+<text x="1020" y="1396" font-size="13.5" fill="#1d2939">Core banking muda um limite; a ACL traduz e o Limites aplica via EventBridge.</text>
+<circle cx="875" cy="1443" r="15" fill="#ec7000" stroke="#ffffff" stroke-width="2.5"/>
+<text x="875" y="1448" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">11</text>
+<text x="902" y="1448" font-size="14" font-weight="700" fill="#ec7000">Integração</text>
+<text x="1020" y="1448" font-size="13.5" fill="#1d2939">Mudanças de limite saem pelo outbox OUT# para o EventBridge (regras + archive).</text>
+<circle cx="875" cy="1495" r="15" fill="#b42318" stroke="#ffffff" stroke-width="2.5"/>
+<text x="875" y="1500" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">12</text>
+<text x="902" y="1500" font-size="14" font-weight="700" fill="#b42318">Recuperação</text>
+<text x="1020" y="1500" font-size="13.5" fill="#1d2939">Se o Limites não respondeu a tempo, após 15 min o reconciliador desfaz a órfã.</text></svg>

@@ -1,0 +1,107 @@
+asyncapi: 3.0.0
+info:
+  title: Eventos da Plataforma de Limites e Autorização
+  version: 1.0.0
+  description: |
+    Linguagem publicada (DDD) em CloudEvents 1.0, modo estruturado JSON. Valores monetários são strings decimais.
+    Entrega at-least-once: todo consumidor deduplica pelo `id` e tolera reordenação/reentrega (PDF §2.4).
+    Evolução retrocompatível validada no Glue Schema Registry (compatibilidade FULL: só campos opcionais entram ou saem).
+
+    Dois canais, escolhidos por volume e quota (docs/eventos.md):
+    - **Kinesis `transacoes`**: fluxo transacional (até 5.000/s), partition key = id_contrato (distribuição); a ordem não é garantida (PutRecords e relay paralelo); consumidores independentes de ordem.
+    - **EventBridge `financas`**: integração entre domínios (baixo volume), roteamento por regras.
+servers:
+  kinesis:
+    host: kinesis.sa-east-1.amazonaws.com
+    protocol: kinesis
+  eventbridge:
+    host: events.sa-east-1.amazonaws.com
+    protocol: eventbridge
+channels:
+  transacoes:
+    address: transacoes
+    servers:
+      - $ref: '#/servers/kinesis'
+    description: Stream Kinesis; produtor = relay do outbox da Autorização.
+    messages:
+      transacaoAutorizada:
+        $ref: '#/components/messages/TransacaoAutorizada'
+      transacaoRecusada:
+        $ref: '#/components/messages/TransacaoRecusada'
+      estornoRealizado:
+        $ref: '#/components/messages/EstornoRealizado'
+  financas:
+    address: financas
+    servers:
+      - $ref: '#/servers/eventbridge'
+    description: Bus EventBridge; `detail-type` = CloudEvent `type`, `detail` = CloudEvent completo.
+    messages:
+      limiteConcedido:
+        $ref: '#/components/messages/LimiteConcedido'
+      limiteAlterado:
+        $ref: '#/components/messages/LimiteAlterado'
+      operacaoRevertida:
+        $ref: '#/components/messages/OperacaoRevertida'
+operations:
+  publicarTransacoes:
+    action: send
+    channel:
+      $ref: '#/channels/transacoes'
+    summary: autorizacao-service (via outbox embutido + relay Lambda)
+  contabilizar:
+    action: receive
+    channel:
+      $ref: '#/channels/transacoes'
+    summary: contabilizacao-service (KCL, Fargate) — BIAN Financial Accounting
+  avaliarFraude:
+    action: receive
+    channel:
+      $ref: '#/channels/transacoes'
+    summary: antifraude (stub) — BIAN Fraud Evaluation
+  notificarCliente:
+    action: receive
+    channel:
+      $ref: '#/channels/transacoes'
+    summary: notificações (stub) — BIAN Correspondence
+  publicarLimiteConcedido:
+    action: send
+    channel:
+      $ref: '#/channels/financas'
+    summary: corebanking-acl (Anti-Corruption Layer do legado)
+  aplicarLimite:
+    action: receive
+    channel:
+      $ref: '#/channels/financas'
+    summary: limites-service via regra limite-concedido → SQS
+components:
+  messages:
+    TransacaoAutorizada:
+      name: br.com.itau.financas.autorizacao.transacao-autorizada.v1
+      contentType: application/cloudevents+json
+      payload:
+        $ref: '../schemas/eventos/transacao-autorizada-v1.json'
+    TransacaoRecusada:
+      name: br.com.itau.financas.autorizacao.transacao-recusada.v1
+      contentType: application/cloudevents+json
+      payload:
+        $ref: '../schemas/eventos/transacao-recusada-v1.json'
+    EstornoRealizado:
+      name: br.com.itau.financas.autorizacao.estorno-realizado.v1
+      contentType: application/cloudevents+json
+      payload:
+        $ref: '../schemas/eventos/estorno-realizado-v1.json'
+    LimiteConcedido:
+      name: br.com.itau.financas.corebanking.limite-concedido.v1
+      contentType: application/cloudevents+json
+      payload:
+        $ref: '../schemas/eventos/limite-concedido-v1.json'
+    LimiteAlterado:
+      name: br.com.itau.financas.limites.limite-alterado.v1
+      contentType: application/cloudevents+json
+      payload:
+        $ref: '../schemas/eventos/limite-alterado-v1.json'
+    OperacaoRevertida:
+      name: br.com.itau.financas.limites.operacao-revertida.v1
+      contentType: application/cloudevents+json
+      payload:
+        $ref: '../schemas/eventos/operacao-revertida-v1.json'

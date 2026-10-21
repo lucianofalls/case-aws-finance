@@ -1,0 +1,204 @@
+{
+  "Comment": "Conciliação diária (BIAN Account Reconciliation; ADR 034). Entrada {} = dia UTC anterior; {\"desde\",\"ate\"} = janela manual (runbook de outbox parado > 24 h).",
+  "StartAt": "PrepararJanela",
+  "States": {
+    "PrepararJanela": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${preparar_janela_arn}",
+        "Payload.$": "$"
+      },
+      "OutputPath": "$.Payload",
+      "Retry": [{ "ErrorEquals": ["Lambda.ServiceException", "Lambda.TooManyRequestsException", "Lambda.SdkClientException"], "IntervalSeconds": 5, "MaxAttempts": 3, "BackoffRate": 2 }],
+      "Next": "Extrair"
+    },
+    "Extrair": {
+      "Type": "Parallel",
+      "ResultPath": null,
+      "Next": "Consultar",
+      "Branches": [
+        {
+          "StartAt": "ExportarAutorizacoes",
+          "States": {
+            "ExportarAutorizacoes": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::aws-sdk:dynamodb:exportTableToPointInTime",
+              "Parameters": {
+                "TableArn": "${tabela_autorizacoes_arn}",
+                "S3Bucket": "${bucket}",
+                "S3Prefix.$": "$.prefixo_autorizacoes",
+                "ExportFormat": "DYNAMODB_JSON",
+                "ExportType": "INCREMENTAL_EXPORT",
+                "IncrementalExportSpecification": {
+                  "ExportFromTime.$": "$.desde",
+                  "ExportToTime.$": "$.ate",
+                  "ExportViewType": "NEW_IMAGE"
+                },
+                "S3SseAlgorithm": "KMS",
+                "S3SseKmsKeyId": "${kms_key_arn}"
+              },
+              "ResultSelector": { "arn.$": "$.ExportDescription.ExportArn" },
+              "ResultPath": "$.exportacao",
+              "Next": "AguardarAutorizacoes"
+            },
+            "AguardarAutorizacoes": { "Type": "Wait", "Seconds": 300, "Next": "SituacaoAutorizacoes" },
+            "SituacaoAutorizacoes": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::aws-sdk:dynamodb:describeExport",
+              "Parameters": { "ExportArn.$": "$.exportacao.arn" },
+              "ResultSelector": { "status.$": "$.ExportDescription.ExportStatus" },
+              "ResultPath": "$.situacao",
+              "Next": "AutorizacoesConcluida"
+            },
+            "AutorizacoesConcluida": {
+              "Type": "Choice",
+              "Choices": [
+                { "Variable": "$.situacao.status", "StringEquals": "COMPLETED", "Next": "AutorizacoesExportada" },
+                { "Variable": "$.situacao.status", "StringEquals": "FAILED", "Next": "FalhaNaExportacaoDeAutorizacoes" }
+              ],
+              "Default": "AguardarAutorizacoes"
+            },
+            "AutorizacoesExportada": { "Type": "Succeed" },
+            "FalhaNaExportacaoDeAutorizacoes": { "Type": "Fail", "Error": "ExportacaoFalhou", "Cause": "exportação incremental da tabela autorizacoes" }
+          }
+        },
+        {
+          "StartAt": "ExportarLimites",
+          "States": {
+            "ExportarLimites": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::aws-sdk:dynamodb:exportTableToPointInTime",
+              "Parameters": {
+                "TableArn": "${tabela_limites_arn}",
+                "S3Bucket": "${bucket}",
+                "S3Prefix.$": "$.prefixo_limites",
+                "ExportFormat": "DYNAMODB_JSON",
+                "ExportType": "INCREMENTAL_EXPORT",
+                "IncrementalExportSpecification": {
+                  "ExportFromTime.$": "$.desde",
+                  "ExportToTime.$": "$.ate",
+                  "ExportViewType": "NEW_IMAGE"
+                },
+                "S3SseAlgorithm": "KMS",
+                "S3SseKmsKeyId": "${kms_key_arn}"
+              },
+              "ResultSelector": { "arn.$": "$.ExportDescription.ExportArn" },
+              "ResultPath": "$.exportacao",
+              "Next": "AguardarLimites"
+            },
+            "AguardarLimites": { "Type": "Wait", "Seconds": 300, "Next": "SituacaoLimites" },
+            "SituacaoLimites": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::aws-sdk:dynamodb:describeExport",
+              "Parameters": { "ExportArn.$": "$.exportacao.arn" },
+              "ResultSelector": { "status.$": "$.ExportDescription.ExportStatus" },
+              "ResultPath": "$.situacao",
+              "Next": "LimitesConcluida"
+            },
+            "LimitesConcluida": {
+              "Type": "Choice",
+              "Choices": [
+                { "Variable": "$.situacao.status", "StringEquals": "COMPLETED", "Next": "LimitesExportada" },
+                { "Variable": "$.situacao.status", "StringEquals": "FAILED", "Next": "FalhaNaExportacaoDeLimites" }
+              ],
+              "Default": "AguardarLimites"
+            },
+            "LimitesExportada": { "Type": "Succeed" },
+            "FalhaNaExportacaoDeLimites": { "Type": "Fail", "Error": "ExportacaoFalhou", "Cause": "exportação incremental da tabela limites" }
+          }
+        },
+        {
+          "StartAt": "ExportarRazao",
+          "States": {
+            "ExportarRazao": {
+              "Type": "Map",
+              "ItemsPath": "$.exportacoes_razao",
+              "MaxConcurrency": 4,
+              "ItemProcessor": {
+                "ProcessorConfig": { "Mode": "INLINE" },
+                "StartAt": "ExportarBlocoDoRazao",
+                "States": {
+                  "ExportarBlocoDoRazao": {
+                    "Type": "Task",
+                    "Resource": "arn:aws:states:::aws-sdk:rdsdata:executeStatement",
+                    "Parameters": {
+                      "ResourceArn": "${aurora_arn}",
+                      "SecretArn": "${aurora_segredo_arn}",
+                      "Database": "contabilizacao",
+                      "Sql.$": "$"
+                    },
+                    "Retry": [{ "ErrorEquals": ["States.ALL"], "IntervalSeconds": 30, "MaxAttempts": 3, "BackoffRate": 2 }],
+                    "End": true
+                  }
+                }
+              },
+              "ResultPath": null,
+              "End": true
+            }
+          }
+        }
+      ]
+    },
+    "Consultar": {
+      "Type": "Parallel",
+      "End": true,
+      "Branches": [
+        {
+          "StartAt": "ConsultarFatosSemPublicacaoOuContabilizacao",
+          "States": {
+            "ConsultarFatosSemPublicacaoOuContabilizacao": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+              "Parameters": {
+                "QueryString.$": "$.consulta_republicar",
+                "WorkGroup": "${workgroup}",
+                "ResultConfiguration": { "OutputLocation.$": "$.saida_athena" }
+              },
+              "ResultSelector": { "resultado.$": "$.QueryExecution.ResultConfiguration.OutputLocation" },
+              "Next": "Republicar"
+            },
+            "Republicar": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke",
+              "Parameters": {
+                "FunctionName": "${republicador_arn}",
+                "Payload": { "resultado.$": "$.resultado" }
+              },
+              "OutputPath": "$.Payload",
+              "Retry": [{ "ErrorEquals": ["States.ALL"], "IntervalSeconds": 60, "MaxAttempts": 5, "BackoffRate": 2 }],
+              "End": true
+            }
+          }
+        },
+        {
+          "StartAt": "ConsultarOperacoesSemDecisao",
+          "States": {
+            "ConsultarOperacoesSemDecisao": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+              "Parameters": {
+                "QueryString.$": "$.consulta_orfas",
+                "WorkGroup": "${workgroup}",
+                "ResultConfiguration": { "OutputLocation.$": "$.saida_athena" }
+              },
+              "ResultSelector": { "resultado.$": "$.QueryExecution.ResultConfiguration.OutputLocation" },
+              "Next": "AgendarVerificacaoDasOrfas"
+            },
+            "AgendarVerificacaoDasOrfas": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke",
+              "Parameters": {
+                "FunctionName": "${agendar_orfas_arn}",
+                "Payload": { "resultado.$": "$.resultado" }
+              },
+              "OutputPath": "$.Payload",
+              "Retry": [{ "ErrorEquals": ["States.ALL"], "IntervalSeconds": 60, "MaxAttempts": 5, "BackoffRate": 2 }],
+              "End": true
+            }
+          }
+        }
+      ]
+    }
+  }
+}

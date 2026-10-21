@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.itau.com.br/financas/limites/limite-alterado/v1.json",
+  "title": "limite-alterado-v1",
+  "description": "Posição do contrato com novo limite aplicado (delta). EventBridge 'financas'.",
+  "type": "object",
+  "required": [
+    "specversion",
+    "id",
+    "source",
+    "type",
+    "time",
+    "correlationid",
+    "data"
+  ],
+  "properties": {
+    "specversion": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "description": "único; chave de deduplicação (at-least-once)"
+    },
+    "source": {
+      "type": "string"
+    },
+    "type": {
+      "const": "br.com.itau.financas.limites.limite-alterado.v1"
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "datacontenttype": {
+      "const": "application/json"
+    },
+    "dataschema": {
+      "type": "string",
+      "format": "uri"
+    },
+    "traceparent": {
+      "type": "string",
+      "description": "W3C Trace Context"
+    },
+    "correlationid": {
+      "type": "string",
+      "description": "rastreio ponta a ponta (PDF §2.4, não nulo); sem correlação recebida = id do evento"
+    },
+    "partitionkey": {
+      "type": "string",
+      "description": "id_contrato (ordenação por contrato)"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "id_contrato",
+        "limite_anterior",
+        "limite_novo",
+        "limite_disponivel",
+        "moeda",
+        "versao_origem"
+      ],
+      "properties": {
+        "id_contrato": {
+          "type": "string"
+        },
+        "limite_anterior": {
+          "type": "string",
+          "pattern": "^-?\\d{1,16}\\.\\d{2}$",
+          "description": "decimal(18,2) como string"
+        },
+        "limite_novo": {
+          "type": "string",
+          "pattern": "^-?\\d{1,16}\\.\\d{2}$",
+          "description": "decimal(18,2) como string"
+        },
+        "limite_disponivel": {
+          "type": "string",
+          "pattern": "^-?\\d{1,16}\\.\\d{2}$",
+          "description": "decimal(18,2) como string"
+        },
+        "moeda": {
+          "type": "string"
+        },
+        "versao_origem": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

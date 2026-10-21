@@ -1,0 +1,5 @@
+# Copie para terraform.tfvars e ajuste.
+versao_imagem          = "1.0.0-abc1234"
+diretorio_artefatos    = "../../../../artefatos"
+modo_cobranca_dynamodb = "PAY_PER_REQUEST" # go-live; migrar para PROVISIONED após 2–4 semanas de baseline
+shards_transacoes      = 8

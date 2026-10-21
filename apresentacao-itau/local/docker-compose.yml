@@ -1,0 +1,107 @@
+# Demo local (PDF §5: "demonstrar execução local com docker"). Ver local/LEIAME.md.
+# Mesma imagem dos serviços que roda no Fargate; AWS emulada pelo LocalStack.
+name: financas
+
+x-aws-local: &aws-local
+  AWS_REGION: sa-east-1
+  AWS_ENDPOINT_URL: http://localstack:4566
+  AWS_ACCESS_KEY_ID: test
+  AWS_SECRET_ACCESS_KEY: test
+  OTEL_SERVICE_NAME_PREFIX: financas
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+  OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+  OTEL_PROPAGATORS: tracecontext
+
+services:
+  localstack:
+    image: localstack/localstack:4.0
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: dynamodb,dynamodbstreams,kinesis,sqs,events,lambda,iam,sts,logs,cloudwatch,s3,sns
+      LAMBDA_DOCKER_NETWORK: financas_default
+      LAMBDA_IGNORE_ARCHITECTURE: "1"          # Lambdas são arm64 (Graviton) na AWS; aqui rodam na arquitetura da máquina
+      LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT: "90" # 1ª execução Java baixa a imagem do runtime
+      LOCALSTACK_HOST: localstack:4566          # URLs de fila resolvíveis de dentro dos containers
+      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN:-}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:4566/_localstack/health"]
+      interval: 5s
+      retries: 30
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: contabilizacao
+      POSTGRES_USER: contabilizacao
+      POSTGRES_PASSWORD: contabilizacao
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "contabilizacao"]
+      interval: 5s
+      retries: 20
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    ports:
+      - "16686:16686"   # UI de traces (correlation_id ponta a ponta)
+      - "4317:4317"
+
+  limites:
+    build:
+      context: ../servicos
+      args:
+        SERVICO: limites-service
+    environment:
+      <<: *aws-local
+      OTEL_SERVICE_NAME: limites-service
+      TABELA_LIMITES: limites
+      FILA_LIMITES_CONCEDIDOS: limites-concedidos
+    ports:
+      - "8082:8080"
+    depends_on:
+      localstack:
+        condition: service_healthy
+
+  autorizacao:
+    build:
+      context: ../servicos
+      args:
+        SERVICO: autorizacao-service
+    environment:
+      <<: *aws-local
+      OTEL_SERVICE_NAME: autorizacao-service
+      TABELA_AUTORIZACOES: autorizacoes
+      LIMITES_URL: http://limites:8080
+      FILA_RESERVAS_A_EXPIRAR: reservas-a-expirar   # ADR 035 (no LocalStack a entrega é simulada)
+    ports:
+      - "8080:8080"
+    depends_on:
+      - limites
+
+  contabilizacao:
+    build:
+      context: ../servicos
+      args:
+        SERVICO: contabilizacao-service
+    environment:
+      <<: *aws-local
+      OTEL_SERVICE_NAME: contabilizacao-service
+      AWS_CBOR_ENABLED: "false"  # SDK v2 (aws.cborEnabled): Kinesis em JSON no LocalStack
+      KCL_MODO_LEITURA: polling  # enhanced fan-out (HTTP/2) fica para a AWS
+      DB_URL: jdbc:postgresql://postgres:5432/contabilizacao
+      DB_USUARIO: contabilizacao
+      DB_SENHA: contabilizacao
+      STREAM_TRANSACOES: transacoes
+      KCL_APLICACAO: contabilizacao-service
+      FILA_QUARENTENA_URL: http://localstack:4566/000000000000/contabilizacao-quarentena
+    ports:
+      - "8083:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy

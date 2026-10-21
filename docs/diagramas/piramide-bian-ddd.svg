@@ -1,0 +1,787 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2120" height="1030" viewBox="0 0 2120 1030">
+<rect width="2120" height="1030" fill="#f6f8fb"/>
+<text x="60" y="58" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="700" fill="#1b2a4a">Do BIAN ao DDD: a torre da plataforma de Limites e Autorização</text>
+<text x="60" y="88" font-family="Segoe UI, Arial, sans-serif" font-size="16" fill="#55627a">Itaú POD99 · BIAN Service Landscape v12/v13 (validado em bian.org) · cada camada se apoia na anterior</text>
+<rect x="60.0" y="112.0" width="22" height="14" rx="3" fill="#0d47a1"/>
+<text x="90.0" y="124.0" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#33415c">SD núcleo (implementado)</text>
+<rect x="297.6" y="112.0" width="22" height="14" rx="3" fill="#8a6bbf"/>
+<text x="327.6" y="124.0" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#33415c">SD do legado (via ACL)</text>
+<rect x="520.4" y="112.0" width="22" height="14" rx="3" fill="#2a9d8f"/>
+<text x="550.4" y="124.0" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#33415c">SD consumidor de eventos</text>
+<rect x="758.0" y="112.0" width="22" height="14" rx="3" fill="#a7b1bd"/>
+<text x="788.0" y="124.0" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#33415c">considerado / fora do escopo / lacuna</text>
+<rect x="175.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="178.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="205.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="208.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="235.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="238.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="265.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="268.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="295.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="298.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="325.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="328.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="355.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="358.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="385.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="388.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="415.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="418.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="162.0" y="914.0" width="284.0" height="76" rx="5" fill="#1b3a6b" stroke="#13294d" stroke-width="1.5"/>
+<rect x="164.0" y="980.0" width="280.0" height="8" rx="3" fill="#13294d" opacity="0.55"/>
+<rect x="168.0" y="918.0" width="272.0" height="3" rx="1.5" fill="#1f447e" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="304.0" y="945.5">Sales and</tspan><tspan x="304.0" y="962.3">Service</tspan></text>
+<rect x="463.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="466.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="493.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="496.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="523.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="526.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="553.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="556.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="583.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="586.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="613.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="616.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="643.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="646.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="673.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="676.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="703.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="706.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="450.0" y="914.0" width="284.0" height="76" rx="5" fill="#1b3a6b" stroke="#13294d" stroke-width="1.5"/>
+<rect x="452.0" y="980.0" width="280.0" height="8" rx="3" fill="#13294d" opacity="0.55"/>
+<rect x="456.0" y="918.0" width="272.0" height="3" rx="1.5" fill="#1f447e" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="592.0" y="945.5">Operations and</tspan><tspan x="592.0" y="962.3">Execution</tspan></text>
+<rect x="751.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="754.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="781.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="784.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="811.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="814.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="841.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="844.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="871.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="874.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="901.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="904.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="931.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="934.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="961.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="964.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="991.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="994.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="738.0" y="914.0" width="284.0" height="76" rx="5" fill="#1b3a6b" stroke="#13294d" stroke-width="1.5"/>
+<rect x="740.0" y="980.0" width="280.0" height="8" rx="3" fill="#13294d" opacity="0.55"/>
+<rect x="744.0" y="918.0" width="272.0" height="3" rx="1.5" fill="#1f447e" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="880.0" y="945.5">Risk and</tspan><tspan x="880.0" y="962.3">Compliance</tspan></text>
+<rect x="1039.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="1042.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="1069.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="1072.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="1099.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="1102.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="1129.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="1132.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="1159.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="1162.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="1189.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="1192.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="1219.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="1222.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="1249.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="1252.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="1279.0" y="905.0" width="18" height="11" rx="3" fill="#1b3a6b" stroke="#13294d" stroke-width="1"/>
+<rect x="1282.0" y="907.0" width="8" height="3" rx="1.5" fill="#1f447e" opacity="0.8"/>
+<rect x="1026.0" y="914.0" width="284.0" height="76" rx="5" fill="#1b3a6b" stroke="#13294d" stroke-width="1.5"/>
+<rect x="1028.0" y="980.0" width="280.0" height="8" rx="3" fill="#13294d" opacity="0.55"/>
+<rect x="1032.0" y="918.0" width="272.0" height="3" rx="1.5" fill="#1f447e" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1168.0" y="945.5">Business</tspan><tspan x="1168.0" y="962.3">Support</tspan></text>
+<rect x="1327.0" y="905.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1330.0" y="907.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1357.0" y="905.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1360.0" y="907.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1387.0" y="905.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1390.0" y="907.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1417.0" y="905.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1420.0" y="907.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1447.0" y="905.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1450.0" y="907.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1477.0" y="905.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1480.0" y="907.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1507.0" y="905.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1510.0" y="907.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1537.0" y="905.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1540.0" y="907.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1567.0" y="905.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1570.0" y="907.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1314.0" y="914.0" width="284.0" height="76" rx="5" fill="#a7b1bd" stroke="#787f88" stroke-width="1.5"/>
+<rect x="1316.0" y="980.0" width="280.0" height="8" rx="3" fill="#787f88" opacity="0.55"/>
+<rect x="1320.0" y="918.0" width="272.0" height="3" rx="1.5" fill="#c5d0df" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1456.0" y="945.5">Reference</tspan><tspan x="1456.0" y="962.3">Data</tspan></text>
+<line x1="1608.0" y1="952.0" x2="1650.0" y2="952.0" stroke="#1b3a6b" stroke-width="1.5" stroke-dasharray="5 4"/>
+<circle cx="1608.0" cy="952.0" r="4" fill="#1b3a6b"/>
+<rect x="1650" y="919.0" width="440" height="66" rx="8" fill="#ffffff" stroke="#1b3a6b" stroke-width="2"/>
+<rect x="1650" y="919.0" width="6" height="66" rx="3" fill="#1b3a6b"/>
+<text x="1664" y="941.0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" fill="#1b2a4a">① BIAN · Business Areas (v12/v13)</text>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#33415c"><tspan x="1664" y="963.0">As 5 áreas oficiais. 4 são tocadas pelo case; Reference Data</tspan><tspan x="1664" y="981.0">(Product Directory) foi considerada e não usada.</tspan></text>
+<rect x="242.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="245.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="272.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="275.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="302.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="305.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="217.0" y="836.0" width="129.0" height="76" rx="5" fill="#3a6fb0" stroke="#294f7e" stroke-width="1.5"/>
+<rect x="219.0" y="902.0" width="125.0" height="8" rx="3" fill="#294f7e" opacity="0.55"/>
+<rect x="223.0" y="840.0" width="117.0" height="3" rx="1.5" fill="#4482cf" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="281.5" y="868.0">Cross</tspan><tspan x="281.5" y="882.4">Channel</tspan></text>
+<rect x="375.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="378.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="405.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="408.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="435.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="438.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="350.0" y="836.0" width="129.0" height="76" rx="5" fill="#3a6fb0" stroke="#294f7e" stroke-width="1.5"/>
+<rect x="352.0" y="902.0" width="125.0" height="8" rx="3" fill="#294f7e" opacity="0.55"/>
+<rect x="356.0" y="840.0" width="117.0" height="3" rx="1.5" fill="#4482cf" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="414.5" y="868.0">Customer</tspan><tspan x="414.5" y="882.4">Management</tspan></text>
+<rect x="508.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="511.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="538.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="541.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="568.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="571.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="483.0" y="836.0" width="129.0" height="76" rx="5" fill="#3a6fb0" stroke="#294f7e" stroke-width="1.5"/>
+<rect x="485.0" y="902.0" width="125.0" height="8" rx="3" fill="#294f7e" opacity="0.55"/>
+<rect x="489.0" y="840.0" width="117.0" height="3" rx="1.5" fill="#4482cf" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="547.5" y="868.0">Account</tspan><tspan x="547.5" y="882.4">Management</tspan></text>
+<rect x="641.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="644.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="671.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="674.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="701.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="704.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="616.0" y="836.0" width="129.0" height="76" rx="5" fill="#3a6fb0" stroke="#294f7e" stroke-width="1.5"/>
+<rect x="618.0" y="902.0" width="125.0" height="8" rx="3" fill="#294f7e" opacity="0.55"/>
+<rect x="622.0" y="840.0" width="117.0" height="3" rx="1.5" fill="#4482cf" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="680.5" y="868.0">Trade</tspan><tspan x="680.5" y="882.4">Banking</tspan></text>
+<rect x="774.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="777.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="804.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="807.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="834.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="837.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="749.0" y="836.0" width="129.0" height="76" rx="5" fill="#3a6fb0" stroke="#294f7e" stroke-width="1.5"/>
+<rect x="751.0" y="902.0" width="125.0" height="8" rx="3" fill="#294f7e" opacity="0.55"/>
+<rect x="755.0" y="840.0" width="117.0" height="3" rx="1.5" fill="#4482cf" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="813.5" y="868.0">Loans and</tspan><tspan x="813.5" y="882.4">Deposits</tspan></text>
+<rect x="907.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="910.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="937.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="940.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="967.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="970.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="882.0" y="836.0" width="129.0" height="76" rx="5" fill="#3a6fb0" stroke="#294f7e" stroke-width="1.5"/>
+<rect x="884.0" y="902.0" width="125.0" height="8" rx="3" fill="#294f7e" opacity="0.55"/>
+<rect x="888.0" y="840.0" width="117.0" height="3" rx="1.5" fill="#4482cf" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="946.5" y="875.2">Cards</tspan></text>
+<rect x="1040.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="1043.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="1070.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="1073.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="1100.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="1103.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="1015.0" y="836.0" width="129.0" height="76" rx="5" fill="#3a6fb0" stroke="#294f7e" stroke-width="1.5"/>
+<rect x="1017.0" y="902.0" width="125.0" height="8" rx="3" fill="#294f7e" opacity="0.55"/>
+<rect x="1021.0" y="840.0" width="117.0" height="3" rx="1.5" fill="#4482cf" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1079.5" y="868.0">Investment</tspan><tspan x="1079.5" y="882.4">Management</tspan></text>
+<rect x="1173.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="1176.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="1203.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="1206.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="1233.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="1236.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="1148.0" y="836.0" width="129.0" height="76" rx="5" fill="#3a6fb0" stroke="#294f7e" stroke-width="1.5"/>
+<rect x="1150.0" y="902.0" width="125.0" height="8" rx="3" fill="#294f7e" opacity="0.55"/>
+<rect x="1154.0" y="840.0" width="117.0" height="3" rx="1.5" fill="#4482cf" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1212.5" y="868.0">Consumer</tspan><tspan x="1212.5" y="882.4">Services</tspan></text>
+<rect x="1306.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="1309.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="1336.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="1339.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="1366.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="1369.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="1281.0" y="836.0" width="129.0" height="76" rx="5" fill="#3a6fb0" stroke="#294f7e" stroke-width="1.5"/>
+<rect x="1283.0" y="902.0" width="125.0" height="8" rx="3" fill="#294f7e" opacity="0.55"/>
+<rect x="1287.0" y="840.0" width="117.0" height="3" rx="1.5" fill="#4482cf" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1345.5" y="868.0">Regulations</tspan><tspan x="1345.5" y="882.4">and Compliance</tspan></text>
+<rect x="1439.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="1442.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="1469.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="1472.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="1499.5" y="827.0" width="18" height="11" rx="3" fill="#3a6fb0" stroke="#294f7e" stroke-width="1"/>
+<rect x="1502.5" y="829.0" width="8" height="3" rx="1.5" fill="#4482cf" opacity="0.8"/>
+<rect x="1414.0" y="836.0" width="129.0" height="76" rx="5" fill="#3a6fb0" stroke="#294f7e" stroke-width="1.5"/>
+<rect x="1416.0" y="902.0" width="125.0" height="8" rx="3" fill="#294f7e" opacity="0.55"/>
+<rect x="1420.0" y="840.0" width="117.0" height="3" rx="1.5" fill="#4482cf" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1478.5" y="868.0">Document Mgmt</tspan><tspan x="1478.5" y="882.4">and Archive</tspan></text>
+<line x1="1553.0" y1="874.0" x2="1650.0" y2="874.0" stroke="#3a6fb0" stroke-width="1.5" stroke-dasharray="5 4"/>
+<circle cx="1553.0" cy="874.0" r="4" fill="#3a6fb0"/>
+<rect x="1650" y="841.0" width="440" height="66" rx="8" fill="#ffffff" stroke="#3a6fb0" stroke-width="2"/>
+<rect x="1650" y="841.0" width="6" height="66" rx="3" fill="#3a6fb0"/>
+<text x="1664" y="863.0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" fill="#1b2a4a">② BIAN · Business Domains</text>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#33415c"><tspan x="1664" y="885.0">10 dos 39 domínios. Validado: Position Keeping em Account</tspan><tspan x="1664" y="903.0">Management; Limit and Exposure em Trade Banking.</tspan></text>
+<rect x="288.1" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="291.1" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="318.1" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="321.1" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="348.1" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="351.1" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="378.1" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="381.1" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="408.1" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="411.1" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="272.0" y="758.0" width="170.3" height="76" rx="5" fill="#8a6bbf" stroke="#634d89" stroke-width="1.5"/>
+<rect x="274.0" y="824.0" width="166.3" height="8" rx="3" fill="#634d89" opacity="0.55"/>
+<rect x="278.0" y="762.0" width="158.3" height="3" rx="1.5" fill="#a27ee1" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="357.1" y="789.8">Sales Product</tspan><tspan x="357.1" y="805.4">Agreement</tspan></text>
+<rect x="462.4" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="465.4" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="492.4" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="495.4" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="522.4" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="525.4" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="552.4" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="555.4" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="582.4" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="585.4" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="446.3" y="758.0" width="170.3" height="76" rx="5" fill="#8a6bbf" stroke="#634d89" stroke-width="1.5"/>
+<rect x="448.3" y="824.0" width="166.3" height="8" rx="3" fill="#634d89" opacity="0.55"/>
+<rect x="452.3" y="762.0" width="158.3" height="3" rx="1.5" fill="#a27ee1" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="531.4" y="789.8">Current</tspan><tspan x="531.4" y="805.4">Account</tspan></text>
+<rect x="636.7" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="639.7" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="666.7" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="669.7" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="696.7" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="699.7" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="726.7" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="729.7" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="756.7" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="759.7" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="620.6" y="758.0" width="170.3" height="76" rx="5" fill="#8a6bbf" stroke="#634d89" stroke-width="1.5"/>
+<rect x="622.6" y="824.0" width="166.3" height="8" rx="3" fill="#634d89" opacity="0.55"/>
+<rect x="626.6" y="762.0" width="158.3" height="3" rx="1.5" fill="#a27ee1" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="705.7" y="789.8">Consumer</tspan><tspan x="705.7" y="805.4">Loan</tspan></text>
+<rect x="811.0" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="814.0" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="841.0" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="844.0" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="871.0" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="874.0" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="901.0" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="904.0" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="931.0" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="934.0" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="794.9" y="758.0" width="170.3" height="76" rx="5" fill="#8a6bbf" stroke="#634d89" stroke-width="1.5"/>
+<rect x="796.9" y="824.0" width="166.3" height="8" rx="3" fill="#634d89" opacity="0.55"/>
+<rect x="800.9" y="762.0" width="158.3" height="3" rx="1.5" fill="#a27ee1" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="880.0" y="789.8">Credit</tspan><tspan x="880.0" y="805.4">Card</tspan></text>
+<rect x="985.3" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="988.3" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="1015.3" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="1018.3" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="1045.3" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="1048.3" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="1075.3" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="1078.3" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="1105.3" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="1108.3" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="969.1" y="758.0" width="170.3" height="76" rx="5" fill="#8a6bbf" stroke="#634d89" stroke-width="1.5"/>
+<rect x="971.1" y="824.0" width="166.3" height="8" rx="3" fill="#634d89" opacity="0.55"/>
+<rect x="975.1" y="762.0" width="158.3" height="3" rx="1.5" fill="#a27ee1" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1054.3" y="789.8">Investment</tspan><tspan x="1054.3" y="805.4">Account</tspan></text>
+<rect x="1159.6" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="1162.6" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="1189.6" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="1192.6" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="1219.6" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="1222.6" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="1249.6" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="1252.6" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="1279.6" y="749.0" width="18" height="11" rx="3" fill="#8a6bbf" stroke="#634d89" stroke-width="1"/>
+<rect x="1282.6" y="751.0" width="8" height="3" rx="1.5" fill="#a27ee1" opacity="0.8"/>
+<rect x="1143.4" y="758.0" width="170.3" height="76" rx="5" fill="#8a6bbf" stroke="#634d89" stroke-width="1.5"/>
+<rect x="1145.4" y="824.0" width="166.3" height="8" rx="3" fill="#634d89" opacity="0.55"/>
+<rect x="1149.4" y="762.0" width="158.3" height="3" rx="1.5" fill="#a27ee1" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1228.6" y="789.8">Brokered Product</tspan><tspan x="1228.6" y="805.4">(seguros)</tspan></text>
+<rect x="1333.9" y="749.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1336.9" y="751.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1363.9" y="749.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1366.9" y="751.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1393.9" y="749.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1396.9" y="751.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1423.9" y="749.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1426.9" y="751.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1453.9" y="749.0" width="18" height="11" rx="3" fill="#a7b1bd" stroke="#787f88" stroke-width="1"/>
+<rect x="1456.9" y="751.0" width="8" height="3" rx="1.5" fill="#c5d0df" opacity="0.8"/>
+<rect x="1317.7" y="758.0" width="170.3" height="76" rx="5" fill="#a7b1bd" stroke="#787f88" stroke-width="1.5"/>
+<rect x="1319.7" y="824.0" width="166.3" height="8" rx="3" fill="#787f88" opacity="0.55"/>
+<rect x="1323.7" y="762.0" width="158.3" height="3" rx="1.5" fill="#c5d0df" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1402.9" y="789.8">Consórcio</tspan><tspan x="1402.9" y="805.4">(sem SD BIAN)</tspan></text>
+<line x1="1498.0" y1="796.0" x2="1650.0" y2="796.0" stroke="#8a6bbf" stroke-width="1.5" stroke-dasharray="5 4"/>
+<circle cx="1498.0" cy="796.0" r="4" fill="#8a6bbf"/>
+<rect x="1650" y="763.0" width="440" height="66" rx="8" fill="#ffffff" stroke="#8a6bbf" stroke-width="2"/>
+<rect x="1650" y="763.0" width="6" height="66" rx="3" fill="#8a6bbf"/>
+<text x="1664" y="785.0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" fill="#1b2a4a">③ Service Domains · legado via ACL</text>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#33415c"><tspan x="1664" y="807.0">O "contrato" do PDF e os produtos do core banking. Consórcio</tspan><tspan x="1664" y="825.0">não tem SD no BIAN: lacuna documentada.</tspan></text>
+<rect x="349.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="352.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="379.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="382.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="409.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="412.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="439.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="442.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="469.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="472.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="499.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="502.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="529.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="532.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="559.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="562.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="327.0" y="680.0" width="273.5" height="76" rx="5" fill="#2a9d8f" stroke="#1e7166" stroke-width="1.5"/>
+<rect x="329.0" y="746.0" width="269.5" height="8" rx="3" fill="#1e7166" opacity="0.55"/>
+<rect x="333.0" y="684.0" width="261.5" height="3" rx="1.5" fill="#31b9a8" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="463.8" y="711.5">Fraud Evaluation</tspan><tspan x="463.8" y="728.3">→ antifraude</tspan></text>
+<rect x="627.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="630.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="657.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="660.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="687.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="690.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="717.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="720.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="747.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="750.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="777.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="780.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="807.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="810.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="837.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="840.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="604.5" y="680.0" width="273.5" height="76" rx="5" fill="#2a9d8f" stroke="#1e7166" stroke-width="1.5"/>
+<rect x="606.5" y="746.0" width="269.5" height="8" rx="3" fill="#1e7166" opacity="0.55"/>
+<rect x="610.5" y="684.0" width="261.5" height="3" rx="1.5" fill="#31b9a8" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="741.2" y="711.5">Correspondence</tspan><tspan x="741.2" y="728.3">→ notificações</tspan></text>
+<rect x="904.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="907.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="934.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="937.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="964.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="967.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="994.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="997.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="1024.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="1027.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="1054.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="1057.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="1084.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="1087.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="1114.8" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="1117.8" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="882.0" y="680.0" width="273.5" height="76" rx="5" fill="#2a9d8f" stroke="#1e7166" stroke-width="1.5"/>
+<rect x="884.0" y="746.0" width="269.5" height="8" rx="3" fill="#1e7166" opacity="0.55"/>
+<rect x="888.0" y="684.0" width="261.5" height="3" rx="1.5" fill="#31b9a8" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1018.8" y="711.5">Customer Event History</tspan><tspan x="1018.8" y="728.3">→ data platform</tspan></text>
+<rect x="1182.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="1185.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="1212.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="1215.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="1242.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="1245.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="1272.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="1275.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="1302.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="1305.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="1332.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="1335.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="1362.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="1365.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="1392.2" y="671.0" width="18" height="11" rx="3" fill="#2a9d8f" stroke="#1e7166" stroke-width="1"/>
+<rect x="1395.2" y="673.0" width="8" height="3" rx="1.5" fill="#31b9a8" opacity="0.8"/>
+<rect x="1159.5" y="680.0" width="273.5" height="76" rx="5" fill="#2a9d8f" stroke="#1e7166" stroke-width="1.5"/>
+<rect x="1161.5" y="746.0" width="269.5" height="8" rx="3" fill="#1e7166" opacity="0.55"/>
+<rect x="1165.5" y="684.0" width="261.5" height="3" rx="1.5" fill="#31b9a8" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1296.2" y="711.5">Archive Services</tspan><tspan x="1296.2" y="728.3">→ auditoria</tspan></text>
+<line x1="1443.0" y1="718.0" x2="1650.0" y2="718.0" stroke="#2a9d8f" stroke-width="1.5" stroke-dasharray="5 4"/>
+<circle cx="1443.0" cy="718.0" r="4" fill="#2a9d8f"/>
+<rect x="1650" y="685.0" width="440" height="66" rx="8" fill="#ffffff" stroke="#2a9d8f" stroke-width="2"/>
+<rect x="1650" y="685.0" width="6" height="66" rx="3" fill="#2a9d8f"/>
+<text x="1664" y="707.0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" fill="#1b2a4a">④ Service Domains · consumidores de eventos</text>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#33415c"><tspan x="1664" y="729.0">Consomem TransacaoAutorizada de forma desacoplada. "Fraud</tspan><tspan x="1664" y="747.0">Detection" não existe: o SD é Fraud Evaluation.</tspan></text>
+<rect x="406.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="409.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="436.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="439.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="466.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="469.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="496.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="499.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="526.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="529.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="556.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="559.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="586.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="589.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="382.0" y="602.0" width="246.0" height="76" rx="5" fill="#0d47a1" stroke="#093373" stroke-width="1.5"/>
+<rect x="384.0" y="668.0" width="242.0" height="8" rx="3" fill="#093373" opacity="0.55"/>
+<rect x="388.0" y="606.0" width="234.0" height="3" rx="1.5" fill="#0f53bd" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="505.0" y="625.1">Transaction</tspan><tspan x="505.0" y="641.9">Authorization</tspan><tspan x="505.0" y="658.7">→ Autorização</tspan></text>
+<rect x="656.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="659.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="686.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="689.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="716.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="719.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="746.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="749.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="776.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="779.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="806.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="809.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="836.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="839.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="632.0" y="602.0" width="246.0" height="76" rx="5" fill="#0d47a1" stroke="#093373" stroke-width="1.5"/>
+<rect x="634.0" y="668.0" width="242.0" height="8" rx="3" fill="#093373" opacity="0.55"/>
+<rect x="638.0" y="606.0" width="234.0" height="3" rx="1.5" fill="#0f53bd" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="755.0" y="625.1">Position</tspan><tspan x="755.0" y="641.9">Keeping</tspan><tspan x="755.0" y="658.7">→ Limites</tspan></text>
+<rect x="906.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="909.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="936.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="939.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="966.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="969.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="996.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="999.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="1026.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="1029.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="1056.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="1059.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="1086.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="1089.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="882.0" y="602.0" width="246.0" height="76" rx="5" fill="#0d47a1" stroke="#093373" stroke-width="1.5"/>
+<rect x="884.0" y="668.0" width="242.0" height="8" rx="3" fill="#093373" opacity="0.55"/>
+<rect x="888.0" y="606.0" width="234.0" height="3" rx="1.5" fill="#0f53bd" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1005.0" y="625.1">Limit and Exposure</tspan><tspan x="1005.0" y="641.9">Management</tspan><tspan x="1005.0" y="658.7">→ Limites</tspan></text>
+<rect x="1156.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="1159.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="1186.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="1189.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="1216.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="1219.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="1246.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="1249.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="1276.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="1279.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="1306.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="1309.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="1336.0" y="593.0" width="18" height="11" rx="3" fill="#0d47a1" stroke="#093373" stroke-width="1"/>
+<rect x="1339.0" y="595.0" width="8" height="3" rx="1.5" fill="#0f53bd" opacity="0.8"/>
+<rect x="1132.0" y="602.0" width="246.0" height="76" rx="5" fill="#0d47a1" stroke="#093373" stroke-width="1.5"/>
+<rect x="1134.0" y="668.0" width="242.0" height="8" rx="3" fill="#093373" opacity="0.55"/>
+<rect x="1138.0" y="606.0" width="234.0" height="3" rx="1.5" fill="#0f53bd" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1255.0" y="625.1">Financial</tspan><tspan x="1255.0" y="641.9">Accounting</tspan><tspan x="1255.0" y="658.7">→ Contabilização</tspan></text>
+<line x1="1388.0" y1="640.0" x2="1650.0" y2="640.0" stroke="#0d47a1" stroke-width="1.5" stroke-dasharray="5 4"/>
+<circle cx="1388.0" cy="640.0" r="4" fill="#0d47a1"/>
+<rect x="1650" y="607.0" width="440" height="66" rx="8" fill="#ffffff" stroke="#0d47a1" stroke-width="2"/>
+<rect x="1650" y="607.0" width="6" height="66" rx="3" fill="#0d47a1"/>
+<text x="1664" y="629.0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" fill="#1b2a4a">⑤ Service Domains · núcleo (implementados)</text>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#33415c"><tspan x="1664" y="651.0">PK "maintains positions… includes limits and blocks": a</tspan><tspan x="1664" y="669.0">reserva de limite é dele, por isso vai para Limites.</tspan></text>
+<rect x="462.2" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="465.2" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="492.2" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="495.2" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="522.2" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="525.2" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="552.2" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="555.2" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="582.2" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="585.2" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="612.2" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="615.2" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="437.0" y="524.0" width="218.5" height="76" rx="5" fill="#8dbbea" stroke="#6586a8" stroke-width="1.5"/>
+<rect x="439.0" y="590.0" width="214.5" height="8" rx="3" fill="#6586a8" opacity="0.55"/>
+<rect x="443.0" y="528.0" width="206.5" height="3" rx="1.5" fill="#a6dcff" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#0f2747" text-anchor="middle"><tspan x="546.2" y="555.5">CR Interactive</tspan><tspan x="546.2" y="572.3">Transaction Assessment</tspan></text>
+<rect x="684.8" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="687.8" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="714.8" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="717.8" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="744.8" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="747.8" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="774.8" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="777.8" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="804.8" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="807.8" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="834.8" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="837.8" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="659.5" y="524.0" width="218.5" height="76" rx="5" fill="#8dbbea" stroke="#6586a8" stroke-width="1.5"/>
+<rect x="661.5" y="590.0" width="214.5" height="8" rx="3" fill="#6586a8" opacity="0.55"/>
+<rect x="665.5" y="528.0" width="206.5" height="3" rx="1.5" fill="#a6dcff" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#0f2747" text-anchor="middle"><tspan x="768.8" y="555.5">CR Financial Position Log</tspan><tspan x="768.8" y="572.3">BQ Fin. Tx Capture</tspan></text>
+<rect x="907.2" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="910.2" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="937.2" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="940.2" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="967.2" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="970.2" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="997.2" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="1000.2" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="1027.2" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="1030.2" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="1057.2" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="1060.2" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="882.0" y="524.0" width="218.5" height="76" rx="5" fill="#8dbbea" stroke="#6586a8" stroke-width="1.5"/>
+<rect x="884.0" y="590.0" width="214.5" height="8" rx="3" fill="#6586a8" opacity="0.55"/>
+<rect x="888.0" y="528.0" width="206.5" height="3" rx="1.5" fill="#a6dcff" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#0f2747" text-anchor="middle"><tspan x="991.2" y="555.5">Position Limit Value</tspan><tspan x="991.2" y="572.3">Amount Block</tspan></text>
+<rect x="1129.8" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="1132.8" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="1159.8" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="1162.8" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="1189.8" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="1192.8" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="1219.8" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="1222.8" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="1249.8" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="1252.8" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="1279.8" y="515.0" width="18" height="11" rx="3" fill="#8dbbea" stroke="#6586a8" stroke-width="1"/>
+<rect x="1282.8" y="517.0" width="8" height="3" rx="1.5" fill="#a6dcff" opacity="0.8"/>
+<rect x="1104.5" y="524.0" width="218.5" height="76" rx="5" fill="#8dbbea" stroke="#6586a8" stroke-width="1.5"/>
+<rect x="1106.5" y="590.0" width="214.5" height="8" rx="3" fill="#6586a8" opacity="0.55"/>
+<rect x="1110.5" y="528.0" width="206.5" height="3" rx="1.5" fill="#a6dcff" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#0f2747" text-anchor="middle"><tspan x="1213.8" y="555.5">CR Financial Booking Log</tspan><tspan x="1213.8" y="572.3">BQ Ledger Posting</tspan></text>
+<line x1="1333.0" y1="562.0" x2="1650.0" y2="562.0" stroke="#8dbbea" stroke-width="1.5" stroke-dasharray="5 4"/>
+<circle cx="1333.0" cy="562.0" r="4" fill="#8dbbea"/>
+<rect x="1650" y="529.0" width="440" height="66" rx="8" fill="#ffffff" stroke="#8dbbea" stroke-width="2"/>
+<rect x="1650" y="529.0" width="6" height="66" rx="3" fill="#8dbbea"/>
+<text x="1664" y="551.0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" fill="#1b2a4a">⑥ BIAN · Control Records · BQs · Action Terms</text>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#33415c"><tspan x="1664" y="573.0">Vocabulário oficial. Operações: Evaluate (TA), Control e</tspan><tspan x="1664" y="591.0">Capture (PK), Capture LedgerPosting (FA).</tspan></text>
+<rect x="455.0" y="492.0" width="850" height="30" rx="4" fill="#ec7000" stroke="#b55600" stroke-width="1.5"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="880.0" y="511.9">▲  Tradução BIAN → linguagem ubíqua (PT-BR)  ▲</tspan></text>
+<rect x="518.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="521.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="548.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="551.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="578.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="581.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="608.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="611.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="638.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="641.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="492.0" y="416.0" width="191.0" height="76" rx="5" fill="#f28c28" stroke="#ae641c" stroke-width="1.5"/>
+<rect x="494.0" y="482.0" width="187.0" height="8" rx="3" fill="#ae641c" opacity="0.55"/>
+<rect x="498.0" y="420.0" width="179.0" height="3" rx="1.5" fill="#ffa52f" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="587.5" y="447.8">Autorização</tspan><tspan x="587.5" y="463.4">(Core)</tspan></text>
+<rect x="713.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="716.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="743.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="746.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="773.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="776.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="803.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="806.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="833.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="836.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="687.0" y="416.0" width="191.0" height="76" rx="5" fill="#f28c28" stroke="#ae641c" stroke-width="1.5"/>
+<rect x="689.0" y="482.0" width="187.0" height="8" rx="3" fill="#ae641c" opacity="0.55"/>
+<rect x="693.0" y="420.0" width="179.0" height="3" rx="1.5" fill="#ffa52f" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="782.5" y="447.8">Limites</tspan><tspan x="782.5" y="463.4">(Core)</tspan></text>
+<rect x="908.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="911.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="938.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="941.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="968.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="971.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="998.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="1001.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="1028.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="1031.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="882.0" y="416.0" width="191.0" height="76" rx="5" fill="#f28c28" stroke="#ae641c" stroke-width="1.5"/>
+<rect x="884.0" y="482.0" width="187.0" height="8" rx="3" fill="#ae641c" opacity="0.55"/>
+<rect x="888.0" y="420.0" width="179.0" height="3" rx="1.5" fill="#ffa52f" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="977.5" y="447.8">Contabilização</tspan><tspan x="977.5" y="463.4">(Supporting)</tspan></text>
+<rect x="1103.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="1106.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="1133.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="1136.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="1163.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="1166.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="1193.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="1196.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="1223.5" y="407.0" width="18" height="11" rx="3" fill="#f28c28" stroke="#ae641c" stroke-width="1"/>
+<rect x="1226.5" y="409.0" width="8" height="3" rx="1.5" fill="#ffa52f" opacity="0.8"/>
+<rect x="1077.0" y="416.0" width="191.0" height="76" rx="5" fill="#f28c28" stroke="#ae641c" stroke-width="1.5"/>
+<rect x="1079.0" y="482.0" width="187.0" height="8" rx="3" fill="#ae641c" opacity="0.55"/>
+<rect x="1083.0" y="420.0" width="179.0" height="3" rx="1.5" fill="#ffa52f" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1172.5" y="447.8">ACL Core Banking</tspan><tspan x="1172.5" y="463.4">(Integração)</tspan></text>
+<line x1="1278.0" y1="454.0" x2="1650.0" y2="454.0" stroke="#f28c28" stroke-width="1.5" stroke-dasharray="5 4"/>
+<circle cx="1278.0" cy="454.0" r="4" fill="#f28c28"/>
+<rect x="1650" y="421.0" width="440" height="66" rx="8" fill="#ffffff" stroke="#f28c28" stroke-width="2"/>
+<rect x="1650" y="421.0" width="6" height="66" rx="3" fill="#f28c28"/>
+<text x="1664" y="443.0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" fill="#1b2a4a">⑦ DDD Estratégico · Bounded Contexts</text>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#33415c"><tspan x="1664" y="465.0">3 BCs + ACL. Customer/Supplier (Autorização → Limites),</tspan><tspan x="1664" y="483.0">Published Language (eventos), ACL (legado).</tspan></text>
+<rect x="559.8" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="562.8" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="589.8" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="592.8" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="619.8" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="622.8" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="649.8" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="652.8" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="679.8" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="682.8" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="547.0" y="338.0" width="163.5" height="76" rx="5" fill="#2e9e5b" stroke="#217141" stroke-width="1.5"/>
+<rect x="549.0" y="404.0" width="159.5" height="8" rx="3" fill="#217141" opacity="0.55"/>
+<rect x="553.0" y="342.0" width="151.5" height="3" rx="1.5" fill="#36ba6b" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="628.8" y="369.8">Agregado</tspan><tspan x="628.8" y="385.4">Autorizacao</tspan></text>
+<rect x="727.2" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="730.2" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="757.2" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="760.2" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="787.2" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="790.2" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="817.2" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="820.2" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="847.2" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="850.2" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="714.5" y="338.0" width="163.5" height="76" rx="5" fill="#2e9e5b" stroke="#217141" stroke-width="1.5"/>
+<rect x="716.5" y="404.0" width="159.5" height="8" rx="3" fill="#217141" opacity="0.55"/>
+<rect x="720.5" y="342.0" width="151.5" height="3" rx="1.5" fill="#36ba6b" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="796.2" y="369.8">LimiteContrato</tspan><tspan x="796.2" y="385.4">Reserva · Movimento</tspan></text>
+<rect x="894.8" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="897.8" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="924.8" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="927.8" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="954.8" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="957.8" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="984.8" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="987.8" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="1014.8" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="1017.8" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="882.0" y="338.0" width="163.5" height="76" rx="5" fill="#2e9e5b" stroke="#217141" stroke-width="1.5"/>
+<rect x="884.0" y="404.0" width="159.5" height="8" rx="3" fill="#217141" opacity="0.55"/>
+<rect x="888.0" y="342.0" width="151.5" height="3" rx="1.5" fill="#36ba6b" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="963.8" y="369.8">RegistroContabil</tspan><tspan x="963.8" y="385.4">Lancamento</tspan></text>
+<rect x="1062.2" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="1065.2" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="1092.2" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="1095.2" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="1122.2" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="1125.2" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="1152.2" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="1155.2" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="1182.2" y="329.0" width="18" height="11" rx="3" fill="#2e9e5b" stroke="#217141" stroke-width="1"/>
+<rect x="1185.2" y="331.0" width="8" height="3" rx="1.5" fill="#36ba6b" opacity="0.8"/>
+<rect x="1049.5" y="338.0" width="163.5" height="76" rx="5" fill="#2e9e5b" stroke="#217141" stroke-width="1.5"/>
+<rect x="1051.5" y="404.0" width="159.5" height="8" rx="3" fill="#217141" opacity="0.55"/>
+<rect x="1055.5" y="342.0" width="151.5" height="3" rx="1.5" fill="#36ba6b" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1131.2" y="369.8">Domain Events</tspan><tspan x="1131.2" y="385.4">TransacaoAutorizada</tspan></text>
+<line x1="1223.0" y1="376.0" x2="1650.0" y2="376.0" stroke="#2e9e5b" stroke-width="1.5" stroke-dasharray="5 4"/>
+<circle cx="1223.0" cy="376.0" r="4" fill="#2e9e5b"/>
+<rect x="1650" y="343.0" width="440" height="66" rx="8" fill="#ffffff" stroke="#2e9e5b" stroke-width="2"/>
+<rect x="1650" y="343.0" width="6" height="66" rx="3" fill="#2e9e5b"/>
+<text x="1664" y="365.0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" fill="#1b2a4a">⑧ DDD Tático</text>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#33415c"><tspan x="1664" y="387.0">Invariante disponível ≥ 0 no agregado; entidades do BIAN em</tspan><tspan x="1664" y="405.0">PT-BR; eventos no passado → outbox.</tspan></text>
+<rect x="616.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="619.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="646.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="649.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="676.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="679.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="706.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="709.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="602.0" y="260.0" width="136.0" height="76" rx="5" fill="#1b2a4a" stroke="#131e35" stroke-width="1.5"/>
+<rect x="604.0" y="326.0" width="132.0" height="8" rx="3" fill="#131e35" opacity="0.55"/>
+<rect x="608.0" y="264.0" width="124.0" height="3" rx="1.5" fill="#1f3157" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="670.0" y="291.8">autorizacao</tspan><tspan x="670.0" y="307.4">(Fargate)</tspan></text>
+<rect x="756.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="759.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="786.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="789.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="816.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="819.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="846.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="849.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="742.0" y="260.0" width="136.0" height="76" rx="5" fill="#1b2a4a" stroke="#131e35" stroke-width="1.5"/>
+<rect x="744.0" y="326.0" width="132.0" height="8" rx="3" fill="#131e35" opacity="0.55"/>
+<rect x="748.0" y="264.0" width="124.0" height="3" rx="1.5" fill="#1f3157" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="810.0" y="291.8">limites</tspan><tspan x="810.0" y="307.4">(Fargate)</tspan></text>
+<rect x="896.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="899.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="926.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="929.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="956.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="959.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="986.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="989.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="882.0" y="260.0" width="136.0" height="76" rx="5" fill="#1b2a4a" stroke="#131e35" stroke-width="1.5"/>
+<rect x="884.0" y="326.0" width="132.0" height="8" rx="3" fill="#131e35" opacity="0.55"/>
+<rect x="888.0" y="264.0" width="124.0" height="3" rx="1.5" fill="#1f3157" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="950.0" y="291.8">contabilizacao</tspan><tspan x="950.0" y="307.4">(Fargate)</tspan></text>
+<rect x="1036.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="1039.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="1066.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="1069.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="1096.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="1099.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="1126.0" y="251.0" width="18" height="11" rx="3" fill="#1b2a4a" stroke="#131e35" stroke-width="1"/>
+<rect x="1129.0" y="253.0" width="8" height="3" rx="1.5" fill="#1f3157" opacity="0.8"/>
+<rect x="1022.0" y="260.0" width="136.0" height="76" rx="5" fill="#1b2a4a" stroke="#131e35" stroke-width="1.5"/>
+<rect x="1024.0" y="326.0" width="132.0" height="8" rx="3" fill="#131e35" opacity="0.55"/>
+<rect x="1028.0" y="264.0" width="124.0" height="3" rx="1.5" fill="#1f3157" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="1090.0" y="291.8">corebanking-acl</tspan><tspan x="1090.0" y="307.4">(Lambda)</tspan></text>
+<line x1="1168.0" y1="298.0" x2="1650.0" y2="298.0" stroke="#1b2a4a" stroke-width="1.5" stroke-dasharray="5 4"/>
+<circle cx="1168.0" cy="298.0" r="4" fill="#1b2a4a"/>
+<rect x="1650" y="265.0" width="440" height="66" rx="8" fill="#ffffff" stroke="#1b2a4a" stroke-width="2"/>
+<rect x="1650" y="265.0" width="6" height="66" rx="3" fill="#1b2a4a"/>
+<text x="1664" y="287.0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" fill="#1b2a4a">⑨ Microsserviços · Hexagonal</text>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#33415c"><tspan x="1664" y="309.0">4 deployables, database-per-service, ports &amp; adapters</tspan><tspan x="1664" y="327.0">isolando AWS SDK e frameworks.</tspan></text>
+<rect x="751.0" y="173.0" width="18" height="11" rx="3" fill="#ff9900" stroke="#b76e00" stroke-width="1"/>
+<rect x="754.0" y="175.0" width="8" height="3" rx="1.5" fill="#ffb400" opacity="0.8"/>
+<rect x="781.0" y="173.0" width="18" height="11" rx="3" fill="#ff9900" stroke="#b76e00" stroke-width="1"/>
+<rect x="784.0" y="175.0" width="8" height="3" rx="1.5" fill="#ffb400" opacity="0.8"/>
+<rect x="811.0" y="173.0" width="18" height="11" rx="3" fill="#ff9900" stroke="#b76e00" stroke-width="1"/>
+<rect x="814.0" y="175.0" width="8" height="3" rx="1.5" fill="#ffb400" opacity="0.8"/>
+<rect x="841.0" y="173.0" width="18" height="11" rx="3" fill="#ff9900" stroke="#b76e00" stroke-width="1"/>
+<rect x="844.0" y="175.0" width="8" height="3" rx="1.5" fill="#ffb400" opacity="0.8"/>
+<rect x="871.0" y="173.0" width="18" height="11" rx="3" fill="#ff9900" stroke="#b76e00" stroke-width="1"/>
+<rect x="874.0" y="175.0" width="8" height="3" rx="1.5" fill="#ffb400" opacity="0.8"/>
+<rect x="901.0" y="173.0" width="18" height="11" rx="3" fill="#ff9900" stroke="#b76e00" stroke-width="1"/>
+<rect x="904.0" y="175.0" width="8" height="3" rx="1.5" fill="#ffb400" opacity="0.8"/>
+<rect x="931.0" y="173.0" width="18" height="11" rx="3" fill="#ff9900" stroke="#b76e00" stroke-width="1"/>
+<rect x="934.0" y="175.0" width="8" height="3" rx="1.5" fill="#ffb400" opacity="0.8"/>
+<rect x="961.0" y="173.0" width="18" height="11" rx="3" fill="#ff9900" stroke="#b76e00" stroke-width="1"/>
+<rect x="964.0" y="175.0" width="8" height="3" rx="1.5" fill="#ffb400" opacity="0.8"/>
+<rect x="991.0" y="173.0" width="18" height="11" rx="3" fill="#ff9900" stroke="#b76e00" stroke-width="1"/>
+<rect x="994.0" y="175.0" width="8" height="3" rx="1.5" fill="#ffb400" opacity="0.8"/>
+<rect x="732.0" y="182.0" width="296.0" height="76" rx="5" fill="#ff9900" stroke="#b76e00" stroke-width="1.5"/>
+<rect x="734.0" y="248.0" width="292.0" height="8" rx="3" fill="#b76e00" opacity="0.55"/>
+<rect x="738.0" y="186.0" width="284.0" height="3" rx="1.5" fill="#ffb400" opacity="0.6"/>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#1b2a4a" text-anchor="middle"><tspan x="880.0" y="221.9">AWS Well-Architected</tspan></text>
+<line x1="1038.0" y1="220.0" x2="1650.0" y2="220.0" stroke="#ff9900" stroke-width="1.5" stroke-dasharray="5 4"/>
+<circle cx="1038.0" cy="220.0" r="4" fill="#ff9900"/>
+<rect x="1650" y="187.0" width="440" height="66" rx="8" fill="#ffffff" stroke="#ff9900" stroke-width="2"/>
+<rect x="1650" y="187.0" width="6" height="66" rx="3" fill="#ff9900"/>
+<text x="1664" y="209.0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" fill="#1b2a4a">⑩ AWS Well-Architected</text>
+<text font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#33415c"><tspan x="1664" y="231.0">Cada bloco implantado seguindo os 6 pilares + FSI Lens (ADR</tspan><tspan x="1664" y="249.0">000), validados na doc AWS.</tspan></text>
+<path d="M88,524 L70,524 L70,990 L88,990" fill="none" stroke="#3a6fb0" stroke-width="3"/>
+<text x="56" y="757.0" transform="rotate(-90 56 757.0)" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#3a6fb0" text-anchor="middle">BIAN v12/v13 · validado</text>
+<path d="M88,338 L70,338 L70,492 L88,492" fill="none" stroke="#f28c28" stroke-width="3"/>
+<text x="56" y="415.0" transform="rotate(-90 56 415.0)" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#f28c28" text-anchor="middle">DDD</text>
+<path d="M88,182 L70,182 L70,336 L88,336" fill="none" stroke="#1b2a4a" stroke-width="3"/>
+<text x="56" y="259.0" transform="rotate(-90 56 259.0)" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#1b2a4a" text-anchor="middle">Implementação</text>
+</svg>

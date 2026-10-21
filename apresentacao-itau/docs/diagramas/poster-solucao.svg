@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1660" viewBox="0 0 2400 1660" font-family="Segoe UI, Helvetica, Arial, sans-serif"><defs><marker id="p-123a6b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#123a6b"/></marker><marker id="p-ec7000" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ec7000"/></marker></defs><rect width="2400" height="1660" fill="#f6f7f9"/>
+<rect width="2400" height="118" fill="#123a6b"/>
+<rect y="118" width="2400" height="6" fill="#ec7000"/>
+<text x="40" y="58" font-size="40" font-weight="700" fill="#ffffff" text-anchor="start" font-style="normal">Plataforma de Limites e Autorização de Transações</text>
+<text x="40" y="96" font-size="20" font-weight="400" fill="#ffd9b8" text-anchor="start" font-style="normal">Itaú POD99 · Arquiteto de Aplicação · AWS sa-east-1 · DDD + BIAN · Clean/Hexagonal · Event-Driven · Well-Architected</text>
+<text x="2360" y="58" font-size="22" font-weight="400" fill="#ffffff" text-anchor="end" font-style="italic">a solução em uma página</text>
+<text x="2360" y="94" font-size="18" font-weight="400" fill="#ffd9b8" text-anchor="end" font-style="normal">estudo e apresentação à banca</text>
+<rect x="40" y="150" width="700" height="380" rx="16" fill="#ffffff" stroke="#d0d5dd" stroke-width="1.5"/>
+<circle cx="74" cy="186" r="17" fill="#ec7000"/>
+<text x="74" y="192" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle" font-style="normal">1</text>
+<text x="102" y="194" font-size="22" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">O problema (PDF)</text>
+<line x1="60" y1="214" x2="720" y2="214" stroke="#d0d5dd"/>
+<circle cx="70" cy="245" r="5" fill="#123a6b"/>
+<text x="84" y="250" font-size="16" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Autorizar em tempo real</text>
+<text x="84" y="271.75" font-size="15" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">aprovar ou recusar cada transação de 80 mi de contas (3 a 5 contratos cada), com</text>
+<text x="84" y="292.0" font-size="15" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">pico de 5.000 TPS</text>
+<circle cx="70" cy="315.25" r="5" fill="#123a6b"/>
+<text x="84" y="320.25" font-size="16" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Nunca passar do limite</text>
+<text x="84" y="342.0" font-size="15" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">reserva consistente mesmo com muitas transações simultâneas no mesmo contrato</text>
+<circle cx="70" cy="365.25" r="5" fill="#123a6b"/>
+<text x="84" y="370.25" font-size="16" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Avisar a retaguarda</text>
+<text x="84" y="392.0" font-size="15" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">eventos desacoplados para contabilidade, antifraude, notificações e data</text>
+<text x="84" y="412.25" font-size="15" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">platform</text>
+<circle cx="70" cy="435.5" r="5" fill="#123a6b"/>
+<text x="84" y="440.5" font-size="16" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Respeitar o legado e a auditoria</text>
+<text x="84" y="462.25" font-size="15" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">core banking via camada anticorrupção; idempotência e rastreio ponta a ponta</text>
+<rect x="770" y="150" width="920" height="380" rx="16" fill="#ffffff" stroke="#d0d5dd" stroke-width="1.5"/>
+<circle cx="804" cy="186" r="17" fill="#ec7000"/>
+<text x="804" y="192" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle" font-style="normal">2</text>
+<text x="832" y="194" font-size="22" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Domínio: 3 bounded contexts + ACL (DDD × BIAN)</text>
+<line x1="790" y1="214" x2="1670" y2="214" stroke="#d0d5dd"/>
+<rect x="796" y="232" width="280" height="196" rx="12" fill="#eef4fb" stroke="#6f93c2"/>
+<text x="936" y="266" font-size="21" font-weight="700" fill="#123a6b" text-anchor="middle" font-style="normal">Autorização</text>
+<text x="936" y="290" font-size="13" font-weight="700" fill="#ec7000" text-anchor="middle" font-style="normal">BIAN Transaction Authorization</text>
+<text x="812" y="320" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">agregado Autorizacao · decide,</text>
+<text x="812" y="338.9" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">garante idempotência, registra e</text>
+<text x="812" y="357.79999999999995" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">publica o fato</text>
+<rect x="1092" y="232" width="280" height="196" rx="12" fill="#eef4fb" stroke="#6f93c2"/>
+<text x="1232" y="266" font-size="21" font-weight="700" fill="#123a6b" text-anchor="middle" font-style="normal">Limites</text>
+<text x="1232" y="290" font-size="13" font-weight="700" fill="#ec7000" text-anchor="middle" font-style="normal">BIAN Position Keeping + Limit &amp; Exposure</text>
+<text x="1108" y="320" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">agregados Posicao e Operacao ·</text>
+<text x="1108" y="338.9" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">dono do saldo; escrita condicional</text>
+<rect x="1388" y="232" width="280" height="196" rx="12" fill="#eef4fb" stroke="#6f93c2"/>
+<text x="1528" y="266" font-size="21" font-weight="700" fill="#123a6b" text-anchor="middle" font-style="normal">Contabilização</text>
+<text x="1528" y="290" font-size="13" font-weight="700" fill="#ec7000" text-anchor="middle" font-style="normal">BIAN Financial Accounting</text>
+<text x="1404" y="320" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">agregados RegistroContabil e</text>
+<text x="1404" y="338.9" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">Lancamento · partidas dobradas no</text>
+<text x="1404" y="357.79999999999995" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">razão</text>
+<rect x="796" y="444" width="872" height="66" rx="12" fill="#fff1e5" stroke="#ec7000"/>
+<text x="816" y="472" font-size="18" font-weight="700" fill="#7a3a00" text-anchor="start" font-style="normal">Core Banking ACL</text>
+<text x="816" y="496" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">traduz o registro posicional do legado em LimiteConcedido · o modelo legado não entra no domínio</text>
+<text x="1650" y="472" font-size="13" font-weight="400" fill="#5b6573" text-anchor="end" font-style="italic">Shared kernel: Dinheiro · Published language: CloudEvents</text>
+<rect x="1720" y="150" width="640" height="380" rx="16" fill="#ffffff" stroke="#d0d5dd" stroke-width="1.5"/>
+<circle cx="1754" cy="186" r="17" fill="#ec7000"/>
+<text x="1754" y="192" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle" font-style="normal">3</text>
+<text x="1782" y="194" font-size="22" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Números</text>
+<line x1="1740" y1="214" x2="2340" y2="214" stroke="#d0d5dd"/>
+<rect x="1744" y="232" width="288" height="86" rx="10" fill="#eef4fb"/>
+<text x="1762" y="276" font-size="30" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">5.000</text>
+<text x="1762" y="302" font-size="14" font-weight="400" fill="#5b6573" text-anchor="start" font-style="normal">TPS de pico (PDF)</text>
+<rect x="2048" y="232" width="288" height="86" rx="10" fill="#eef4fb"/>
+<text x="2066" y="276" font-size="30" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">&lt; 100 ms</text>
+<text x="2066" y="302" font-size="14" font-weight="400" fill="#5b6573" text-anchor="start" font-style="normal">p99 na borda (premissa)</text>
+<rect x="1744" y="330" width="288" height="86" rx="10" fill="#eef4fb"/>
+<text x="1762" y="374" font-size="30" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">~US$ 35 mil</text>
+<text x="1762" y="400" font-size="14" font-weight="400" fill="#5b6573" text-anchor="start" font-style="normal">por mês (preço de lista)</text>
+<rect x="2048" y="330" width="288" height="86" rx="10" fill="#eef4fb"/>
+<text x="2066" y="374" font-size="30" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">US$ 8,90</text>
+<text x="2066" y="400" font-size="14" font-weight="400" fill="#5b6573" text-anchor="start" font-style="normal">por milhão de autorizações</text>
+<rect x="1744" y="428" width="288" height="86" rx="10" fill="#eef4fb"/>
+<text x="1762" y="472" font-size="30" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">80 + 4</text>
+<text x="1762" y="498" font-size="14" font-weight="400" fill="#5b6573" text-anchor="start" font-style="normal">testes + integração</text>
+<rect x="2048" y="428" width="288" height="86" rx="10" fill="#eef4fb"/>
+<text x="2066" y="472" font-size="30" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">000–031</text>
+<text x="2066" y="498" font-size="14" font-weight="400" fill="#5b6573" text-anchor="start" font-style="normal">ADRs registradas</text>
+<rect x="40" y="560" width="2320" height="440" rx="16" fill="#ffffff" stroke="#d0d5dd" stroke-width="1.5"/>
+<circle cx="74" cy="596" r="17" fill="#ec7000"/>
+<text x="74" y="602" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle" font-style="normal">4</text>
+<text x="102" y="604" font-size="22" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Como funciona</text>
+<line x1="60" y1="624" x2="2340" y2="624" stroke="#d0d5dd"/>
+<rect x="64" y="640" width="1440" height="150" rx="12" fill="#eef4fb" opacity="0.6"/>
+<text x="80" y="664" font-size="14" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">SÍNCRONO · o cliente aguarda</text>
+<rect x="64" y="806" width="2272" height="176" rx="12" fill="#fff1e5" opacity="0.6"/>
+<text x="80" y="830" font-size="14" font-weight="700" fill="#7a3a00" text-anchor="start" font-style="normal">ASSÍNCRONO · eventos de domínio (o cliente já recebeu a resposta)</text>
+<rect x="84" y="680" width="170" height="92" rx="10" fill="#ffffff" stroke="#123a6b" stroke-width="1.5"/>
+<text x="169.0" y="715.0" font-size="17" font-weight="700" fill="#123a6b" text-anchor="middle" font-style="normal">Canal</text>
+<text x="169.0" y="732.0" font-size="13" font-weight="400" fill="#123a6b" text-anchor="middle" font-style="normal">app, parceiro,</text>
+<text x="169.0" y="749.0" font-size="13" font-weight="400" fill="#123a6b" text-anchor="middle" font-style="normal">adquirente</text>
+<rect x="312" y="680" width="330" height="92" rx="10" fill="#ffffff" stroke="#123a6b" stroke-width="1.5"/>
+<text x="477.0" y="715.0" font-size="17" font-weight="700" fill="#123a6b" text-anchor="middle" font-style="normal">API Gateway REST</text>
+<text x="477.0" y="732.0" font-size="13" font-weight="400" fill="#123a6b" text-anchor="middle" font-style="normal">Cognito OAuth2 · usage plan (429) · validação</text>
+<text x="477.0" y="749.0" font-size="13" font-weight="400" fill="#123a6b" text-anchor="middle" font-style="normal">OpenAPI (422) · WAF</text>
+<rect x="700" y="680" width="330" height="92" rx="10" fill="#123a6b" stroke="#123a6b" stroke-width="1.5"/>
+<text x="865.0" y="715.0" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle" font-style="normal">Autorização</text>
+<text x="865.0" y="732.0" font-size="13" font-weight="400" fill="#ffffff" text-anchor="middle" font-style="normal">Fargate · id = UUIDv5(cliente,</text>
+<text x="865.0" y="749.0" font-size="13" font-weight="400" fill="#ffffff" text-anchor="middle" font-style="normal">Idempotency-Key) → repetição devolve 200</text>
+<rect x="1150" y="680" width="330" height="92" rx="10" fill="#123a6b" stroke="#123a6b" stroke-width="1.5"/>
+<text x="1315.0" y="715.0" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle" font-style="normal">Limites</text>
+<text x="1315.0" y="732.0" font-size="13" font-weight="400" fill="#ffffff" text-anchor="middle" font-style="normal">Fargate · grava só se versão igual e</text>
+<text x="1315.0" y="749.0" font-size="13" font-weight="400" fill="#ffffff" text-anchor="middle" font-style="normal">disponível ≥ valor (402 / 409)</text>
+<polyline points="254,726 312,726" fill="none" stroke="#123a6b" stroke-width="2.6" marker-end="url(#p-123a6b)"/>
+<polyline points="642,726 700,726" fill="none" stroke="#123a6b" stroke-width="2.6" marker-end="url(#p-123a6b)"/>
+<polyline points="1030,726 1150,726" fill="none" stroke="#123a6b" stroke-width="2.6" marker-start="url(#p-123a6b)" marker-end="url(#p-123a6b)"/>
+<text x="1090" y="712" font-size="13" font-weight="700" fill="#123a6b" text-anchor="middle" font-style="normal">único</text>
+<text x="1090" y="750" font-size="13" font-weight="700" fill="#123a6b" text-anchor="middle" font-style="normal">síncrono</text>
+<text x="1520" y="700" font-size="15" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">timeout 200 ms · retry com jitter · circuit breaker → 503</text>
+<text x="1520" y="726" font-size="15" font-weight="400" fill="#b42318" text-anchor="start" font-style="normal">resultado incerto → SQS (15 min) → reconciliador desfaz a operação órfã</text>
+<text x="1520" y="752" font-size="15" font-weight="400" fill="#5b6573" text-anchor="start" font-style="normal">repetição aceita por 10 min · reversão só após 15 min: janelas disjuntas</text>
+<rect x="560" y="850" width="330" height="110" rx="10" fill="#ffffff" stroke="#ec7000" stroke-width="1.5"/>
+<text x="725.0" y="885.5" font-size="17" font-weight="700" fill="#123a6b" text-anchor="middle" font-style="normal">Outbox → Kinesis</text>
+<text x="725.0" y="902.5" font-size="13" font-weight="400" fill="#123a6b" text-anchor="middle" font-style="normal">decisão e evento na mesma escrita do DynamoDB</text>
+<text x="725.0" y="919.5" font-size="13" font-weight="400" fill="#123a6b" text-anchor="middle" font-style="normal">· Streams → relay Lambda → Kinesis (chave</text>
+<text x="725.0" y="936.5" font-size="13" font-weight="400" fill="#123a6b" text-anchor="middle" font-style="normal">id_contrato)</text>
+<rect x="84" y="850" width="420" height="110" rx="10" fill="#ffffff" stroke="#ec7000" stroke-width="1.5"/>
+<text x="294.0" y="894.0" font-size="17" font-weight="700" fill="#123a6b" text-anchor="middle" font-style="normal">Consumidores do Kinesis</text>
+<text x="294.0" y="911.0" font-size="13" font-weight="400" fill="#123a6b" text-anchor="middle" font-style="normal">Contabilização (KCL → Aurora) · Antifraude · Notificações ·</text>
+<text x="294.0" y="928.0" font-size="13" font-weight="400" fill="#123a6b" text-anchor="middle" font-style="normal">Data platform (S3 WORM)</text>
+<rect x="1010" y="850" width="330" height="110" rx="10" fill="#ffffff" stroke="#ec7000" stroke-width="1.5"/>
+<text x="1175.0" y="894.0" font-size="17" font-weight="700" fill="#123a6b" text-anchor="middle" font-style="normal">Outbox OUT# → EventBridge</text>
+<text x="1175.0" y="911.0" font-size="13" font-weight="400" fill="#123a6b" text-anchor="middle" font-style="normal">LimiteAlterado · OperacaoRevertida · regras,</text>
+<text x="1175.0" y="928.0" font-size="13" font-weight="400" fill="#123a6b" text-anchor="middle" font-style="normal">archive 90 d, DLQ</text>
+<rect x="1460" y="850" width="360" height="110" rx="10" fill="#ffffff" stroke="#ec7000" stroke-width="1.5"/>
+<text x="1640.0" y="894.0" font-size="17" font-weight="700" fill="#123a6b" text-anchor="middle" font-style="normal">EventBridge «financas»</text>
+<text x="1640.0" y="911.0" font-size="13" font-weight="400" fill="#123a6b" text-anchor="middle" font-style="normal">integração entre domínios: roteamento por regra →</text>
+<text x="1640.0" y="928.0" font-size="13" font-weight="400" fill="#123a6b" text-anchor="middle" font-style="normal">SQS → Limites</text>
+<rect x="1940" y="850" width="370" height="110" rx="10" fill="#fff1e5" stroke="#ec7000" stroke-width="1.5"/>
+<text x="2125.0" y="894.0" font-size="17" font-weight="700" fill="#7a3a00" text-anchor="middle" font-style="normal">Core banking → ACL</text>
+<text x="2125.0" y="911.0" font-size="13" font-weight="400" fill="#7a3a00" text-anchor="middle" font-style="normal">Lambda traduz o layout legado em LimiteConcedido</text>
+<text x="2125.0" y="928.0" font-size="13" font-weight="400" fill="#7a3a00" text-anchor="middle" font-style="normal">(versão monotônica)</text>
+<polyline points="865,772 865,850" fill="none" stroke="#ec7000" stroke-width="2.6" marker-end="url(#p-ec7000)"/>
+<polyline points="560,905 504,905" fill="none" stroke="#ec7000" stroke-width="2.6" marker-end="url(#p-ec7000)"/>
+<polyline points="1315,772 1315,850" fill="none" stroke="#ec7000" stroke-width="2.6" marker-end="url(#p-ec7000)"/>
+<polyline points="1340,905 1460,905" fill="none" stroke="#ec7000" stroke-width="2.6" marker-end="url(#p-ec7000)"/>
+<polyline points="1940,905 1820,905" fill="none" stroke="#ec7000" stroke-width="2.6" marker-end="url(#p-ec7000)"/>
+<polyline points="1640,850 1640,815 1420,815 1420,772" fill="none" stroke="#ec7000" stroke-width="2.6" marker-end="url(#p-ec7000)"/>
+<text x="1650" y="840" font-size="13" font-weight="700" fill="#7a3a00" text-anchor="start" font-style="normal">novo limite</text>
+<rect x="40" y="1030" width="900" height="440" rx="16" fill="#ffffff" stroke="#d0d5dd" stroke-width="1.5"/>
+<circle cx="74" cy="1066" r="17" fill="#ec7000"/>
+<text x="74" y="1072" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle" font-style="normal">5</text>
+<text x="102" y="1074" font-size="22" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Decisões-chave e o porquê</text>
+<line x1="60" y1="1094" x2="920" y2="1094" stroke="#d0d5dd"/>
+<circle cx="70" cy="1119" r="5" fill="#123a6b"/>
+<text x="84" y="1124" font-size="16" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Fargate no síncrono, Lambda na cola</text>
+<text x="84" y="1145.75" font-size="15" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">p99 previsível a 5k TPS, sem cold start; Lambda onde o gatilho é nativo (Streams, SQS, Kinesis)</text>
+<circle cx="70" cy="1169.0" r="5" fill="#123a6b"/>
+<text x="84" y="1174.0" font-size="16" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">DynamoDB com escrita condicional</text>
+<text x="84" y="1195.75" font-size="15" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">concorrência sem lock distribuído; ~5 WRU por autorização (2 escritas)</text>
+<circle cx="70" cy="1219.0" r="5" fill="#123a6b"/>
+<text x="84" y="1224.0" font-size="16" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Outbox no próprio item + relay Lambda</text>
+<text x="84" y="1245.75" font-size="15" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">sem dual-write; dezenas de dólares contra ~US$ 2,7 mil/mês do Pipes</text>
+<circle cx="70" cy="1269.0" r="5" fill="#123a6b"/>
+<text x="84" y="1274.0" font-size="16" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Kinesis no alto volume, EventBridge na integração</text>
+<text x="84" y="1295.75" font-size="15" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">custo e fan-out a 5k eventos/s; EventBridge onde brilha: regras e outros times</text>
+<circle cx="70" cy="1319.0" r="5" fill="#123a6b"/>
+<text x="84" y="1324.0" font-size="16" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Contract-first de verdade</text>
+<text x="84" y="1345.75" font-size="15" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">API Gateway importa o OpenAPI; Glue Schema Registry (FULL) barra evento incompatível</text>
+<rect x="970" y="1030" width="700" height="440" rx="16" fill="#ffffff" stroke="#d0d5dd" stroke-width="1.5"/>
+<circle cx="1004" cy="1066" r="17" fill="#ec7000"/>
+<text x="1004" y="1072" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle" font-style="normal">6</text>
+<text x="1032" y="1074" font-size="22" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Garantias</text>
+<line x1="990" y1="1094" x2="1650" y2="1094" stroke="#d0d5dd"/>
+<circle cx="1000" cy="1119" r="5" fill="#ec7000"/>
+<text x="1014" y="1124" font-size="15" font-weight="700" fill="#ec7000" text-anchor="start" font-style="normal">Idempotência</text>
+<text x="1014" y="1144.3" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">mesma chave = mesma decisão; outro conteúdo = 422</text>
+<circle cx="1000" cy="1166.2" r="5" fill="#ec7000"/>
+<text x="1014" y="1171.2" font-size="15" font-weight="700" fill="#ec7000" text-anchor="start" font-style="normal">Consistência sob concorrência</text>
+<text x="1014" y="1191.5" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">controle otimista + retentativa; 50 débitos simultâneos testados</text>
+<circle cx="1000" cy="1213.4" r="5" fill="#ec7000"/>
+<text x="1014" y="1218.4" font-size="15" font-weight="700" fill="#ec7000" text-anchor="start" font-style="normal">Sem dual-write</text>
+<text x="1014" y="1238.7" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">o evento sai se, e somente se, a decisão foi gravada</text>
+<circle cx="1000" cy="1260.6000000000001" r="5" fill="#ec7000"/>
+<text x="1014" y="1265.6000000000001" font-size="15" font-weight="700" fill="#ec7000" text-anchor="start" font-style="normal">At-least-once + deduplicação</text>
+<text x="1014" y="1285.9" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">id do CloudEvent; inbox na contabilização</text>
+<circle cx="1000" cy="1307.8000000000002" r="5" fill="#ec7000"/>
+<text x="1014" y="1312.8000000000002" font-size="15" font-weight="700" fill="#ec7000" text-anchor="start" font-style="normal">Resiliência</text>
+<text x="1014" y="1333.1000000000001" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">circuit breaker (503), DLQ em todo consumidor, replay de 7 dias</text>
+<circle cx="1000" cy="1355.0000000000002" r="5" fill="#ec7000"/>
+<text x="1014" y="1360.0000000000002" font-size="15" font-weight="700" fill="#ec7000" text-anchor="start" font-style="normal">Rastreio</text>
+<text x="1014" y="1380.3000000000002" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">correlation_id e traceparent ponta a ponta, entre contextos</text>
+<rect x="1700" y="1030" width="660" height="440" rx="16" fill="#ffffff" stroke="#d0d5dd" stroke-width="1.5"/>
+<circle cx="1734" cy="1066" r="17" fill="#ec7000"/>
+<text x="1734" y="1072" font-size="17" font-weight="700" fill="#ffffff" text-anchor="middle" font-style="normal">7</text>
+<text x="1762" y="1074" font-size="22" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Well-Architected</text>
+<line x1="1720" y1="1094" x2="2340" y2="1094" stroke="#d0d5dd"/>
+<rect x="1724" y="1110" width="612" height="50" rx="8" fill="#eef4fb"/>
+<text x="1740" y="1132" font-size="15" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Excelência operacional</text>
+<text x="1740" y="1152" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">Terraform, alarmes, deploy com rollback</text>
+<rect x="1724" y="1168" width="612" height="50" rx="8" fill="#eef4fb"/>
+<text x="1740" y="1190" font-size="15" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Segurança</text>
+<text x="1740" y="1210" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">OAuth2, WAF, VPC sem NAT, IAM mínimo, KMS</text>
+<rect x="1724" y="1226" width="612" height="50" rx="8" fill="#eef4fb"/>
+<text x="1740" y="1248" font-size="15" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Confiabilidade</text>
+<text x="1740" y="1268" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">3 AZs, idempotência, outbox, DLQ, replay</text>
+<rect x="1724" y="1284" width="612" height="50" rx="8" fill="#eef4fb"/>
+<text x="1740" y="1306" font-size="15" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Eficiência de performance</text>
+<text x="1740" y="1326" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">acesso por chave, virtual threads</text>
+<rect x="1724" y="1342" width="612" height="50" rx="8" fill="#eef4fb"/>
+<text x="1740" y="1364" font-size="15" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Otimização de custos</text>
+<text x="1740" y="1384" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">~71% abaixo do desenho inicial</text>
+<rect x="1724" y="1400" width="612" height="50" rx="8" fill="#eef4fb"/>
+<text x="1740" y="1422" font-size="15" font-weight="700" fill="#123a6b" text-anchor="start" font-style="normal">Sustentabilidade</text>
+<text x="1740" y="1442" font-size="14" font-weight="400" fill="#1d2939" text-anchor="start" font-style="normal">Graviton, escala a zero, TTL 35 dias</text>
+<rect x="40" y="1496" width="2320" height="140" rx="16" fill="#123a6b"/>
+<text x="64" y="1534" font-size="22" font-weight="700" fill="#ffffff" text-anchor="start" font-style="normal">Trade-offs que eu defendo</text>
+<text x="64" y="1570" font-size="16" font-weight="700" fill="#ffd9b8" text-anchor="start" font-style="normal">Kinesis, não EventBridge, no TransacaoAutorizada</text>
+<text x="64" y="1596" font-size="14" font-weight="400" fill="#ffffff" text-anchor="start" font-style="normal">o PDF traz o EventBridge como exemplo e pede avaliar Kinesis (§3.3). Plano B: EventBridge com</text>
+<text x="64" y="1614.9" font-size="14" font-weight="400" fill="#ffffff" text-anchor="start" font-style="normal">aumento de quota</text>
+<text x="834" y="1570" font-size="16" font-weight="700" fill="#ffd9b8" text-anchor="start" font-style="normal">SNS fora do fluxo de eventos</text>
+<text x="834" y="1596" font-size="14" font-weight="400" fill="#ffffff" text-anchor="start" font-style="normal">o fan-out é do Kinesis e das regras do EventBridge; SNS entra nas notificações reais ao cliente</text>
+<text x="1604" y="1570" font-size="16" font-weight="700" fill="#ffd9b8" text-anchor="start" font-style="normal">Local × AWS</text>
+<text x="1604" y="1596" font-size="14" font-weight="400" fill="#ffffff" text-anchor="start" font-style="normal">LocalStack sobe o fluxo inteiro; API Gateway, Cognito, WAF e Glue ficam no Terraform de produção</text></svg>

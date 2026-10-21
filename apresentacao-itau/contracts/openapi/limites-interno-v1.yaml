@@ -1,0 +1,68 @@
+openapi: 3.0.3
+info:
+  title: API interna do contexto Limites
+  version: 1.0.0
+  description: |
+    Leste-oeste (ECS Service Connect / NLB interno). Não exposta no API Gateway.
+    Relação Customer/Supplier: o contexto Autorização é o cliente.
+    Toda operação é idempotente por `id_operacao` (= id da autorização) dentro da janela de repetição (10 min).
+paths:
+  /v1/contratos/{id_contrato}/operacoes:
+    post:
+      operationId: aplicarOperacao
+      summary: Aplica débito/reserva/crédito/estorno na posição do contrato (BIAN Position Keeping Control/Capture)
+      parameters:
+        - { name: id_contrato, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id_operacao, tipo_operacao, valor, moeda, impressao_digital]
+              properties:
+                id_operacao: { type: string, format: uuid }
+                tipo_operacao: { type: string, enum: [DEBITO, CREDITO, RESERVA, ESTORNO] }
+                valor: { type: string, pattern: '^\d{1,16}(\.\d{1,2})?$' }
+                moeda: { type: string, pattern: '^[A-Z]{3}$' }
+                impressao_digital: { type: string, description: hash do conteúdo de negócio }
+                id_operacao_original: { type: string, format: uuid }
+      responses:
+        '201': { description: Operação aplicada, content: { application/json: { schema: { $ref: '#/components/schemas/Posicao' } } } }
+        '200': { description: Repetição idempotente, content: { application/json: { schema: { $ref: '#/components/schemas/Posicao' } } } }
+        '402': { description: Limite insuficiente (inclui saldo_reservado e limite_disponivel) }
+        '404': { description: Contrato sem limite cadastrado }
+        '409': { description: 'Concorrência não resolvida (conflito-de-concorrencia) ou operação encerrada (operacao-encerrada)' }
+        '422': { description: Regra violada (ex. devolução maior que o utilizado) }
+  /v1/contratos/{id_contrato}/operacoes/{id_operacao}/reversao:
+    post:
+      operationId: reverterOperacaoOrfa
+      summary: Reverte operação órfã (usado pelo reconciliador). Idempotente.
+      parameters:
+        - { name: id_contrato, in: path, required: true, schema: { type: string } }
+        - { name: id_operacao, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Desfecho
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  desfecho: { type: string, enum: [REVERTIDA, JA_REVERTIDA, NAO_ENCONTRADA] }
+  /v1/contratos/{id_contrato}/posicao:
+    get:
+      operationId: consultarPosicao
+      parameters:
+        - { name: id_contrato, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Posição atual, content: { application/json: { schema: { $ref: '#/components/schemas/Posicao' } } } }
+        '404': { description: Contrato sem limite }
+components:
+  schemas:
+    Posicao:
+      type: object
+      properties:
+        saldo_reservado: { type: string }
+        limite_disponivel: { type: string }
+        limite_concedido: { type: string }

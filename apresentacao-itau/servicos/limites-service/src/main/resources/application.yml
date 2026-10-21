@@ -1,0 +1,47 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: limites-service
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: non_null
+  threads:
+    virtual:
+      enabled: true
+  cloud:
+    aws:
+      region:
+        static: ${AWS_REGION:sa-east-1}
+      sqs:
+        endpoint: ${AWS_ENDPOINT_URL:}
+        listener:
+          max-concurrent-messages: 10
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+limites:
+  regiao: ${AWS_REGION:sa-east-1}
+  endpoint: ${AWS_ENDPOINT_URL:}
+  tabela: ${TABELA_LIMITES:limites}
+  retencao-operacoes: ${RETENCAO_OPERACOES:35d}
+  tentativas: 4
+  espera-base: 5ms
+  janela-de-repeticao: 10m   # menor que o atraso do reconciliador (15 min): sem sobreposição (ADR 027)
+  fila-limites-concedidos: ${FILA_LIMITES_CONCEDIDOS:limites-concedidos}
+
+logging:
+  pattern:
+    level: "%5p [correlation_id=%X{correlation_id:-}]"

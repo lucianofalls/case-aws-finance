@@ -1,0 +1,30 @@
+variable "regiao" {
+  type    = string
+  default = "sa-east-1"
+}
+
+variable "centro_de_custo" {
+  type    = string
+  default = "POD99-FINANCAS"
+}
+
+variable "versao_imagem" {
+  type        = string
+  description = "Tag imutável das imagens no ECR (SHA do commit)."
+}
+
+variable "diretorio_artefatos" {
+  type        = string
+  description = "Diretório com os JARs das Lambdas (ex.: ../../../../artefatos)."
+}
+
+variable "modo_cobranca_dynamodb" {
+  type        = string
+  description = "PROVISIONED em carga estável (recomendado após o baseline); PAY_PER_REQUEST no go-live."
+  default     = "PROVISIONED"
+}
+
+variable "shards_transacoes" {
+  type    = number
+  default = 8
+}
