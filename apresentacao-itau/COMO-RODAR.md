@@ -64,16 +64,14 @@ terraform -version
 ### 3.1 Descompactar e entrar na pasta
 
 ```bash
-unzip itau-pod99-solucao.zip -d itau
-cd itau/apresentacao-itau
+git clone https://github.com/lucianofalls/case-aws-finance.git
+cd case-aws-finance/apresentacao-itau
 ```
 
-Para passar pelo filtro de e-mail, os scripts (`.sh`) e o teste de carga (`.js`) vieram com `.txt` no fim do
-nome. Devolva os nomes originais **uma vez**, antes de tudo:
+**No GitHub os scripts foram normalizados para extensões `.sh` e `.js`.** A renomeação é necessária apenas para executar o ZIP original recebido:
 
 ```bash
 find . \( -name "*.sh.txt" -o -name "*.js.txt" \) | while read -r f; do mv "$f" "${f%.txt}"; done
-ls local/   # deve mostrar demo.sh, derrubar.sh, subir.sh
 ```
 
 ### 3.2 Subir tudo
