@@ -48,6 +48,7 @@ Não foi alterada a modelagem original por preferência tecnológica: permanecem
 - Conferência **244/244 SHA Git** da importação.
 - Parse de **8 JSON**, **3 YAML + 4 YML**, **10 XML**, **2 SVG**, **4 Python**, **4 Bash** (sintaxe) e assinatura de **2 PNG** na árvore normalizada.
 - Compilação isolada em **Java 21** de `VerificarAutorizacaoIncerta.java` e `JanelaDeConciliacao.java` (sem dependências externas).
+- **Smoke test Java 21 efetivamente executado**: desfecho `REVERTIDA`, rejeição de desfecho inesperado e SQL `NOT EXISTS` foram validados com assertions e passaram.
 - Verificação estática da estrutura principal e das extensões dos scripts.
 - Confirmação de que o repositório **não contém workflows GitHub Actions**.
 
