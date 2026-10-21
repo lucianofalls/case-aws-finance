@@ -36,6 +36,8 @@ fontes oficiais consultadas, está em `../../../docs/MEMORIA.md` §5.
 | **031** | API Gateway criado por importação do OpenAPI; oasdiff barra breaking change | Op. Excelência, Confiabilidade | Aceita |
 | **032–035** | Agendamento de verificação, reconciliação e expiração (ver implementação e `docs/MEMORIA.md`) | Confiabilidade | Existentes no ZIP, catalogação completa pendente |
 | **036** | [Hardening da compensação e conciliação](036-hardening-compensacao.md) | Confiabilidade, Segurança | Implementação revisada; testes integrais pendentes |
+| **037** | [Compatibilidade EventBridge vs Kinesis](037-eventbridge-contrato-vs-kinesis.md) | Confiabilidade, Custo, Performance | Gap aberto |
+| **038** | [Estratégia de testes locais e restrição de exposição](038-validacao-local-sem-actions.md) | Segurança, Operações | Estratégia adotada; E2E pendente |
 
 ---
 
