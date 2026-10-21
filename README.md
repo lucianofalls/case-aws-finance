@@ -1,20 +1,46 @@
-# Case Itaú POD99 — Plataforma de Finanças
+# Case Itaú POD99 — Nova Plataforma de Finanças
 
-Repositório destinado à entrega original do Claude Code, auditoria técnica e correções incrementais do desafio de arquitetura de autorização financeira em AWS.
+Este repositório contém o trabalho integral entregue pelo Claude Code e uma auditoria técnica incremental, **sem GitHub Actions e sem infraestrutura AWS provisionada**.
 
-## Organização das fases
+## Status da auditoria
 
-- **Fase 0 — Importação fiel:** preservar o ZIP `itau-pod99-solucao(2).zip` com todos os fontes, Terraform, contratos, testes e diagramas.
-- **Fase 1 — Consistência financeira:** revisar comunicação Autorização↔Limites, compensações, reconciliação e idempotência.
-- **Fase 2 — Mensageria:** Outbox, Kinesis, EventBridge, SQS, entrega, replay e ordenação.
-- **Fase 3 — Infraestrutura e testes:** IAM, ECS/compute, Terraform, execução local, custos e Well-Architected.
-- **Fase 4 — ADRs e relatório final:** matriz de requisitos, evidências de testes, riscos remanescentes e recomendações para apresentação.
+| Fase | Entrega |
+|---|---|
+| 1 — Importação | **244/244 arquivos do ZIP original verificados por SHA Git** — [commit de preservação](https://github.com/lucianofalls/case-aws-finance/commit/ad35be77a0293824a610f18b72c10e71af6acc07) |
+| 2 — Consistência e compensação | Regressões corrigidas em reversão, SQS e consulta Athena + [ADR-036](apresentacao-itau/docs/adr/036-hardening-compensacao.md) |
+| 3 — Infraestrutura/eventos/local | Scripts executáveis, portas loopback, validador estático, [ADR-037](apresentacao-itau/docs/adr/037-eventbridge-contrato-vs-kinesis.md) e [ADR-038](apresentacao-itau/docs/adr/038-validacao-local-sem-actions.md) |
+| 4 — Relatório | **[Relatório final](docs/auditoria/RELATORIO-FINAL.md)** e [matriz de aceite](docs/auditoria/MATRIZ-REQUISITOS.md) |
 
-## Regras de execução
+## Abrir o projeto
 
-1. Não ativar nem criar GitHub Actions.
-2. Não executar `terraform apply`, provisionar AWS ou gerar custos sem autorização.
-3. Preservar a autoria e o conteúdo original; toda alteração posterior deve ter justificativa e teste.
-4. Documentar o que foi **validado** e o que ainda está **pendente**, sem supor que um parse estático equivale a implantação.
+- [Código principal, serviços e infraestrutura](apresentacao-itau/)
+- [Visão geral do Claude Code](apresentacao-itau/docs/visao-da-solucao.md)
+- [Como executar no Mac / Docker / LocalStack](apresentacao-itau/COMO-RODAR.md)
+- [Diagramas da solução](apresentacao-itau/docs/diagramas/)
+- [ADRs do case](apresentacao-itau/docs/adr/)
+- [Histórico de auditoria](docs/auditoria/)
 
-> **Atenção:** este README é o índice de trabalho. A transferência completa dos arquivos do ZIP para este repositório será marcada explicitamente somente após verificação de contagem e hashes. Não considerar esta página prova de que o código foi importado.
+### Teste rápido sem AWS
+
+```bash
+git clone https://github.com/lucianofalls/case-aws-finance.git
+cd case-aws-finance/apresentacao-itau
+python3 local/verificar-estatico.py
+```
+
+Para o teste completo, siga `COMO-RODAR.md`. **`local/subir.sh` aplica Terraform apenas no LocalStack configurado no ambiente local; não execute o diretório `ambientes/prod` sem revisão de segurança/custos.**
+
+## Principais pendências
+
+1. Executar Maven, Terraform validate/plan e Docker/LocalStack E2E na máquina do usuário.
+2. Validar em execução a compensação de operação entre dois commits independentes.
+3. Fechar o desvio literal do evento `TransacaoAutorizada` enviado ao Kinesis, quando o PDF mostra EventBridge, e demonstrar o papel SNS/SQS no fan-out de negócio.
+4. Provar recuperação acima da retenção de 24h do DynamoDB Streams.
+5. Dimensionar e medir 5.000 TPS de pico e confirmar retenção regulatória.
+
+## Regras de segurança do trabalho
+
+- **Nunca ativar GitHub Actions** sem solicitação explícita.
+- **Nunca executar `terraform apply` em AWS**, criar recursos ou gerar custos sem autorização.
+- Reportar separadamente testes realizados e somente previstos.
+- Preservar o commit original para comparação com as alterações de auditoria.
