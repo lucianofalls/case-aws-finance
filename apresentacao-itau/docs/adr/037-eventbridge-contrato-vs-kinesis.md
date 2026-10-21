@@ -13,6 +13,7 @@ O item **2.4** descreve explicitamente **TransacaoAutorizada (v1) — publicado 
 - Fatos transacionais de Autorização são persistidos em DynamoDB com um Outbox embutido e, após o commit, um relay Lambda publica em **Kinesis Data Streams**.
 - Contabilização usa KCL com Inbox/lançamentos PostgreSQL; antifraude e notificações têm consumidores stub; Firehose/S3 preserva auditoria.
 - **EventBridge** é utilizado para eventos de Limites e integração com Core Banking ACL.
+- **Amazon SNS** está definido para alarmes operacionais; o fan-out de negócio de notificações é realizado hoje por consumidor Kinesis stub, não por uma topologia SNS→SQS de negócio.
 - O sistema **não demonstra TransacaoAutorizada v1 no EventBridge**, em divergência literal com o exemplo do item 2.4.
 
 ## Decisões e alternativas
@@ -22,9 +23,10 @@ O item **2.4** descreve explicitamente **TransacaoAutorizada (v1) — publicado 
 Adicionar, após o Kinesis, uma ponte de publicação no EventBridge para o CloudEvent `TransacaoAutorizada`, preservando o mesmo `event_id`, `correlation_id`, schema versionado e entrega at-least-once. A ponte deve:
 1. Fazer fan-out para regras EventBridge/SQS com fonte e tipo versionados.
 2. Usar leitura do stream com checkpoint somente depois de confirmação de `PutEvents`.
-3. Tratar `FailedEntryCount`, limite regional/da conta, retry/backoff, duplicidade, DLQ e replay durável.
-4. Solicitar e validar **quotas EventBridge compatíveis com picos de 5.000 TPS** e calcular o custo do fan-out; nenhuma quota foi alterada no código.
-5. Não introduzir *dual write* na requisição síncrona de autorização.
+3. Criar, se exigido na defesa, roteamento SNS→SQS de notificações de negócio, com policy de tópico/fila, DLQ e consumidor idempotente.
+4. Tratar `FailedEntryCount`, limite regional/da conta, retry/backoff, duplicidade, DLQ e replay durável.
+5. Solicitar e validar **quotas EventBridge compatíveis com picos de 5.000 TPS** e calcular o custo do fan-out; nenhuma quota foi alterada no código.
+6. Não introduzir *dual write* na requisição síncrona de autorização.
 
 **Alternativa B — Kinesis como caminho transacional e EventBridge só para integração:**
 
