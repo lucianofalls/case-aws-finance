@@ -14,7 +14,7 @@ x-aws-local: &aws-local
 
 services:
   localstack:
-    image: localstack/localstack:4.0
+    image: ${LOCALSTACK_IMAGE:-localstack/localstack:4.0}
     ports:
       - "127.0.0.1:4566:4566"
     environment:
