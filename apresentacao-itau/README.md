@@ -1,3 +1,8 @@
+> **ARQUITETURA ATUAL (22/10/2026): EKS Auto Mode + RDS PostgreSQL Multi-AZ.**
+> A descrição anterior de **ECS Fargate e Aurora** neste documento e nos PNGs originais é **histórica**, não é a topologia de produção vigente.
+> Para a decisão atual use [ADR-042](docs/adr/042-eks-automode-rds-postgres.md), [visão EKS/RDS](docs/visao-eks-rds.md) e [status de implementação](docs/STATUS-EKS-RDS.md).
+> O ambiente local permanece Docker Compose + PostgreSQL em container + LocalStack. Terraform de produção não foi aplicado nem validado.
+
 # Plataforma de Limites e Autorização de Transações — Itaú POD99
 
 Solução do desafio técnico de **Arquiteto de Aplicação** (Nova Plataforma de Finanças, AWS).
