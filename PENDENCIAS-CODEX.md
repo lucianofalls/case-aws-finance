@@ -127,3 +127,9 @@ diff desde `ad35be77` inspecionado (115 arquivos), marco preservado.
 - Commit desta correção: registrado abaixo após criação do commit; sem push.
 
 Commit das correções e evidências da Fase 0: `d72c1075702929e226115867196b3607b8f445ba` (local, sem push).
+
+## Revisão de entrega com PDF — 22/10/2026
+
+PDF original localizado em Downloads e lido integralmente (5 páginas). Parecer: **ainda não pronto para entrega final**. Demonstração Docker é aceita pelo §5; Aurora não é obrigatório. Revisão estática/documental, sem novos testes de runtime. Ver [relatório](apresentacao-itau/docs/REVISAO-PRONTIDAO-ENTREGA.md) para evidências, seis pilares, prioridades e critérios de liberação. Fase 0 permanece parcial.
+
+Os commits `d72c107` e `e2563e0` foram enviados a origin/main após o registro anterior; a anotação “sem push” acima é histórica.
