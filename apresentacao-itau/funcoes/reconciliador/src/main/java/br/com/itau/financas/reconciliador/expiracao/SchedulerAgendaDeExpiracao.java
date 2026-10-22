@@ -4,6 +4,10 @@ import software.amazon.awssdk.services.scheduler.SchedulerClient;
 import software.amazon.awssdk.services.scheduler.model.ActionAfterCompletion;
 import software.amazon.awssdk.services.scheduler.model.ConflictException;
 import software.amazon.awssdk.services.scheduler.model.FlexibleTimeWindowMode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import java.io.UncheckedIOException;
+import java.util.Map;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -29,14 +33,17 @@ public final class SchedulerAgendaDeExpiracao implements AgendaDeExpiracao {
     private final String filaArn;
     private final String papelArn;
     private final Clock relogio;
+    private final String filaFalhasArn;
+    private static final ObjectMapper JSON = new ObjectMapper();
 
     public SchedulerAgendaDeExpiracao(SchedulerClient scheduler, String grupo, String filaArn, String papelArn,
-                                      Clock relogio) {
+                                      String filaFalhasArn, Clock relogio) {
         this.scheduler = scheduler;
         this.grupo = grupo;
         this.filaArn = filaArn;
         this.papelArn = papelArn;
         this.relogio = relogio;
+        this.filaFalhasArn = filaFalhasArn;
     }
 
     @Override
@@ -50,9 +57,20 @@ public final class SchedulerAgendaDeExpiracao implements AgendaDeExpiracao {
                     .flexibleTimeWindow(janela -> janela.mode(FlexibleTimeWindowMode.OFF))
                     .actionAfterCompletion(ActionAfterCompletion.DELETE)
                     .target(alvo -> alvo.arn(filaArn).roleArn(papelArn)
-                            .input("{\"id_autorizacao\":\"" + idReserva + "\",\"id_contrato\":\"" + idContrato + "\"}")));
+                            .input(payload(idReserva, idContrato))
+                            // Retry do target Scheduler é independente do redrive SQS após entrega.
+                            .retryPolicy(p -> p.maximumRetryAttempts(185).maximumEventAgeInSeconds(86400))
+                            .deadLetterConfig(dlq -> dlq.arn(filaFalhasArn))));
         } catch (ConflictException jaAgendada) {
             // reentrega do evento: a expiração desta reserva já está agendada
+        }
+    }
+
+    static String payload(String idReserva, String idContrato) {
+        try {
+            return JSON.writeValueAsString(Map.of("id_autorizacao", idReserva, "id_contrato", idContrato));
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("identificadores inválidos para o Scheduler", e);
         }
     }
 

@@ -47,12 +47,14 @@ class AgendadorDeExpiracaoHandlerTest {
 
     @Test
     void expiracaoNoPassadoViraUmMinutoDepoisDeAgora() {
-        var agenda = new SchedulerAgendaDeExpiracao(null, "reservas", "arn:fila", "arn:papel",
+        var agenda = new SchedulerAgendaDeExpiracao(null, "reservas", "arn:fila", "arn:papel", "arn:dlq",
                 Clock.fixed(Instant.parse("2026-10-28T10:00:00Z"), ZoneOffset.UTC));
 
         assertThat(agenda.expressao(Instant.parse("2026-10-27T12:00:00Z"))).isEqualTo("at(2026-10-28T10:01:00)");
         assertThat(agenda.expressao(Instant.parse("2026-11-03T09:30:00Z"))).isEqualTo("at(2026-11-03T09:30:00)");
         assertThat(SchedulerAgendaDeExpiracao.nome("abc")).isEqualTo("reserva-abc");
+        assertThat(SchedulerAgendaDeExpiracao.payload("id-a\"b", "contrato-c"))
+                .contains("id-a\\\"b", "contrato-c");
     }
 
     private static String evento(String tipoOperacao, String id, String extra) {

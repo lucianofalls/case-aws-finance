@@ -108,6 +108,7 @@ locals {
         GRUPO_AGENDAMENTOS          = try(var.expiracao.grupo, "")
         FILA_RESERVAS_A_EXPIRAR_ARN = try(var.expiracao.fila_arn, "")
         PAPEL_AGENDADOR_ARN         = try(var.expiracao.papel_arn, "")
+        FILA_FALHAS_EXPIRACAO_ARN   = try(var.expiracao.dlq_arn, "")
       }
       politica = [
         { acoes = ["kinesis:DescribeStream", "kinesis:DescribeStreamSummary", "kinesis:GetRecords", "kinesis:GetShardIterator", "kinesis:ListShards", "kinesis:ListStreams"], recursos = [var.stream_transacoes.arn] },

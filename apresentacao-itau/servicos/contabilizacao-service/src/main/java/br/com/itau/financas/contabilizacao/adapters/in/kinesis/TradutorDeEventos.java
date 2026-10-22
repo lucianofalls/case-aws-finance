@@ -30,7 +30,11 @@ public final class TradutorDeEventos {
                 yield Optional.of(fato(evento, FatoContabil.Tipo.ESTORNO_REALIZADO, p.idAutorizacao(),
                         p.idContrato(), "ESTORNO", p.valor(), p.moeda()));
             }
-            default -> Optional.empty();
+            // Tipo publicado conhecido, explicitamente sem efeito contábil.
+            case TiposDeEvento.TRANSACAO_RECUSADA -> Optional.empty();
+            // Versões/tipos novos não podem ser descartados silenciosamente: o KCL envia à quarentena.
+            default -> throw new IllegalArgumentException("tipo CloudEvent não suportado pela Contabilização: "
+                    + evento.type());
         };
     }
 

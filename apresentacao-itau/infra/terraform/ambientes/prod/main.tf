@@ -151,6 +151,7 @@ module "funcoes" {
     grupo     = module.eventos.expiracao_de_reservas.grupo
     papel_arn = module.eventos.expiracao_de_reservas.papel_arn
     fila_arn  = module.eventos.expiracao_de_reservas.fila_arn
+    dlq_arn   = module.eventos.expiracao_de_reservas.dlq_arn
   }
   conciliacao = {
     bucket_nome = module.conciliacao.bucket.nome

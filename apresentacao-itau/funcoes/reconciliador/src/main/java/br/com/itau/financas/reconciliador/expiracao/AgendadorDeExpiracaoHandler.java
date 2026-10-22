@@ -30,7 +30,8 @@ public final class AgendadorDeExpiracaoHandler implements RequestHandler<Kinesis
         static final AgendaDeExpiracao AGENDA = new SchedulerAgendaDeExpiracao(
                 SchedulerClient.builder().httpClientBuilder(UrlConnectionHttpClient.builder()).build(),
                 System.getenv("GRUPO_AGENDAMENTOS"), System.getenv("FILA_RESERVAS_A_EXPIRAR_ARN"),
-                System.getenv("PAPEL_AGENDADOR_ARN"), Clock.systemUTC());
+                System.getenv("PAPEL_AGENDADOR_ARN"), System.getenv("FILA_FALHAS_EXPIRACAO_ARN"),
+                Clock.systemUTC());
     }
 
     private final AgendaDeExpiracao agenda;

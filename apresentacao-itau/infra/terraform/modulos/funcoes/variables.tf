@@ -79,6 +79,6 @@ variable "conciliacao" {
 
 variable "expiracao" {
   description = "Expiração de reservas (ADR 035): grupo do Scheduler, papel e fila. null desliga o agendador (local)."
-  type        = object({ grupo = string, papel_arn = string, fila_arn = string })
+  type        = object({ grupo = string, papel_arn = string, fila_arn = string, dlq_arn = string })
   default     = null
 }

@@ -363,6 +363,15 @@ resource "aws_glue_schema" "evento" {
 
 # ---- Expiração de reservas (BIAN AmountBlock com data de expiração; ADR 035) ----------------------------
 # Um agendamento único por reserva (criado pela Lambda agendador-expiracao) entrega o id na fila reservas-a-expirar.
+# Dead-letter do PRÓPRIO Scheduler: falha em entregar o alvo, antes da mensagem entrar na SQS principal.
+# Distinta da DLQ do consumidor reservas-a-expirar, que cobre falhas APÓS entrega.
+resource "aws_sqs_queue" "scheduler_expiracao_dlq" {
+  count                     = var.habilitar_expiracao_agendada ? 1 : 0
+  name                      = "${var.prefixo}scheduler-expiracao-dlq"
+  message_retention_seconds = 1209600
+  sqs_managed_sse_enabled   = true
+}
+
 resource "aws_scheduler_schedule_group" "reservas" {
   count = var.habilitar_expiracao_agendada ? 1 : 0
   name  = "${var.prefixo}reservas"
@@ -382,6 +391,9 @@ resource "aws_iam_role_policy" "agendador_reservas" {
   role  = aws_iam_role.agendador_reservas[0].id
   policy = jsonencode({
     Version   = "2012-10-17"
-    Statement = [{ Effect = "Allow", Action = ["sqs:SendMessage"], Resource = aws_sqs_queue.fila["reservas-a-expirar"].arn }]
+    Statement = [{ Effect = "Allow", Action = ["sqs:SendMessage"], Resource = [
+      aws_sqs_queue.fila["reservas-a-expirar"].arn,
+      aws_sqs_queue.scheduler_expiracao_dlq[0].arn
+    ] }]
   })
 }

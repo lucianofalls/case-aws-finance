@@ -43,6 +43,19 @@ class ReprocessadorDeQuarentenaTest {
         assertThat(fila.removidas).containsExactly("r1");
     }
 
+    @Test
+    void tipoDesconhecidoPermaneceNaFilaParaDlq() {
+        FilaFalsa fila = new FilaFalsa(List.of(Message.builder().messageId("desconhecido")
+                .receiptHandle("rx").body("{\"specversion\":\"1.0\",\"type\":\"br.com.itau.financas.futuro.v2\"}").build()));
+        ContabilizarFatoService contabilizar = new ContabilizarFatoService(new PlanoDeContas(),
+                (id, registro) -> { throw new AssertionError("não deve contabilizar tipo desconhecido"); });
+
+        int resolvidas = new ReprocessadorDeQuarentena(fila, "url", new TradutorDeEventos(), contabilizar).reprocessar();
+
+        assertThat(resolvidas).isZero();
+        assertThat(fila.removidas).isEmpty();
+    }
+
     private static String debito() {
         return CodecDeEventos.paraJson(CodecDeEventos.novo(TiposDeEvento.FONTE_AUTORIZACAO,
                 TiposDeEvento.TRANSACAO_AUTORIZADA, Instant.parse("2026-10-21T12:00:00Z"), "contrato/CTR-1",

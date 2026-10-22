@@ -19,10 +19,12 @@ output "filas" {
 output "dlqs" {
   value = merge(
     { for nome, fila in aws_sqs_queue.dlq : nome => fila.arn },
+    (var.habilitar_expiracao_agendada ? { scheduler-expiracao-dlq = aws_sqs_queue.scheduler_expiracao_dlq[0].arn } : {}),
     {
       eventbridge               = aws_sqs_queue.dlq_eventbridge.arn
       contabilizacao-quarentena = aws_sqs_queue.quarentena_contabilizacao.arn
       outbox-relay-falhas       = aws_sqs_queue.falhas_relay.arn
+
     }
   )
 }
@@ -30,11 +32,13 @@ output "dlqs" {
 output "dlq_nomes" {
   value = merge(
     { for nome, fila in aws_sqs_queue.dlq : nome => fila.name },
+    (var.habilitar_expiracao_agendada ? { scheduler-expiracao-dlq = aws_sqs_queue.scheduler_expiracao_dlq[0].name } : {}),
     {
       eventbridge                   = aws_sqs_queue.dlq_eventbridge.name
       contabilizacao-quarentena     = aws_sqs_queue.quarentena_contabilizacao.name
       contabilizacao-quarentena-dlq = aws_sqs_queue.quarentena_contabilizacao_dlq.name
       outbox-relay-falhas           = aws_sqs_queue.falhas_relay.name
+
     }
   )
 }
@@ -59,5 +63,6 @@ output "expiracao_de_reservas" {
     papel_arn = var.habilitar_expiracao_agendada ? aws_iam_role.agendador_reservas[0].arn : null
     fila_arn  = aws_sqs_queue.fila["reservas-a-expirar"].arn
     fila_url  = aws_sqs_queue.fila["reservas-a-expirar"].url
+    dlq_arn   = var.habilitar_expiracao_agendada ? aws_sqs_queue.scheduler_expiracao_dlq[0].arn : null
   }
 }

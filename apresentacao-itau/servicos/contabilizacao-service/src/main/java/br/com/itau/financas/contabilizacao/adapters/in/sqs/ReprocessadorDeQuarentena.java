@@ -42,6 +42,8 @@ public final class ReprocessadorDeQuarentena {
         for (Message mensagem : sqs.receiveMessage(pedido -> pedido.queueUrl(urlDaFila)
                 .maxNumberOfMessages(LOTE).waitTimeSeconds(1)).messages()) {
             try {
+                // Apenas tipos conscientemente ignoráveis retornam vazio (ex.: TransacaoRecusada).
+                // Tipo desconhecido ou schema inválido lança exceção, permanece na fila e vai à DLQ.
                 tradutor.traduzir(mensagem.body()).ifPresent(contabilizar::contabilizar);
                 sqs.deleteMessage(pedido -> pedido.queueUrl(urlDaFila).receiptHandle(mensagem.receiptHandle()));
                 resolvidas++;
