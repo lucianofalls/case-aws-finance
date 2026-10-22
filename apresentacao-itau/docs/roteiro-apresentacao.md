@@ -1,3 +1,5 @@
+> **ROTEIRO ORIGINAL DESATUALIZADO:** as menções a ECS Fargate e Aurora são históricas. Para defender a arquitetura escolhida use a [visão EKS/RDS](visao-eks-rds.md), a [ADR-042](adr/042-eks-automode-rds-postgres.md) e o [checklist de validação](STATUS-EKS-RDS.md). Este roteiro não deve ser apresentado sem revisão.
+
 # Roteiro da apresentação (20 minutos)
 
 Apoio visual: [diagramas/poster-solucao.png](diagramas/poster-solucao.png) (a solução em uma página) e
