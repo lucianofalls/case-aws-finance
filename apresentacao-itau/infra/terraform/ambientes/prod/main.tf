@@ -7,7 +7,7 @@ terraform {
     }
   }
   # Estado remoto (criar o bucket antes
- lock nativo do S3):
+  # Lock nativo do S3:
   # backend "s3" {
   #   bucket       = "itau-financas-terraform-state"
   #   key          = "plataforma-limites-autorizacao/prod.tfstate"
@@ -70,7 +70,7 @@ module "dados" {
 
 module "eventos" {
   # ADR-040: manter OFF até quota EventBridge/latência/custos validados
- não altera o caminho transacional.
+  # Não altera o caminho transacional.
   habilitar_eventbridge_transacoes = var.habilitar_eventbridge_transacoes
   source            = "../../modulos/eventos"
   kms_key_arn       = aws_kms_key.financas.arn

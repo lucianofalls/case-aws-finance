@@ -48,7 +48,7 @@ resource "aws_eks_cluster" "this" {
   access_config {
     authentication_mode = "API"
     bootstrap_cluster_creator_admin_permissions = true # bootstrap
- depois migrar para access entries sob IAM corporativo
+    # Migrar bootstrap admin para EKS access entries de IAM corporativo.
   }
   vpc_config {
     subnet_ids = var.subnets_privadas
@@ -72,7 +72,7 @@ resource "aws_eks_cluster" "this" {
 }
 
 # ECR com imagens imutáveis
- pipeline manual de publish, sem GitHub Actions.
+# Publicação de imagens por pipeline manual, sem GitHub Actions.
 resource "aws_ecr_repository" "servico" {
   for_each = local.servicos
   name = "${var.prefixo}${each.key}-service"
