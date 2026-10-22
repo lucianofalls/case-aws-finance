@@ -1,3 +1,5 @@
+> **PLANILHA HISTÓRICA — NÃO USAR COMO TCO ATUAL:** os US$ 35 mil/mês abaixo foram estimados para **ECS Fargate e Aurora**. A plataforma-alvo agora usa **EKS Auto Mode e RDS PostgreSQL Multi-AZ**, além de consulta de entitlement e transações de reserva individuais. Consulte [custos EKS/RDS](custos/custos-eks-rds.md). O orçamento dessa nova arquitetura ainda não está fechado.
+
 # Custos
 
 Modelo reproduzível: [`custos/calcular_custos.py`](custos/calcular_custos.py). Preços de lista **sa-east-1**
