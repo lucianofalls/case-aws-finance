@@ -7,14 +7,14 @@ fontes oficiais consultadas, está em `../../../docs/MEMORIA.md` §5.
 |---|---|---|---|
 | 000 | Well-Architected (6 pilares + FSI Lens) como base; preferir serviço gerenciado | todos | Aceita |
 | 001 | Bounded contexts: Autorização, Limites, Contabilização, Core Banking ACL | Op. Excelência | Aceita |
-| 002 | Fargate no caminho síncrono; EKS descartado | Performance | Aceita |
+| 002 | Fargate no caminho síncrono (decisão histórica) | Performance | **Substituída pela 042** |
 | 003 | DynamoDB para limites com escrita condicional | Confiabilidade | Aceita |
 | 004 | Outbox com EventBridge Pipes | Confiabilidade | **Substituída pela 026** |
 | 005 | Idempotência com item próprio + TTL | Confiabilidade | **Substituída pela 027** |
 | 006 | EventBridge + SQS FIFO para todo o fan-out | Confiabilidade | **Substituída pela 028** |
 | 007 | API Gateway REST + Cognito + WAF + usage plans | Segurança | Aceita |
-| 008 | Aurora PostgreSQL na Contabilização | Performance | Aceita (I/O-Optimized, ver 030) |
-| 009 | Sem service mesh; ECS Service Connect (App Mesh descontinuado em 30/09/2026) | Op. Excelência | Aceita |
+| 008 | Aurora PostgreSQL (decisão histórica) | Performance | **Substituída pela 042** |
+| 009 | ECS Service Connect (decisão histórica) | Op. Excelência | **Substituída pela 042** |
 | 010 | Multi-AZ ativo; DR regional ativo-passivo (MRSC indisponível em sa-east-1) | Confiabilidade | Aceita |
 | 011 | BIAN v12/v13 validado como referência | Op. Excelência | Aceita |
 | 012 | Mini-saga com PENDENTE + reconciliador por índice | Confiabilidade | **Substituída pela 027** |
@@ -25,19 +25,22 @@ fontes oficiais consultadas, está em `../../../docs/MEMORIA.md` §5.
 | 020 | IaC com AWS CDK | Op. Excelência | **Substituída pela 029** |
 | 021 | Semântica de `tipo_operacao` e limite reduzido abaixo do utilizado | — | Aceita |
 | 022 | Lambda avaliado e mantido fora do caminho síncrono | Performance, Custo | Aceita |
-| 023 | Compute híbrido com regra explícita; contabilização em Fargate | Custo | Aceita |
+| 023 | Contabilização em Fargate (decisão histórica) | Custo | **Substituída pela 042** |
 | 024 | Concorrência sem lock distribuído (catálogo C1–C11) | Confiabilidade | Aceita |
 | 025 | Único acoplamento síncrono é autorização → limites | Confiabilidade | Aceita |
 | **026** | Outbox embutido + relay Lambda | Custo, Confiabilidade | Aceita |
 | **027** | id determinístico, sem PENDENTE, verificação posterior com janelas disjuntas | Custo, Confiabilidade | Aceita |
 | **028** | Kinesis no fluxo transacional, EventBridge na integração | Custo, Confiabilidade | Aceita |
 | **029** | Terraform | Op. Excelência | Aceita |
-| **030** | Aurora I/O-Optimized e TTL de 35 dias no DynamoDB | Custo | Aceita |
+| **030** | Aurora I/O-Optimized (histórico) e TTL DynamoDB 35 dias | Custo | **Aurora substituída pela 042; TTL mantido** |
 | **031** | API Gateway criado por importação do OpenAPI; oasdiff barra breaking change | Op. Excelência, Confiabilidade | Aceita |
 | **032–035** | Agendamento de verificação, reconciliação e expiração (ver implementação e `docs/MEMORIA.md`) | Confiabilidade | Existentes no ZIP, catalogação completa pendente |
 | **036** | [Hardening da compensação e conciliação](036-hardening-compensacao.md) | Confiabilidade, Segurança | Implementação revisada; testes integrais pendentes |
 | **037** | [Compatibilidade EventBridge vs Kinesis](037-eventbridge-contrato-vs-kinesis.md) | Confiabilidade, Custo, Performance | Gap aberto |
 | **038** | [Estratégia de testes locais e restrição de exposição](038-validacao-local-sem-actions.md) | Segurança, Operações | Estratégia adotada; E2E pendente |
+| **042** | [EKS Auto Mode + RDS PostgreSQL Multi-AZ](042-eks-automode-rds-postgres.md) | Todos, especialmente segurança e custo | Declarativa; validação pendente |
+| **043** | [Entitlement cliente/conta/contrato](043-entitlement-cliente-contrato.md) | Segurança | Implementação parcial; fonte corporativa pendente |
+| **044** | [Reserva individual atômica](044-posicao-bloqueio-por-reserva.md) | Confiabilidade | Código atualizado; testes de integração pendentes |
 | **039** | [DLQ de Scheduler e quarentena fail-closed](039-protecao-agendamento-quarentena.md) | Confiabilidade, Segurança | Implementado; E2E pendente |
 | **040** | [Ponte opcional Kinesis→EventBridge + SNS/SQS](040-ponte-kinesis-eventbridge-opcional.md) | Performance, Custo, Confiabilidade | OFF por padrão; quota/plan pendente |
 | **041** | [Replay após TTL e evidências](041-replay-ttl-evidencias.md) | Confiabilidade, Operações | Manual; automação histórica pendente |
