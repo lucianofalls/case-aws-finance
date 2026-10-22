@@ -1,10 +1,9 @@
 # Como rodar a solução numa máquina nova
 
 Guia para subir a plataforma inteira **localmente**, sem conta AWS e sem pagar nada. Os serviços AWS são simulados
-pelo **LocalStack** (edição Community 4.0, sem cadastro e sem token) e criados pelo **mesmo Terraform** da produção.
-
-**Tempo:** a primeira execução leva de 10 a 20 minutos, porque baixa as dependências Maven, as imagens Docker e o
-runtime Java das Lambdas. As seguintes levam de 2 a 4 minutos.
+pelo **LocalStack** (imagem padrão legada 4.0 para compatibilidade local) e provisionados
+com o **ambiente Terraform local**, separado de produção. Imagens atuais podem exigir token
+LocalStack e ter disponibilidade de serviços diferente; consulte as condições da sua licença.
 
 ---
 
@@ -85,7 +84,7 @@ O script faz, em ordem:
 | Etapa | O que acontece | Se falhar |
 |---|---|---|
 | 0/5 | Confere Docker (rodando), Java 21, Maven, Terraform e curl | mostra exatamente o que falta |
-| 1/5 | `mvn install`: compila os 9 módulos e roda **80 testes** | um teste falhou: veja a saída do Maven |
+| 1/5 | `mvn install`: compila os módulos e executa testes disponíveis | se falhar, confira saída Maven e relatório Surefire; não presumir contagem fixa |
 | 2/5 | Copia os JARs das Lambdas para `artefatos/` | — |
 | 3/5 | Sobe LocalStack, Postgres e Jaeger e espera ficarem saudáveis | porta ocupada ou Docker sem memória |
 | 4/5 | `terraform apply` em `infra/terraform/ambientes/local`, **só contra o LocalStack** | veja a seção 5 |
@@ -114,7 +113,8 @@ bash local/demo.sh
 | 6 | Payload inválido | `HTTP 422` |
 | 7 | Limites fora do ar | `HTTP 503` com `Retry-After` (circuit breaker) |
 | 8 | Evento no Kinesis → Contabilização | linhas `D`/`C` (partidas dobradas) no Postgres |
-| 9 | Rastreio | abra http://localhost:16686 e procure por `autorizacao-service` |
+| 9 | Ciclo de reserva | RESERVA→CAPTURA parcial→LIBERACAO parcial→expiração simulada por SQS; verificar saldo bloqueado zero |
+| 10 | Rastreio | abra http://localhost:16686 e procure por `autorizacao-service` |
 
 ### 3.4 Desligar
 
@@ -134,7 +134,7 @@ Isso remove os containers, os dados e o estado local do Terraform. Na próxima v
 | `cd infra/terraform/modulos/openapi-api-gateway && terraform init -backend=false && terraform test` | a tradução do contrato OpenAPI para a definição do API Gateway (4 cenários) |
 | `terraform -chdir=infra/terraform/ambientes/prod init -backend=false && terraform -chdir=infra/terraform/ambientes/prod validate` | o Terraform de produção é válido (não cria nada) |
 | `bash contracts/verificar-contrato-api.sh <base.yaml> <novo.yaml>` | breaking change no contrato da API (usa `oasdiff`, pelo binário ou pelo Docker) |
-| `k6 run -e API=... tests/k6/autorizacao.js` | teste de carga **para a AWS** (rampa até 5.000 TPS, p99 < 100 ms). Não rode localmente: os contratos do cenário não existem e a máquina não sustenta a carga. Renomeie o arquivo antes (ver 3.1) |
+| `k6 run -e API=... tests/k6/autorizacao.js` | teste de carga **para a AWS** (rampa até 5.000 TPS, p99 < 100 ms). Não rode como prova de 5.000 TPS no Mac: o cenário exige infraestrutura dimensionada e contratos de teste; o arquivo já tem extensão `.js` |
 
 ---
 
@@ -149,7 +149,7 @@ Isso remove os containers, os dados e o estado local do Terraform. Na próxima v
 | Terraform falha com "already exists" ou "not found" | o LocalStack foi reiniciado e o estado do Terraform ficou velho | `bash local/derrubar.sh` e depois `bash local/subir.sh` |
 | Passo 0 do demo não mostra a posição | primeira execução da Lambda Java (baixa a imagem do runtime) | rode o `demo.sh` de novo; veja `docker compose -f local/docker-compose.yml logs localstack` |
 | Passo 8 sem linhas | a Contabilização ainda está assumindo o shard do Kinesis | espere 1 minuto e rode `docker compose -f local/docker-compose.yml logs contabilizacao` |
-| LocalStack pede `LOCALSTACK_AUTH_TOKEN` | a imagem foi trocada por uma versão nova (a partir de 2026 o token é obrigatório) | mantenha `localstack/localstack:4.0` no `local/docker-compose.yml` |
+| LocalStack pede `LOCALSTACK_AUTH_TOKEN` | a imagem escolhida exige autenticação | obtenha token na conta LocalStack, exporte `LOCALSTACK_AUTH_TOKEN` e configure `LOCALSTACK_IMAGE` (imagem suportada no seu plano); não compartilhe o token |
 | Maven ou Docker com erro de certificado (`PKIX`, `x509`) | rede corporativa com inspeção TLS | rode numa rede sem proxy, ou importe a CA corporativa no Java e no Docker |
 | Mac com Apple Silicon (M1–M4) | — | funciona: as imagens são multi-arquitetura e as Lambdas rodam na arquitetura da máquina (`LAMBDA_IGNORE_ARCHITECTURE`) |
 
@@ -168,3 +168,65 @@ Isso remove os containers, os dados e o estado local do Terraform. Na próxima v
 | `docs/` | visão da solução, arquitetura, domínio, eventos, concorrência, custos, ADRs e diagramas |
 
 Para entender a solução, comece por `docs/visao-da-solucao.md` e pelo pôster `docs/diagramas/poster-solucao.png`.
+
+---
+
+## 7. Correções C01–C12 e testes adicionais (22/10/2026)
+
+**Somente depois de terminar os ajustes no repositório, execute estes testes no Mac.**
+O assistente não executou Maven, Terraform ou Docker na revisão; todas as etapas abaixo são
+**procedimentos**, não resultados previamente aprovados.
+
+```bash
+# Verificações estáticas sem acessar AWS
+python3 local/verificar-estatico.py
+python3 docs/custos/sensibilidade.py
+mvn clean verify
+mvn verify -Pintegracao
+
+# Pré-validação Terraform. Não faz apply em AWS.
+terraform -chdir=infra/terraform/ambientes/prod init -backend=false
+terraform -chdir=infra/terraform/ambientes/prod validate
+
+# Inicialização completa LOCAL (inclui terraform apply apenas no LocalStack!)
+bash local/subir.sh
+bash local/demo.sh
+# Alternativamente, executar apenas o ciclo de reserva isolado:
+bash local/demo-ciclo-reserva.sh
+bash local/derrubar.sh
+```
+
+**Ciclo AmountBlock (RESERVA/CAPTURA/LIBERACAO):** o teste `demo-ciclo-reserva.sh`
+publica um registro de contrato no core simulado, faz os três comandos via API,
+e envia diretamente à SQS `reservas-a-expirar` uma mensagem **que simula**
+a entrega do EventBridge Scheduler. **Não testa Scheduler AWS real.**
+Se `demo.sh` parar no ciclo, execute o comando isolado e examine logs.
+
+**Recuperação após TTL:** consulte [runbook](docs/runbooks/replay-evento-apos-ttl.md).
+O script `scripts/recuperar-evento-trilha.py` faz dry-run sem publicar;
+somente `--enviar` faz PutRecord e requer trilha original/ID e autorização de operador.
+
+**LocalStack configurável:**
+
+```bash
+# Padrão 4.0 do ZIP (compatibilidade legada); pode não suportar recursos atuais.
+export LOCALSTACK_IMAGE=localstack/localstack:4.0
+
+# Para imagem atual, cheque a matriz de serviços do seu plano e use token.
+# export LOCALSTACK_IMAGE=localstack/localstack:<VERSAO_VALIDADA>
+# export LOCALSTACK_AUTH_TOKEN=<TOKEN_PRIVADO>
+docker compose -f local/docker-compose.yml config --quiet
+```
+
+Os recursos do Compose estão expostos somente em **127.0.0.1**, não na rede LAN.
+Nunca execute `terraform apply` no diretório `infra/terraform/ambientes/prod`
+sem autorização explícita, revisão de custos/quotas e credenciais controladas.
+
+**Ponte EventBridge para transações:** disponível via feature flag
+`habilitar_eventbridge_transacoes` no Terraform de produção, **OFF por padrão**.
+Não integra o cenário local sem licenciamento/provisionamento e validação própria.
+
+**Novas evidências pendentes:** DLQ de entrega do Scheduler, DLQ de processamento
+SQS, compensação depois de timeout, replay de eventos acima de 24h, schema de
+CAPTURA/LIBERACAO e event bridge de negócio. Veja
+[STATUS-FASES.md](docs/STATUS-FASES.md).
