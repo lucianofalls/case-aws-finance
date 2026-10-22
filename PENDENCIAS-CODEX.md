@@ -172,7 +172,7 @@ não muda a arquitetura e não declara concluídas as Fases 2–4.
 
 ## Subfase local — execução reproduzível (22/10/2026)
 
-Correção de contrato: `50df502`. Preparação local priorizada por instrução do usuário.
+Correção de contrato consolidada no commit publicado `25f826f`. Preparação local priorizada por instrução do usuário.
 `local/executar-tudo.sh` coordena build/setup/aceite e guarda log local; `demo.sh` e
 `demo-ciclo-reserva.sh` usam verificador Python com falha explícita. Conferidos: status
 HTTP, vínculo canal/contrato/conta, revogação, replay, concorrência, saldo individual,
@@ -207,4 +207,29 @@ Sem Docker/Maven/Terraform instalados neste host: não houve novo build Java,
 validate Terraform ou E2E. Scripts preparados para Docker Desktop no Mac.
 Arquivos adicionais: `local/{verificar-infra.py,test_verificar_infra.py,preflight.py,
 subir.sh,executar-tudo.sh}`, COMO-RODAR e ADR-046. Commit: consultar histórico
-`fix(local): prepara setup e barreira de prontidao LocalStack` para SHA final.
+`25f826f` (commit consolidado publicado da branch LocalStack).
+
+
+## Integração das branches — 22/10/2026
+
+A consulta `git ls-remote --heads origin` encontrou `main` (`052971f`) e
+`codex/localstack-readiness` (`25f826f82b4805540de07f5f60232f388009f047`).
+A branch contém um commit descendente da main; integrada por fast-forward, sem
+conflitos ou descarte de alterações. Foram revisados os 32 arquivos do commit:
+setup/aceite local, Compose, contratos HTTP, validação Java e documentação.
+O SHA intermediário `50df502` citado na documentação recebida não consta do
+histórico publicado; essas alterações estão consolidadas em `25f826f`.
+
+Validação independente do commit integrado: **142 testes unitários Java + 9 testes
+DynamoDB Local/Testcontainers, sem falhas/erros/ignorados**, seis testes Python,
+verificadores estáticos, preflight, Compose config, sintaxe Bash e Terraform fmt.
+Terraform 1.9.8: init local com backend desativado e lockfile readonly, seguido de
+validate, passaram. Evidência: `apresentacao-itau/docs/evidencias/integracao-branches-2026-10-22.txt`
+(caminho relativo à raiz do repositório).
+
+Esta revisão não executou o E2E completo nem apply/deploy AWS. Para o aceite no Mac:
+`cd apresentacao-itau && INTEGRACAO=1 bash local/executar-tudo.sh`.
+Pré-requisitos em COMO-RODAR; logs em local/evidencias (ignorados pelo Git).
+Permanecem os riscos de produção já registrados (identidade interna/TLS, integração
+corporativa, recuperação, capacidade/custos e operação EKS/RDS). A integração não
+encerra essas fases. Arquivos adicionais desta revisão: backlog, STATUS e evidência.

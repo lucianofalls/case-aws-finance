@@ -1,0 +1,32 @@
+Integração de branches — 2026-10-22
+Origem main: 052971fadc9d943d80589b8b33e18e2264b6b9e4
+Branch revisada: codex/localstack-readiness
+Commit integrado: 25f826f82b4805540de07f5f60232f388009f047
+Integração: git merge --ff-only; sem conflitos; 32 arquivos.
+
+Fontes extraídas com git archive 25f826f apresentacao-itau para
+/tmp/itau-branch-review; evita lentidão de leitura do workspace.
+
+JDK Temurin 21.0.13, Maven 3.9.9:
+mvn -B -ntp -Dmaven.repo.local=/tmp/itau-m2 clean verify -Pintegracao
+Exit 0; BUILD SUCCESS; 37.189 s.
+Surefire XML: 142 tests, 0 failures, 0 errors, 0 skipped.
+Failsafe XML: 9 tests, 0 failures, 0 errors, 0 skipped.
+Log completo local: /tmp/itau-merge-verify.log.
+
+python3 -m unittest discover -s local -p 'test_verificar*.py' -v
+6 testes, OK.
+python3 scripts/verificar-migracao-eks-rds.py: 11 controles OK.
+python3 local/verificar-estatico.py: OK.
+python3 local/preflight.py: OK com ferramentas temporárias no PATH.
+Compose config validado também pelo preflight (config --format json).
+bash -n local/subir.sh local/executar-tudo.sh local/demo.sh local/demo-ciclo-reserva.sh: exit 0.
+terraform -chdir=infra/terraform fmt -check -recursive: exit 0.
+Terraform 1.9.8 em infra/terraform/ambientes/local:
+init -backend=false -input=false -lockfile=readonly -no-color: exit 0.
+validate -no-color: exit 0, Success! The configuration is valid.
+Provider: hashicorp/aws 5.100.0, instalado com verificação do lockfile.
+Log completo local: /tmp/itau-merge-terraform.log.
+
+Nenhum workflow GitHub Actions no tree integrado. Nenhum apply, deploy ou
+provisionamento AWS executado. E2E completo permanece pendente no Mac.

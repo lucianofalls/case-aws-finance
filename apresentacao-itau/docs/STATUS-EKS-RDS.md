@@ -4,14 +4,12 @@
 
 ## Situação atual consolidada — revisão LocalStack de 22/10/2026
 
-- Revisão do contrato sobre `052971f`: commit `50df502`.
-- Build Java desta revisão: **142 testes, zero falhas/erros/ignorados**.
-- Verificadores estáticos EKS/RDS e local, e três testes do verificador financeiro: aprovados.
-- Roteiro LocalStack: implementado em `local/executar-tudo.sh`, com aceite automático.
-- **E2E Docker/LocalStack e Testcontainers desta revisão não executados** (Docker ausente no runtime).
-- Terraform local: fmt passou; init e providers lock concluíram, mas validate foi bloqueado
-  por divergência do checksum do cache do provider neste runtime. Lockfile versionado preservado;
-  nenhum hash ajustado manualmente. Validar novamente no Mac antes do apply local.
+- Branch `codex/localstack-readiness` integrada à main: `25f826f` sobre `052971f`.
+- Validação independente: **142 testes unitários Java + 9 IT, zero falhas/erros/ignorados**.
+- Seis testes Python, verificadores estáticos, preflight, Compose config e Bash: aprovados.
+- Terraform local: fmt, init -backend=false -lockfile=readonly e validate aprovados.
+- Roteiro LocalStack implementado em `local/executar-tudo.sh`, com aceite automático.
+- **E2E completo Docker/LocalStack ainda não executado nesta revisão**; executar no Mac.
 - Fases 2–4 e 6–7 de produção continuam abertas. O aceite local não as encerra.
 - ADR-046 registra decisões e limites; `COMO-RODAR.md` é o roteiro atual de execução.
 
@@ -179,4 +177,29 @@ Sem Docker/Maven/Terraform instalados neste host: não houve novo build Java,
 validate Terraform ou E2E. Scripts preparados para Docker Desktop no Mac.
 Arquivos adicionais: `local/{verificar-infra.py,test_verificar_infra.py,preflight.py,
 subir.sh,executar-tudo.sh}`, COMO-RODAR e ADR-046. Commit: consultar histórico
-`fix(local): prepara setup e barreira de prontidao LocalStack` para SHA final.
+`25f826f` (commit consolidado publicado da branch LocalStack).
+
+
+## Integração das branches — 22/10/2026
+
+A consulta `git ls-remote --heads origin` encontrou `main` (`052971f`) e
+`codex/localstack-readiness` (`25f826f82b4805540de07f5f60232f388009f047`).
+A branch contém um commit descendente da main; integrada por fast-forward, sem
+conflitos ou descarte de alterações. Foram revisados os 32 arquivos do commit:
+setup/aceite local, Compose, contratos HTTP, validação Java e documentação.
+O SHA intermediário `50df502` citado na documentação recebida não consta do
+histórico publicado; essas alterações estão consolidadas em `25f826f`.
+
+Validação independente do commit integrado: **142 testes unitários Java + 9 testes
+DynamoDB Local/Testcontainers, sem falhas/erros/ignorados**, seis testes Python,
+verificadores estáticos, preflight, Compose config, sintaxe Bash e Terraform fmt.
+Terraform 1.9.8: init local com backend desativado e lockfile readonly, seguido de
+validate, passaram. Evidência: `apresentacao-itau/docs/evidencias/integracao-branches-2026-10-22.txt`
+(caminho relativo à raiz do repositório).
+
+Esta revisão não executou o E2E completo nem apply/deploy AWS. Para o aceite no Mac:
+`cd apresentacao-itau && INTEGRACAO=1 bash local/executar-tudo.sh`.
+Pré-requisitos em COMO-RODAR; logs em local/evidencias (ignorados pelo Git).
+Permanecem os riscos de produção já registrados (identidade interna/TLS, integração
+corporativa, recuperação, capacidade/custos e operação EKS/RDS). A integração não
+encerra essas fases. Arquivos adicionais desta revisão: backlog, STATUS e evidência.
