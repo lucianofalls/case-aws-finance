@@ -8,6 +8,8 @@ import br.com.itau.financas.limites.domain.Identificadores.ContratoId;
 import br.com.itau.financas.limites.domain.Identificadores.OperacaoId;
 import br.com.itau.financas.limites.domain.Operacao;
 import br.com.itau.financas.limites.domain.Posicao;
+import br.com.itau.financas.limites.domain.TipoOperacao;
+import br.com.itau.financas.limites.domain.RegraDeNegocioVioladaException;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.CancellationReason;
@@ -73,11 +75,22 @@ public final class DynamoDbPosicaoRepository implements PosicaoRepository {
         if (consome) {
             valores.put(":valor", ItensDeLimites.n(operacao.valor().comoTexto()));
         }
-        return executar(
-                atualizarPosicao(lida.contratoId(),
-                        "SET disponivel = :novoDisponivel, bloqueado = :novoBloqueado, versao = :novaVersao",
-                        condicao, valores),
-                criarSeAusente(ItensDeLimites.operacaoParaItem(operacao, retencaoOperacoes)));
+        TransactWriteItem posicao = atualizarPosicao(lida.contratoId(),
+                "SET disponivel = :novoDisponivel, bloqueado = :novoBloqueado, versao = :novaVersao",
+                condicao, valores);
+        TransactWriteItem operacaoNova = criarSeAusente(ItensDeLimites.operacaoParaItem(operacao, retencaoOperacoes));
+        // Posição, idempotência e estado POR RESERVA são confirmados na mesma transação DynamoDB.
+        // CAPTURA/LIBERACAO nunca poderão consumir o bloqueio de outra reserva do mesmo contrato.
+        if (operacao.tipo() == TipoOperacao.RESERVA) {
+            return executar(posicao, operacaoNova, criarSeAusente(ItensDeLimites.reservaParaItem(operacao)));
+        }
+        if (operacao.tipo() == TipoOperacao.CAPTURA || operacao.tipo() == TipoOperacao.LIBERACAO) {
+            if (operacao.original().isEmpty()) {
+                throw new RegraDeNegocioVioladaException("reserva-original-obrigatoria", "informe id_operacao_original");
+            }
+            return executar(posicao, operacaoNova, debitarReserva(operacao));
+        }
+        return executar(posicao, operacaoNova);
     }
 
     @Override
@@ -110,16 +123,60 @@ public final class DynamoDbPosicaoRepository implements PosicaoRepository {
                 .expressionAttributeValues(Map.of(":revertida", ItensDeLimites.s(Operacao.Estado.REVERTIDA.name()),
                         ":efetivada", ItensDeLimites.s(Operacao.Estado.EFETIVADA.name())))
                 .build()).build();
-        return executar(
-                atualizarPosicao(lida.contratoId(),
-                        "SET disponivel = :novoDisponivel, bloqueado = :novoBloqueado, versao = :novaVersao",
-                        "versao = :versaoLida",
-                        Map.of(":novoDisponivel", ItensDeLimites.n(nova.disponivel().comoTexto()),
-                                ":novoBloqueado", ItensDeLimites.n(nova.bloqueado().comoTexto()),
-                                ":novaVersao", ItensDeLimites.n(Long.toString(nova.versao())),
-                                ":versaoLida", ItensDeLimites.n(Long.toString(lida.versao())))),
-                marcarRevertida,
-                outbox(evento));
+        TransactWriteItem posicao = atualizarPosicao(lida.contratoId(),
+                "SET disponivel = :novoDisponivel, bloqueado = :novoBloqueado, versao = :novaVersao",
+                "versao = :versaoLida",
+                Map.of(":novoDisponivel", ItensDeLimites.n(nova.disponivel().comoTexto()),
+                        ":novoBloqueado", ItensDeLimites.n(nova.bloqueado().comoTexto()),
+                        ":novaVersao", ItensDeLimites.n(Long.toString(nova.versao())),
+                        ":versaoLida", ItensDeLimites.n(Long.toString(lida.versao()))));
+        if (revertida.tipo() == TipoOperacao.RESERVA) {
+            return executar(posicao, marcarRevertida, outbox(evento), cancelarReserva(revertida));
+        }
+        if ((revertida.tipo() == TipoOperacao.CAPTURA || revertida.tipo() == TipoOperacao.LIBERACAO)
+                && revertida.original().isPresent()) {
+            return executar(posicao, marcarRevertida, outbox(evento), restaurarReserva(revertida));
+        }
+        return executar(posicao, marcarRevertida, outbox(evento));
+    }
+
+    private TransactWriteItem debitarReserva(Operacao operacao) {
+        return TransactWriteItem.builder().update(Update.builder()
+                .tableName(tabela)
+                .key(ItensDeLimites.chave(operacao.contratoId(), ItensDeLimites.skReserva(operacao.original().orElseThrow())))
+                .updateExpression("SET restante = restante - :valor")
+                .conditionExpression("attribute_exists(sk) AND estado = :ativa AND restante >= :valor AND moeda = :moeda")
+                .expressionAttributeValues(Map.of(
+                        ":valor", ItensDeLimites.n(operacao.valor().comoTexto()),
+                        ":ativa", ItensDeLimites.s("ATIVA"),
+                        ":moeda", ItensDeLimites.s(operacao.valor().codigoMoeda())))
+                .build()).build();
+    }
+
+    private TransactWriteItem cancelarReserva(Operacao operacao) {
+        return TransactWriteItem.builder().update(Update.builder()
+                .tableName(tabela)
+                .key(ItensDeLimites.chave(operacao.contratoId(), ItensDeLimites.skReserva(operacao.id())))
+                .updateExpression("SET estado = :cancelada, restante = :zero")
+                .conditionExpression("estado = :ativa AND restante = :total")
+                .expressionAttributeValues(Map.of(
+                        ":cancelada", ItensDeLimites.s("CANCELADA"),
+                        ":ativa", ItensDeLimites.s("ATIVA"),
+                        ":zero", ItensDeLimites.n("0"),
+                        ":total", ItensDeLimites.n(operacao.valor().comoTexto())))
+                .build()).build();
+    }
+
+    private TransactWriteItem restaurarReserva(Operacao operacao) {
+        return TransactWriteItem.builder().update(Update.builder()
+                .tableName(tabela)
+                .key(ItensDeLimites.chave(operacao.contratoId(), ItensDeLimites.skReserva(operacao.original().orElseThrow())))
+                .updateExpression("SET restante = restante + :valor")
+                .conditionExpression("attribute_exists(sk) AND estado = :ativa")
+                .expressionAttributeValues(Map.of(
+                        ":valor", ItensDeLimites.n(operacao.valor().comoTexto()),
+                        ":ativa", ItensDeLimites.s("ATIVA")))
+                .build()).build();
     }
 
     private Optional<Map<String, AttributeValue>> buscar(Map<String, AttributeValue> chave) {
@@ -172,6 +229,10 @@ public final class DynamoDbPosicaoRepository implements PosicaoRepository {
         }
         if (motivos.size() > 1 && CONDICAO_FALHOU.equals(motivos.get(1).code())) {
             return ResultadoDeEscrita.OPERACAO_JA_EXISTE;
+        }
+        if (motivos.size() > 2 && CONDICAO_FALHOU.equals(motivos.get(2).code())) {
+            throw new RegraDeNegocioVioladaException("reserva-insuficiente-ou-inativa",
+                    "saldo específico da reserva original insuficiente ou reserva não encontrada/inativa");
         }
         return ResultadoDeEscrita.POSICAO_DESATUALIZADA;
     }

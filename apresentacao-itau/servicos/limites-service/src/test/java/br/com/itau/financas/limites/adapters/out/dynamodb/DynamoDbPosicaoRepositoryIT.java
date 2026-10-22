@@ -127,10 +127,11 @@ class DynamoDbPosicaoRepositoryIT {
 
     @Test
     void bloqueadoDaReservaEhPersistidoEReLidoDoBanco() {
-        servico.aplicar(new AplicarOperacaoService.Comando(contrato.valor(), UUID.randomUUID().toString(), "RESERVA",
-                "40.00", "BRL", "reserva", null));
+        String idReserva = UUID.randomUUID().toString();
+        servico.aplicar(new AplicarOperacaoService.Comando(contrato.valor(), idReserva, "RESERVA",
+                "40.00", "BRL", "reserva", null, "0001-1"));
         servico.aplicar(new AplicarOperacaoService.Comando(contrato.valor(), UUID.randomUUID().toString(), "CAPTURA",
-                "25.00", "BRL", "captura", null));
+                "25.00", "BRL", "captura", idReserva, "0001-1"));
 
         Posicao relida = new DynamoDbPosicaoRepository(dynamo, TABELA, Duration.ofDays(35)).buscarPosicao(contrato)
                 .orElseThrow();
@@ -138,6 +139,21 @@ class DynamoDbPosicaoRepositoryIT {
         assertThat(relida.bloqueado().comoTexto()).isEqualTo("15.00");
         assertThat(relida.utilizado().comoTexto()).isEqualTo("25.00");
         assertThat(relida.disponivel().comoTexto()).isEqualTo("60.00");
+    }
+
+    @Test
+    void capturaDeOutraReservaNaoPodeConsumirBloqueioAlheio() {
+        String idReservaA = UUID.randomUUID().toString();
+        String idReservaB = UUID.randomUUID().toString();
+        servico.aplicar(new AplicarOperacaoService.Comando(contrato.valor(), idReservaA, "RESERVA",
+                "10.00", "BRL", "reserva-A", null, "0001-1"));
+        servico.aplicar(new AplicarOperacaoService.Comando(contrato.valor(), idReservaB, "RESERVA",
+                "80.00", "BRL", "reserva-B", null, "0001-1"));
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> servico.aplicar(
+                new AplicarOperacaoService.Comando(contrato.valor(), UUID.randomUUID().toString(), "CAPTURA",
+                        "50.00", "BRL", "captura-A-acima-limite", idReservaA, "0001-1")))
+                .isInstanceOf(br.com.itau.financas.limites.domain.RegraDeNegocioVioladaException.class);
+        assertThat(repositorio.buscarPosicao(contrato).orElseThrow().bloqueado().comoTexto()).isEqualTo("90.00");
     }
 
     @Test
@@ -173,6 +189,6 @@ class DynamoDbPosicaoRepositoryIT {
 
     private AplicarOperacaoService.Comando comando(UUID id, String valor) {
         return new AplicarOperacaoService.Comando(contrato.valor(), id.toString(), "DEBITO", valor, "BRL",
-                "impressao-" + valor, null);
+                "impressao-" + valor, null, "0001-1");
     }
 }

@@ -30,7 +30,7 @@ class AplicarLimiteDoLegadoServiceTest {
         servico.aplicar(comando("1000.00", 1));
         new AplicarOperacaoService(repositorio, retentativa, Clock.systemUTC(), Duration.ofMinutes(10)).aplicar(
                 new AplicarOperacaoService.Comando("CTR-1", UUID.randomUUID().toString(), "DEBITO", "700.00", "BRL",
-                        "h", null));
+                        "h", null, "0001-1"));
 
         servico.aplicar(comando("500.00", 2));
 

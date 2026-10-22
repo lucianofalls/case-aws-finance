@@ -139,7 +139,7 @@ components:
       properties:
         id_autorizacao: { type: string, format: uuid }
         estado: { type: string, enum: [APROVADA, ESTORNADA_PARCIALMENTE, ESTORNADA] }
-        tipo_operacao: { type: string, enum: [DEBITO, CREDITO, RESERVA, ESTORNO] }
+        tipo_operacao: { type: string, enum: [DEBITO, CREDITO, RESERVA, CAPTURA, LIBERACAO, ESTORNO] }
         valor: { type: string, pattern: '^\d{1,16}\.\d{2}$', description: decimal(18,2) como string }
         moeda: { type: string }
         saldo_reservado: { type: string, description: Limite comprometido após a operação }

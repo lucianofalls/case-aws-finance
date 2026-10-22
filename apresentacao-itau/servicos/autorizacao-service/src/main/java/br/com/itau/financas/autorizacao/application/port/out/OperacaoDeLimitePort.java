@@ -16,7 +16,7 @@ public interface OperacaoDeLimitePort {
     ResultadoNoLimite aplicar(PedidoAoLimite pedido);
 
     record PedidoAoLimite(AutorizacaoId idOperacao, ContratoId contratoId, TipoOperacao tipo, Dinheiro valor,
-                          ImpressaoDigital impressao, AutorizacaoId idOperacaoOriginal) {
+                          ImpressaoDigital impressao, AutorizacaoId idOperacaoOriginal, String idConta) {
     }
 
     sealed interface ResultadoNoLimite {

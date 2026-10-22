@@ -16,7 +16,7 @@ public record AutorizacaoRequest(
         @NotBlank @Size(max = 64) String idConta,
         @NotNull @Positive @Digits(integer = 16, fraction = 2) BigDecimal valor,
         @NotBlank @Pattern(regexp = "[A-Z]{3}") String moeda,
-        @NotBlank @Pattern(regexp = "DEBITO|CREDITO|RESERVA|ESTORNO") String tipoOperacao,
+        @NotBlank @Pattern(regexp = "DEBITO|CREDITO|RESERVA|CAPTURA|LIBERACAO|ESTORNO") String tipoOperacao,
         @Size(max = 64) String idEstabelecimento,
         Map<String, Object> metadata) {
 

@@ -43,7 +43,7 @@ public final class RegraDeEstorno implements RegraDeOperacao {
         Autorizacao originalAtualizado = original.comEstorno(pedido.contratoId(), pedido.valor());
 
         var resultado = limites.aplicar(new PedidoAoLimite(pedido.id(), pedido.contratoId(), TipoOperacao.ESTORNO,
-                pedido.valor(), pedido.impressao(), idOriginal));
+                pedido.valor(), pedido.impressao(), idOriginal, pedido.contaId().valor()));
         Autorizacao estorno = Autorizacao.aprovada(pedido, resultado.posicao(), relogio.instant());
         return new Decisao(estorno, Optional.of(originalAtualizado));
     }

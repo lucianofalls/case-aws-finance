@@ -27,6 +27,7 @@ final class ItensDeLimites {
     static final String SK = "sk";
     static final String SK_POSICAO = "POSICAO";
     static final String PREFIXO_OPERACAO = "OPERACAO#";
+    static final String PREFIXO_RESERVA = "RESERVA#";
     static final String PREFIXO_OUTBOX = "OUT#";
 
     private ItensDeLimites() {
@@ -34,6 +35,20 @@ final class ItensDeLimites {
 
     static Map<String, AttributeValue> chave(ContratoId contrato, String sk) {
         return Map.of(PK, s(contrato.valor()), SK, s(sk));
+    }
+
+    static String skReserva(OperacaoId id) {
+        return PREFIXO_RESERVA + id;
+    }
+
+    static Map<String, AttributeValue> reservaParaItem(Operacao o) {
+        Map<String, AttributeValue> item = new HashMap<>(chave(o.contratoId(), skReserva(o.id())));
+        item.put("moeda", s(o.valor().codigoMoeda()));
+        item.put("total", n(o.valor().comoTexto()));
+        item.put("restante", n(o.valor().comoTexto()));
+        item.put("estado", s("ATIVA"));
+        // Não aplicar TTL ao estado da reserva enquanto ainda houver saldo bloqueado.
+        return item;
     }
 
     static String skOperacao(OperacaoId id) {

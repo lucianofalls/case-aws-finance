@@ -66,7 +66,7 @@ public final class LimitesHttpAdapter implements OperacaoDeLimitePort {
     private ResultadoNoLimite enviar(PedidoAoLimite pedido) {
         OperacaoRequest corpo = new OperacaoRequest(pedido.idOperacao().toString(), pedido.tipo().name(),
                 pedido.valor().comoTexto(), pedido.valor().codigoMoeda(), pedido.impressao().hash(),
-                pedido.idOperacaoOriginal() == null ? null : pedido.idOperacaoOriginal().toString());
+                pedido.idOperacaoOriginal() == null ? null : pedido.idOperacaoOriginal().toString(), pedido.idConta());
         try {
             return http.post()
                     .uri("/v1/contratos/{idContrato}/operacoes", pedido.contratoId().valor())
@@ -132,6 +132,6 @@ public final class LimitesHttpAdapter implements OperacaoDeLimitePort {
     }
 
     record OperacaoRequest(String idOperacao, String tipoOperacao, String valor, String moeda,
-                           String impressaoDigital, String idOperacaoOriginal) {
+                           String impressaoDigital, String idOperacaoOriginal, String idConta) {
     }
 }

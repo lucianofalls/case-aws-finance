@@ -31,7 +31,7 @@ public final class RegraDeCredito implements RegraDeOperacao {
     @Override
     public Decisao decidir(NovaAutorizacao pedido) {
         var resultado = limites.aplicar(new PedidoAoLimite(pedido.id(), pedido.contratoId(), pedido.tipo(),
-                pedido.valor(), pedido.impressao(), null));
+                pedido.valor(), pedido.impressao(), null, pedido.contaId().valor()));
         return Decisao.simples(Autorizacao.aprovada(pedido, resultado.posicao(), relogio.instant()));
     }
 }

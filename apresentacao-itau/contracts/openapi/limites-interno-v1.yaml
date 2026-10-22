@@ -23,9 +23,10 @@ paths:
           application/json:
             schema:
               type: object
-              required: [id_operacao, tipo_operacao, valor, moeda, impressao_digital]
+              required: [id_operacao, id_conta, tipo_operacao, valor, moeda, impressao_digital]
               properties:
                 id_operacao: { type: string, format: uuid }
+                id_conta: { type: string, minLength: 1, description: Deve coincidir com id_conta da POSICAO do contrato }
                 tipo_operacao: { type: string, enum: [DEBITO, CREDITO, RESERVA, CAPTURA, LIBERACAO, ESTORNO] }
                 valor: { type: string, pattern: '^\d{1,16}(\.\d{1,2})?$' }
                 moeda: { type: string, pattern: '^[A-Z]{3}$' }

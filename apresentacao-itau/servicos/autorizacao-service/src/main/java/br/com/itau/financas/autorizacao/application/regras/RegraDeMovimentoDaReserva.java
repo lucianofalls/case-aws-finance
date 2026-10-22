@@ -47,7 +47,7 @@ public final class RegraDeMovimentoDaReserva implements RegraDeOperacao {
                 pedido.valor(), agora);
 
         var resultado = limites.aplicar(new PedidoAoLimite(pedido.id(), pedido.contratoId(), pedido.tipo(),
-                pedido.valor(), pedido.impressao(), idReserva));
+                pedido.valor(), pedido.impressao(), idReserva, pedido.contaId().valor()));
         Autorizacao movimento = Autorizacao.aprovada(pedido, resultado.posicao(), agora);
         return new Decisao(movimento, Optional.of(reservaAtualizada));
     }

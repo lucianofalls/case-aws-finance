@@ -75,9 +75,19 @@ class AplicarOperacaoServiceTest {
     }
 
     @Test
+    void naoMovimentaPosicaoDeContaDiferente() {
+        assertThatThrownBy(() -> servico.aplicar(new AplicarOperacaoService.Comando(
+                CONTRATO.valor(), UUID.randomUUID().toString(), "DEBITO", "1.00", "BRL",
+                "prova-conta-divergente", null, "CONTA-DE-TERCEIRO")))
+                .isInstanceOf(RegraDeNegocioVioladaException.class)
+                .hasMessageContaining("não corresponde");
+        assertThat(repositorio.buscarPosicao(CONTRATO).orElseThrow().disponivel().comoTexto()).isEqualTo("100.00");
+    }
+
+    @Test
     void contratoSemPosicaoEh404() {
         assertThatThrownBy(() -> servico.aplicar(new AplicarOperacaoService.Comando("CTR-X",
-                UUID.randomUUID().toString(), "DEBITO", "1.00", "BRL", "h", null)))
+                UUID.randomUUID().toString(), "DEBITO", "1.00", "BRL", "h", null, "0001-1")))
                 .isInstanceOf(ContratoSemLimiteException.class);
     }
 
@@ -193,6 +203,6 @@ class AplicarOperacaoServiceTest {
 
     private static AplicarOperacaoService.Comando comando(UUID id, String tipo, String valor) {
         return new AplicarOperacaoService.Comando(CONTRATO.valor(), id.toString(), tipo, valor, "BRL",
-                "impressao-" + tipo + valor, null);
+                "impressao-" + tipo + valor, null, "0001-1");
     }
 }

@@ -42,7 +42,7 @@ public class OperacaoController {
                                                    @Valid @RequestBody OperacaoRequest corpo) {
         AplicarOperacaoService.Resultado resultado = aplicarOperacao.aplicar(new AplicarOperacaoService.Comando(
                 idContrato, corpo.idOperacao(), corpo.tipoOperacao(), corpo.valor(), corpo.moeda(),
-                corpo.impressaoDigital(), corpo.idOperacaoOriginal()));
+                corpo.impressaoDigital(), corpo.idOperacaoOriginal(), corpo.idConta()));
         HttpStatus status = resultado.criadaAgora() ? HttpStatus.CREATED : HttpStatus.OK;
         return ResponseEntity.status(status).body(PosicaoResponse.de(resultado.operacao()));
     }
@@ -65,7 +65,7 @@ public class OperacaoController {
             @NotBlank @Pattern(regexp = "\\d{1,16}(\\.\\d{1,2})?") String valor,
             @NotBlank @Pattern(regexp = "[A-Z]{3}") String moeda,
             @NotBlank @Size(max = 128) String impressaoDigital,
-            String idOperacaoOriginal) {
+            String idOperacaoOriginal, @NotBlank String idConta) {
     }
 
     /** {@code saldo_reservado} = comprometido (utilizado + bloqueado); {@code saldo_bloqueado} = reservas pendentes. */

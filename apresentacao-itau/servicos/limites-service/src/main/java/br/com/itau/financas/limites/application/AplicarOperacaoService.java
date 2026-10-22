@@ -25,7 +25,7 @@ import java.util.Optional;
 public final class AplicarOperacaoService {
 
     public record Comando(String idContrato, String idOperacao, String tipoOperacao, String valor, String moeda,
-                          String impressao, String idOperacaoOriginal) {
+                          String impressao, String idOperacaoOriginal, String idConta) {
     }
 
     /** @param criadaAgora false quando é a repetição idempotente de uma operação já aplicada */
@@ -58,6 +58,10 @@ public final class AplicarOperacaoService {
         }
         return retentativa.executar("operação " + id, () -> {
             Posicao lida = repositorio.buscarPosicao(contrato).orElseThrow(() -> new ContratoSemLimiteException(contrato));
+            if (comando.idConta() == null || !lida.contaId().equals(comando.idConta())) {
+                throw new br.com.itau.financas.limites.domain.RegraDeNegocioVioladaException(
+                        "conta-nao-pertence-ao-contrato", "conta informada não corresponde ao titular do contrato");
+            }
             Posicao nova = lida.aplicar(tipo, valor);
             Operacao operacao = Operacao.efetivada(id, contrato, tipo, valor, comando.impressao(), original, nova,
                     relogio.instant());

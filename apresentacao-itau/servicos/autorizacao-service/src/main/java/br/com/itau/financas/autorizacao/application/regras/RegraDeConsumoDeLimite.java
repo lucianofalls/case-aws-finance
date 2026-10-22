@@ -36,7 +36,7 @@ public final class RegraDeConsumoDeLimite implements RegraDeOperacao {
     @Override
     public Decisao decidir(NovaAutorizacao pedido) {
         var resultado = limites.aplicar(new PedidoAoLimite(pedido.id(), pedido.contratoId(), pedido.tipo(),
-                pedido.valor(), pedido.impressao(), null));
+                pedido.valor(), pedido.impressao(), null, pedido.contaId().valor()));
         Autorizacao autorizacao = switch (resultado) {
             case Efetivada efetivada -> pedido.tipo() == TipoOperacao.RESERVA
                     ? Autorizacao.reservaAprovada(pedido, efetivada.posicao(), relogio.instant(), validadeDaReserva)
