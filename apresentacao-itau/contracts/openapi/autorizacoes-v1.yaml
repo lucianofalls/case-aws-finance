@@ -68,6 +68,8 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Autorizacao' }
+        '401':
+          description: Token ausente, inválido, expirado ou cliente não permitido
         '403':
           description: Cliente autenticado sem acesso ao contrato ou à conta
           content:

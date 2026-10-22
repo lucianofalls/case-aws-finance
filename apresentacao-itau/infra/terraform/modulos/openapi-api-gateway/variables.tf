@@ -50,8 +50,8 @@ variable "nome_validador" {
 
 variable "cabecalhos_do_contexto" {
   type        = map(string)
-  description = "Cabeçalhos injetados pelo API Gateway a partir do contexto (ex.: X-Client-Id do token)."
-  default     = { "X-Client-Id" = "context.authorizer.claims.client_id" }
+  description = "Cabeçalhos técnicos opcionais; identidade vem do JWT validado no backend."
+  default     = {}
 }
 
 variable "respostas_gateway" {

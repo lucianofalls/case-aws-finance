@@ -183,6 +183,87 @@ class DynamoDbPosicaoRepositoryIT {
         assertThat(repositorio.buscarPosicao(contrato).orElseThrow().disponivel().comoTexto()).isEqualTo("1.00");
     }
 
+    @Test
+    void capturaELiberacaoConcorrentesRespeitamSaldoIndividual() throws Exception {
+        String reserva = UUID.randomUUID().toString();
+        String outra = UUID.randomUUID().toString();
+        servico.aplicar(movimento(reserva, "RESERVA", "60.00", null));
+        servico.aplicar(movimento(outra, "RESERVA", "40.00", null));
+        var inicio = new java.util.concurrent.CountDownLatch(1);
+        var prontas = new java.util.concurrent.CountDownLatch(2);
+        AtomicInteger aprovadas = new AtomicInteger();
+        AtomicInteger negadas = new AtomicInteger();
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            List<Future<?>> tarefas = new ArrayList<>();
+            for (String tipo : List.of("CAPTURA", "LIBERACAO")) {
+                tarefas.add(executor.submit(() -> {
+                    prontas.countDown(); inicio.await();
+                    try {
+                        servico.aplicar(movimento(UUID.randomUUID().toString(), tipo, "40.00", reserva));
+                        aprovadas.incrementAndGet();
+                    } catch (br.com.itau.financas.limites.domain.RegraDeNegocioVioladaException e) {
+                        negadas.incrementAndGet();
+                    }
+                    return null;
+                }));
+            }
+            assertThat(prontas.await(10, java.util.concurrent.TimeUnit.SECONDS)).isTrue();
+            inicio.countDown();
+            for (var tarefa : tarefas) tarefa.get(30, java.util.concurrent.TimeUnit.SECONDS);
+        }
+        assertThat(aprovadas.get()).isEqualTo(1);
+        assertThat(negadas.get()).isEqualTo(1);
+        assertThat(restante(reserva)).isEqualByComparingTo("20.00");
+        assertThat(restante(outra)).isEqualByComparingTo("40.00");
+        var posicao = repositorio.buscarPosicao(contrato).orElseThrow();
+        assertThat(posicao.disponivel().somar(posicao.bloqueado()).somar(posicao.utilizado()).comoTexto())
+                .isEqualTo("100.00");
+    }
+
+    @Test
+    void compensacaoDeCapturaRestauraSomenteReservaOriginalUmaVez() {
+        String reserva = UUID.randomUUID().toString();
+        String outra = UUID.randomUUID().toString();
+        String captura = UUID.randomUUID().toString();
+        servico.aplicar(movimento(reserva, "RESERVA", "60.00", null));
+        servico.aplicar(movimento(outra, "RESERVA", "40.00", null));
+        servico.aplicar(movimento(captura, "CAPTURA", "25.00", reserva));
+        var reversor = new br.com.itau.financas.limites.application.ReverterOperacaoOrfaService(
+                repositorio, new PoliticaDeRetentativa(5, i -> {}), Clock.systemUTC());
+        assertThat(reversor.reverter(contrato.valor(), captura).name()).isEqualTo("REVERTIDA");
+        assertThat(reversor.reverter(contrato.valor(), captura).name()).isEqualTo("JA_REVERTIDA");
+        assertThat(restante(reserva)).isEqualByComparingTo("60.00");
+        assertThat(restante(outra)).isEqualByComparingTo("40.00");
+        assertThat(repositorio.buscarPosicao(contrato).orElseThrow().utilizado().comoTexto()).isEqualTo("0.00");
+    }
+
+    @Test
+    void naoCompensaReservaJaMovimentadaContraBloqueioDeOutra() {
+        String reserva = UUID.randomUUID().toString();
+        String outra = UUID.randomUUID().toString();
+        servico.aplicar(movimento(reserva, "RESERVA", "60.00", null));
+        servico.aplicar(movimento(outra, "RESERVA", "40.00", null));
+        servico.aplicar(movimento(UUID.randomUUID().toString(), "CAPTURA", "10.00", reserva));
+        var reversor = new br.com.itau.financas.limites.application.ReverterOperacaoOrfaService(
+                repositorio, new PoliticaDeRetentativa(5, i -> {}), Clock.systemUTC());
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> reversor.reverter(contrato.valor(), reserva))
+                .isInstanceOf(br.com.itau.financas.limites.domain.RegraDeNegocioVioladaException.class);
+        assertThat(restante(reserva)).isEqualByComparingTo("50.00");
+        assertThat(restante(outra)).isEqualByComparingTo("40.00");
+        assertThat(repositorio.buscarPosicao(contrato).orElseThrow().bloqueado().comoTexto()).isEqualTo("90.00");
+    }
+
+    private java.math.BigDecimal restante(String id) {
+        return new java.math.BigDecimal(dynamo.getItem(r -> r.tableName(TABELA).consistentRead(true)
+                .key(Map.of("id_contrato", AttributeValue.fromS(contrato.valor()),
+                        "sk", AttributeValue.fromS("RESERVA#" + id)))).item().get("restante").n());
+    }
+
+    private AplicarOperacaoService.Comando movimento(String id, String tipo, String valor, String original) {
+        return new AplicarOperacaoService.Comando(contrato.valor(), id, tipo, valor, "BRL",
+                tipo + valor, original, "0001-1");
+    }
+
     /** Backoff com jitter: com DynamoDB real, retentar sem espera só multiplica os conflitos. */
     private static void esperarComJitter(int tentativa) {
         LockSupport.parkNanos(ThreadLocalRandom.current().nextLong(1_000_000L, 2_000_000L * Math.min(tentativa, 10)));

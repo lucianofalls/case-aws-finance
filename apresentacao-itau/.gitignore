@@ -10,3 +10,6 @@ terraform.tfvars
 
 # Gerado localmente pelo k8s/render.py; pode conter endpoints internos.
 k8s/rendered-stack.yaml
+
+# Chaves efêmeras exclusivamente locais; nunca versionar.
+local/.segredos-demo/

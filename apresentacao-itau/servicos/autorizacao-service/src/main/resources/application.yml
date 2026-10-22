@@ -53,3 +53,11 @@ autorizacao:
 logging:
   pattern:
     level: "%5p [correlation_id=%X{correlation_id:-}]"
+
+# Cognito M2M ou emissor OAuth2 compatível; falha no startup sem configuração.
+seguranca:
+  jwt:
+    issuer: ${JWT_ISSUER}
+    jwks-uri: ${JWT_JWKS_URI:}
+    clientes-permitidos: ${JWT_CLIENTES_PERMITIDOS}
+    chave-publica: ${JWT_CHAVE_PUBLICA:}

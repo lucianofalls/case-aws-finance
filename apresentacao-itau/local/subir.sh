@@ -21,6 +21,8 @@ command -v terraform >/dev/null || falhar "Terraform não encontrado (precisa do
 command -v curl >/dev/null || falhar "curl não encontrado"
 echo "ok: docker, java 21, maven, terraform, curl"
 
+python3 local/token-demo.py --preparar
+
 etapa "1/5 build e testes (Maven)"
 mvn -q -B install
 

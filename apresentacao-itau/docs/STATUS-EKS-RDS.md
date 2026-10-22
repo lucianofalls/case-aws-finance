@@ -122,3 +122,11 @@ Alterados: lockfiles prod/local (AWS prod 6.70.0; checksum local), teste OpenAPI
 ### Fechamento da validação da Fase 0
 
 Commit de implementação `0e0fede` enviado ao remoto. `mvn verify -Pintegracao` passou: 6 testes DynamoDB Local, zero falhas/erros/ignorados, além da suíte unitária. Nenhum E2E completo ou teste AWS está aprovado. Build em /tmp evita lentidão de leitura no workspace; fontes extraídas do Git e o teste IT atualizado copiado antes da execução. Erros conhecidos da Fase 0 resolvidos; avisos do provider e catalogação histórica registrados. Prosseguir sequencialmente à Fase 1.
+
+## Fase 1 — identidade e integridade financeira (22/10/2026)
+
+Implementados JWT RS256 no backend com issuer/validade/token_use/client_id/scope, rejeição de identidade forjada por header, entitlement com validade explícita e leitura forte sem cache. Expiração agora confere o prazo e usa chave idempotente por versão; condições de compensação por reserva corrigidas. Incluídos testes de segurança, revogação/acesso cruzado, expiração antecipada/concorrente e três novos IT financeiros (9 IT passaram). Suíte e evidências: `docs/evidencias/fase-1-2026-10-22.txt`.
+
+Arquivos: configuração/DTO HTTP/testes de Autorização, adaptador/testes DynamoDB de Limites, pom, contratos HTTP/entitlement, renderer/manifests, scripts/Compose locais e ADR-045. Seed local passou a usar JWT assinado e validade; chaves efêmeras ignoradas no Git, portas restritas ao loopback.
+
+Riscos/dependências: ingestão da fonte corporativa de entitlement depende do contrato do banco (desenho versionado na ADR-045; não implantado); integração Cognito real/JWKS no cluster privado e E2E local pendentes. Cognito existente autentica canais M2M, não 80 milhões de contas/usuários. Segurança leste-oeste e TLS RDS continuam nas fases seguintes. A conclusão dos testes não é aprovação de produção.

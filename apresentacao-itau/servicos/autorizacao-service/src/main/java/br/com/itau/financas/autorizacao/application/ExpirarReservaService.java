@@ -9,6 +9,7 @@ import br.com.itau.financas.autorizacao.domain.TipoOperacao;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.time.Clock;
 import java.util.UUID;
 
 /**
@@ -28,10 +29,12 @@ public final class ExpirarReservaService {
 
     private final AutorizacaoRepository autorizacoes;
     private final AutorizarTransacaoInterna autorizar;
+    private final Clock relogio;
 
-    public ExpirarReservaService(AutorizacaoRepository autorizacoes, AutorizarTransacaoInterna autorizar) {
+    public ExpirarReservaService(AutorizacaoRepository autorizacoes, AutorizarTransacaoInterna autorizar, Clock relogio) {
         this.autorizacoes = autorizacoes;
         this.autorizar = autorizar;
+        this.relogio = relogio;
     }
 
     public Desfecho expirar(String idReserva) {
@@ -44,7 +47,12 @@ public final class ExpirarReservaService {
                 || !reserva.saldoDaReserva().ehPositivo()) {
             return Desfecho.NADA_A_LIBERAR;
         }
-        UUID chave = UUID.nameUUIDFromBytes(("expiracao:" + idReserva).getBytes(StandardCharsets.UTF_8));
+        if (!reserva.reserva().orElseThrow().expirou(relogio.instant())) {
+            // Não confirmar uma mensagem antecipada: o consumidor deve retentar.
+            throw new IllegalStateException("reserva ainda não venceu");
+        }
+        UUID chave = UUID.nameUUIDFromBytes(("expiracao:" + idReserva + ":" + reserva.versao())
+                .getBytes(StandardCharsets.UTF_8));
         autorizar.executarInternamente(new SolicitacaoDeAutorizacao(CLIENTE_EXPIRACAO, chave.toString(),
                 reserva.contratoId().valor(), reserva.contaId().valor(), reserva.saldoDaReserva().valor(),
                 reserva.valor().codigoMoeda(), TipoOperacao.LIBERACAO.name(), null, idReserva,

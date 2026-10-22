@@ -9,6 +9,7 @@ LIMITES=${LIMITES:-http://localhost:8082}
 CONTRATO="CTR-CICLO-$RANDOM-$RANDOM"
 CONTA="0001-123456"
 CLIENTE="canal-demo-ciclo"
+TOKEN=$(python3 local/token-demo.py "$CLIENTE")
 RETORNO=$(mktemp)
 trap 'rm -f "$RETORNO"' EXIT
 
@@ -29,7 +30,7 @@ postar() { # tipo, valor, original(optional), esperado
   status=$(curl -sS --max-time 30 -o "$RETORNO" -w '%{http_code}' \
     -X POST "$API/v1/contratos/$CONTRATO/autorizacoes" \
     -H 'Content-Type: application/json' -H "Idempotency-Key: $(uuid)" \
-    -H "X-Client-Id: $CLIENTE" -d "$corpo")
+    -H "Authorization: Bearer $TOKEN" -d "$corpo")
   printf '%s R$ %s -> HTTP %s\n' "$tipo" "$valor" "$status"
   cat "$RETORNO"; echo
   if [[ "$status" != "$esperado" ]]; then
@@ -51,7 +52,7 @@ curl -fsS "$LIMITES/v1/contratos/$CONTRATO/posicao"; echo
 # APENAS DEMO LOCAL: provisão simulada de entitlement por fonte confiável.
 # Em produção, um fluxo administrativo autenticado/ACL de identidade deve alimentar esta tabela.
 "${COMPOSE[@]}" exec -T localstack awslocal dynamodb put-item \
-  --table-name permissoes-contratos --item "{\"id_cliente\":{\"S\":\"canal-demo-ciclo\"},\"id_contrato\":{\"S\":\"$CONTRATO\"},\"id_conta\":{\"S\":\"0001-123456\"},\"ativo\":{\"BOOL\":true}}" >/dev/null
+  --table-name permissoes-contratos --item "{\"id_cliente\":{\"S\":\"canal-demo-ciclo\"},\"id_contrato\":{\"S\":\"$CONTRATO\"},\"id_conta\":{\"S\":\"0001-123456\"},\"ativo\":{\"BOOL\":true},\"valido_ate\":{\"N\":\"$(( $(date +%s) + 3600 ))\"}}" >/dev/null
 
 postar RESERVA 100.00 '' 201
 RESERVA_ID=$(python3 - "$RETORNO" <<'PY'

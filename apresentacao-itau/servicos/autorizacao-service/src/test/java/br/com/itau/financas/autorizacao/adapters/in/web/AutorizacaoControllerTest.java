@@ -105,7 +105,9 @@ class AutorizacaoControllerTest {
     private ResultActions enviar(String corpo) throws Exception {
         return mvc.perform(post("/v1/contratos/CTR-1/autorizacoes")
                 .header("Idempotency-Key", UUID.randomUUID().toString())
-                .header("X-Client-Id", "canal-app")
+                .principal(new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(
+                        org.springframework.security.oauth2.jwt.Jwt.withTokenValue("teste")
+                                .header("alg", "RS256").claim("client_id", "canal-app").build()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(corpo));
     }

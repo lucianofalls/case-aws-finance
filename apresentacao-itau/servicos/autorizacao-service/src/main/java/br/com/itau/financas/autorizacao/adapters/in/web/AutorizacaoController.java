@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 /**
  * Adapter de entrada HTTP: só traduz HTTP ↔ caso de uso (SRP).
- * O header X-Client-Id é injetado pelo API Gateway a partir do client_id do token Cognito.
+ * Identidade extraída exclusivamente do JWT validado pelo Resource Server.
  */
 @RestController
 public class AutorizacaoController {
@@ -34,14 +35,14 @@ public class AutorizacaoController {
     @PostMapping("/v1/contratos/{idContrato}/autorizacoes")
     public ResponseEntity<?> autorizar(@PathVariable String idContrato,
                                        @RequestHeader("Idempotency-Key") String idempotencyKey,
-                                       @RequestHeader("X-Client-Id") String clienteId,
+                                       JwtAuthenticationToken autenticacao,
                                        @RequestHeader(value = "traceparent", required = false) String traceparent,
                                        @Valid @RequestBody AutorizacaoRequest corpo) {
         if (corpo.idContrato() != null && !corpo.idContrato().equals(idContrato)) {
             throw new RegraDeNegocioVioladaException("contrato-divergente", "id_contrato do corpo difere do path");
         }
         ResultadoAutorizacao resultado = autorizarTransacao.executar(new SolicitacaoDeAutorizacao(
-                clienteId, idempotencyKey, idContrato, corpo.idConta(), corpo.valor(), corpo.moeda(),
+                autenticacao.getToken().getClaimAsString("client_id"), idempotencyKey, idContrato, corpo.idConta(), corpo.valor(), corpo.moeda(),
                 corpo.tipoOperacao(), corpo.idEstabelecimento(), corpo.idAutorizacaoOriginal(),
                 MDC.get(CorrelationIdFilter.MDC_CORRELATION_ID), traceparent));
         return responder(resultado);

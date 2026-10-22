@@ -40,7 +40,7 @@ class ExpirarReservaServiceTest {
                 new RegraDeCredito(limites, relogio),
                 new RegraDeEstorno(autorizacoes, limites, relogio),
                 new RegraDeMovimentoDaReserva(autorizacoes, limites, relogio)), (id, ctr, conta) -> {});
-        expirar = new ExpirarReservaService(autorizacoes, autorizar);
+        expirar = new ExpirarReservaService(autorizacoes, autorizar, Clock.offset(relogio, Duration.ofDays(7)));
     }
 
     @Test
@@ -77,6 +77,33 @@ class ExpirarReservaServiceTest {
     @Test
     void reservaInexistenteEhIgnorada() {
         assertThat(expirar.expirar(UUID.randomUUID().toString())).isEqualTo(Desfecho.INEXISTENTE);
+    }
+
+    @Test
+    void mensagemAntecipadaNaoLiberaNemConfirma() {
+        var reserva = autorizar.executar(pedido("40.00", "RESERVA", null)).autorizacao();
+        var antecipada = new ExpirarReservaService(autorizacoes, autorizar, relogio);
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> antecipada.expirar(reserva.id().toString()))
+                .isInstanceOf(IllegalStateException.class);
+        assertThat(limites.disponivel().comoTexto()).isEqualTo("60.00");
+    }
+
+    @Test
+    void capturaConcorrenteEntreLeituraELiberacaoPermiteRetentarSaldoAtual() {
+        var reserva = autorizar.executar(pedido("40.00", "RESERVA", null)).autorizacao();
+        var primeira = new java.util.concurrent.atomic.AtomicBoolean(true);
+        var concorrente = new ExpirarReservaService(autorizacoes, solicitacao -> {
+            if (primeira.getAndSet(false)) {
+                // Captura já admitida antes do prazo confirma entre leitura e escrita da expiração.
+                autorizar.executar(pedido("25.00", "CAPTURA", reserva.id().toString()));
+            }
+            return autorizar.executarInternamente(solicitacao);
+        }, Clock.offset(relogio, Duration.ofDays(7)));
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> concorrente.expirar(reserva.id().toString()))
+                .isInstanceOf(br.com.itau.financas.autorizacao.domain.RegraDeNegocioVioladaException.class);
+        assertThat(concorrente.expirar(reserva.id().toString())).isEqualTo(Desfecho.LIBERADA);
+        assertThat(concorrente.expirar(reserva.id().toString())).isEqualTo(Desfecho.NADA_A_LIBERAR);
+        assertThat(limites.disponivel().comoTexto()).isEqualTo("75.00");
     }
 
     private static SolicitacaoDeAutorizacao pedido(String valor, String tipo, String original) {

@@ -7,6 +7,7 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 
 import java.util.Map;
+import java.time.Clock;
 
 /** Projeção de entitlements provisionada por fonte confiável; consulta STRONGLY CONSISTENT.
  * Falhas da AWS NÃO são convertidas em autorização (fail-closed).
@@ -14,8 +15,14 @@ import java.util.Map;
 public final class DynamoDbAcessoClienteContratoAdapter implements AcessoClienteContratoPort {
     private final DynamoDbClient dynamo;
     private final String tabela;
+    private final Clock relogio;
 
     public DynamoDbAcessoClienteContratoAdapter(DynamoDbClient dynamo, String tabela) {
+        this(dynamo, tabela, Clock.systemUTC());
+    }
+
+    public DynamoDbAcessoClienteContratoAdapter(DynamoDbClient dynamo, String tabela, Clock relogio) {
+        this.relogio = relogio;
         this.dynamo = dynamo;
         this.tabela = tabela;
     }
@@ -33,8 +40,18 @@ public final class DynamoDbAcessoClienteContratoAdapter implements AcessoCliente
                 .build()).item();
         if (item == null || item.isEmpty()
                 || !Boolean.TRUE.equals(item.getOrDefault("ativo", AttributeValue.fromBool(false)).bool())
-                || !contaId.equals(item.getOrDefault("id_conta", AttributeValue.fromS("")).s())) {
+                || !contaId.equals(item.getOrDefault("id_conta", AttributeValue.fromS("")).s())
+                || !vigente(item)) {
             throw new AcessoNegadoException();
+        }
+    }
+
+    private boolean vigente(Map<String, AttributeValue> item) {
+        try {
+            var validade = item.get("valido_ate");
+            return validade != null && Long.parseLong(validade.n()) > relogio.instant().getEpochSecond();
+        } catch (RuntimeException invalido) {
+            return false;
         }
     }
 

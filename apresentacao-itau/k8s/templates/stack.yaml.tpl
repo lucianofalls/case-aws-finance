@@ -103,6 +103,12 @@ spec:
           env:
             - name: AWS_REGION
               value: "$REGION"
+            - name: JWT_ISSUER
+              value: "$JWT_ISSUER"
+            - name: JWT_JWKS_URI
+              value: "$JWT_JWKS_URI"
+            - name: JWT_CLIENTES_PERMITIDOS
+              value: "$JWT_CLIENTES_PERMITIDOS"
             - name: TABELA_AUTORIZACOES
               value: "$TABELA_AUTORIZACOES"
             - name: TABELA_PERMISSOES_CONTRATOS

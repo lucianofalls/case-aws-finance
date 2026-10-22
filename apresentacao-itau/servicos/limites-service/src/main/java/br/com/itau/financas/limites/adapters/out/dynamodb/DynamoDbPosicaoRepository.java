@@ -230,7 +230,7 @@ public final class DynamoDbPosicaoRepository implements PosicaoRepository {
         if (motivos.size() > 1 && CONDICAO_FALHOU.equals(motivos.get(1).code())) {
             return ResultadoDeEscrita.OPERACAO_JA_EXISTE;
         }
-        if (motivos.size() > 2 && CONDICAO_FALHOU.equals(motivos.get(2).code())) {
+        if (motivos.stream().skip(2).anyMatch(m -> CONDICAO_FALHOU.equals(m.code()))) {
             throw new RegraDeNegocioVioladaException("reserva-insuficiente-ou-inativa",
                     "saldo específico da reserva original insuficiente ou reserva não encontrada/inativa");
         }

@@ -7,6 +7,7 @@ API=${API:-http://localhost:8080}
 LIMITES=${LIMITES:-http://localhost:8082}
 CONTRATO=CTR-DEMO-$RANDOM
 CLIENTE=canal-demo
+TOKEN=$(python3 "$(dirname "${BASH_SOURCE[0]}")/token-demo.py" "$CLIENTE")
 COMPOSE=(docker compose -f "$(dirname "$0")/docker-compose.yml")
 RESPOSTA=$(mktemp)
 
@@ -23,7 +24,7 @@ uuid() { # portável: Linux, macOS, Git Bash
 
 autorizar() { # $1=Idempotency-Key $2=corpo
   curl -s -o "$RESPOSTA" -w "HTTP %{http_code}\n" -X POST "$API/v1/contratos/$CONTRATO/autorizacoes" \
-    -H "Content-Type: application/json" -H "Idempotency-Key: $1" -H "X-Client-Id: $CLIENTE" -d "$2"
+    -H "Content-Type: application/json" -H "Idempotency-Key: $1" -H "Authorization: Bearer $TOKEN" -d "$2"
   cat "$RESPOSTA"; echo
 }
 
@@ -41,7 +42,7 @@ curl -s "$LIMITES/v1/contratos/$CONTRATO/posicao"; echo "   (limite R\$ 1.000,00
 # APENAS DEMO LOCAL: provisão simulada de entitlement por fonte confiável.
 # Em produção, um fluxo administrativo autenticado/ACL de identidade deve alimentar esta tabela.
 "${COMPOSE[@]}" exec -T localstack awslocal dynamodb put-item \
-  --table-name permissoes-contratos --item "{\"id_cliente\":{\"S\":\"canal-demo\"},\"id_contrato\":{\"S\":\"$CONTRATO\"},\"id_conta\":{\"S\":\"0001-123456\"},\"ativo\":{\"BOOL\":true}}" >/dev/null
+  --table-name permissoes-contratos --item "{\"id_cliente\":{\"S\":\"canal-demo\"},\"id_contrato\":{\"S\":\"$CONTRATO\"},\"id_conta\":{\"S\":\"0001-123456\"},\"ativo\":{\"BOOL\":true},\"valido_ate\":{\"N\":\"$(( $(date +%s) + 3600 ))\"}}" >/dev/null
 
 CHAVE=$(uuid)
 passo "1. Autorização aprovada → 201 com saldo_reservado"
@@ -62,7 +63,7 @@ for _ in $(seq 1 50); do CHAVES+=("$(uuid)"); done
 for chave in "${CHAVES[@]}"; do
   curl -s -o /dev/null -w "%{http_code}\n" -X POST "$API/v1/contratos/$CONTRATO/autorizacoes" \
     -H "Content-Type: application/json" -H "Idempotency-Key: $chave" \
-    -H "X-Client-Id: $CLIENTE" -d "$(debito 20.00)" &
+    -H "Authorization: Bearer $TOKEN" -d "$(debito 20.00)" &
 done | sort | uniq -c
 wait
 curl -s "$LIMITES/v1/contratos/$CONTRATO/posicao"; echo "   (disponível nunca negativo; 201 ≤ 45)"
@@ -74,7 +75,7 @@ passo "7. Limites fora do ar → 503 fail-fast (circuit breaker) com Retry-After
 "${COMPOSE[@]}" stop limites >/dev/null
 for _ in $(seq 1 25); do autorizar "$(uuid)" "$(debito 1.00)" >/dev/null; done
 curl -s -D - -o "$RESPOSTA" -X POST "$API/v1/contratos/$CONTRATO/autorizacoes" \
-  -H "Content-Type: application/json" -H "Idempotency-Key: $(uuid)" -H "X-Client-Id: $CLIENTE" \
+  -H "Content-Type: application/json" -H "Idempotency-Key: $(uuid)" -H "Authorization: Bearer $TOKEN" \
   -d "$(debito 1.00)" | grep -iE "^HTTP|^retry-after"
 cat "$RESPOSTA"; echo
 "${COMPOSE[@]}" start limites >/dev/null

@@ -1,0 +1,19 @@
+Fase 1 — 22/10/2026. JDK21/Maven3.9.9. Fontes alteradas copiadas para /tmp/itau-build antes dos testes.
+surefire: tests=139 failures=0 errors=0 skipped=0
+failsafe: tests=9 failures=0 errors=0 skipped=0
+Comandos: mvn verify -Pintegracao (reactor completo); mvn -pl servicos/autorizacao-service -am verify (após último cenário de corrida na expiração).
+Ambos BUILD SUCCESS. Docker DynamoDB Local: 9 IT, nenhuma falha/erro/skip.
+Dois verificadores Python passaram. Demo Compose/Cognito/EKS ainda não executados com a nova segurança.
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for Plataforma de Limites e Autorização de Transações 1.0.0-SNAPSHOT:
+[INFO]
+[INFO] Plataforma de Limites e Autorização de Transações .. SUCCESS [  0.001 s]
+[INFO] Shared Kernel (DDD) — value objects comuns aos contextos SUCCESS [  1.053 s]
+[INFO] Published Language (DDD) — CloudEvents e payloads versionados SUCCESS [  0.941 s]
+[INFO] Bounded Context Autorização (BIAN Transaction Authorization) SUCCESS [  7.049 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  9.287 s
+[INFO] Finished at: 2026-10-22T13:11:48-03:00
+[INFO] ------------------------------------------------------------------------

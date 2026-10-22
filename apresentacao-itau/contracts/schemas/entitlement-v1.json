@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Projecao corporativa de autorizacao canal contrato conta v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id_evento", "id_cliente", "id_contrato", "id_conta", "ativo", "versao", "valido_ate", "ocorrido_em", "fonte"],
+  "properties": {
+    "id_evento": {"type": "string", "format": "uuid"},
+    "id_cliente": {"type": "string", "minLength": 1, "maxLength": 256},
+    "id_contrato": {"type": "string", "minLength": 1, "maxLength": 64},
+    "id_conta": {"type": "string", "minLength": 1, "maxLength": 64},
+    "ativo": {"type": "boolean"},
+    "versao": {"type": "integer", "minimum": 1},
+    "valido_ate": {"type": "integer", "minimum": 1},
+    "ocorrido_em": {"type": "string", "format": "date-time"},
+    "fonte": {"type": "string", "minLength": 1}
+  }
+}

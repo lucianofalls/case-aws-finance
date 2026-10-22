@@ -80,10 +80,9 @@ run "integracao_vpc_link_por_rota" {
   }
   assert {
     condition = jsondecode(output.corpo).paths["/v1/contratos/{id_contrato}/autorizacoes"].post["x-amazon-apigateway-integration"].requestParameters == {
-      "integration.request.path.id_contrato"   = "method.request.path.id_contrato"
-      "integration.request.header.X-Client-Id" = "context.authorizer.claims.client_id"
+      "integration.request.path.id_contrato" = "method.request.path.id_contrato"
     }
-    error_message = "path params do contrato e X-Client-Id do token devem ser repassados"
+    error_message = "path params devem ser repassados; não injetar identidade por header"
   }
   assert {
     condition     = jsondecode(output.corpo)["x-amazon-apigateway-gateway-responses"].BAD_REQUEST_BODY.statusCode == 422

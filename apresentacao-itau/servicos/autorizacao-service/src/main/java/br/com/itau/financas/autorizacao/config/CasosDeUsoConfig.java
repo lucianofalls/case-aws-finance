@@ -41,8 +41,8 @@ public class CasosDeUsoConfig {
     }
 
     @Bean
-    ExpirarReservaService expirarReservaService(AutorizacaoRepository autorizacoes, AutorizarTransacaoService autorizar) {
-        return new ExpirarReservaService(autorizacoes, autorizar);
+    ExpirarReservaService expirarReservaService(AutorizacaoRepository autorizacoes, AutorizarTransacaoService autorizar, Clock relogio) {
+        return new ExpirarReservaService(autorizacoes, autorizar, relogio);
     }
 
     /** Só existe quando a fila de expiração está configurada (ADR 035). */

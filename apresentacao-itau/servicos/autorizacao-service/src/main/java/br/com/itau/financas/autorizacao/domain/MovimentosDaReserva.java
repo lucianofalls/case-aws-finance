@@ -27,7 +27,7 @@ public record MovimentosDaReserva(Instant expiraEm, Dinheiro capturado, Dinheiro
     }
 
     public boolean expirou(Instant agora) {
-        return agora.isAfter(expiraEm);
+        return !agora.isBefore(expiraEm);
     }
 
     MovimentosDaReserva com(TipoOperacao movimento, Dinheiro valor) {

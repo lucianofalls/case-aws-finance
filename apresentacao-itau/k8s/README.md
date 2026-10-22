@@ -52,3 +52,11 @@ Antes do deploy:
 6. Testar rotação do Secret/rolling restart, failover Multi-AZ, total de conexões e backpressure do Kinesis.
 
 O guia é preparação declarativa, não prova de execução no cluster.
+
+### JWT de entrada (ADR-045)
+
+O renderer exige `JWT_ISSUER`, `JWT_JWKS_URI` e `JWT_CLIENTES_PERMITIDOS` (client IDs separados por vírgula).
+Usar issuer do pool Cognito, JWKS HTTPS confiável e somente aplicações autorizadas.
+Garantir rota de saída controlada para JWKS ou espelho corporativo autenticado no cluster privado.
+Sem essas configurações, o serviço falha fechado; X-Client-Id não autentica.
+No Compose, executar `python3 local/token-demo.py --preparar` antes de subir; os scripts de demo usam JWT local.
