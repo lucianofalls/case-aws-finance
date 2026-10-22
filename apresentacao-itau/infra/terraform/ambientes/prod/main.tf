@@ -92,10 +92,28 @@ resource "aws_security_group" "lambda_interna" {
   name = "financas-lambda-interna"
   vpc_id = module.rede.vpc_id
   description = "Reconciliador para NLB interno e RDS Postgres"
-  egress { from_port=0
- to_port=0
- protocol="-1"
- cidr_blocks=["0.0.0.0/0"] }
+  # Somente API AWS via interface/gateway endpoints e recursos internos.
+  egress {
+    description = "AWS PrivateLink / VPC endpoints"
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = [module.rede.cidr]
+  }
+  egress {
+    description = "RDS PostgreSQL na VPC"
+    from_port = 5432
+    to_port = 5432
+    protocol = "tcp"
+    cidr_blocks = [module.rede.cidr]
+  }
+  egress {
+    description = "NLB interno de Limites"
+    from_port = 8081
+    to_port = 8081
+    protocol = "tcp"
+    cidr_blocks = [module.rede.cidr]
+  }
 }
 
 # Mesmo conjunto de ações IAM antes anexado às tarefas ECS, agora por ServiceAccount via EKS Pod Identity.
@@ -114,7 +132,7 @@ locals {
     limites = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      { Effect = "Allow", Action = ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:UpdateItem"], Resource = module.dados.tabela_limites.arn },
+      { Effect = "Allow", Action = ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:UpdateItem", "dynamodb:TransactWriteItems"], Resource = module.dados.tabela_limites.arn },
       { Effect = "Allow", Action = ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:ChangeMessageVisibility", "sqs:GetQueueAttributes", "sqs:GetQueueUrl"], Resource = module.eventos.filas["limites-concedidos"].arn },
       { Effect = "Allow", Action = ["kms:Decrypt", "kms:GenerateDataKey"], Resource = aws_kms_key.financas.arn },
     ]

@@ -18,6 +18,6 @@ variable "interface_endpoints" {
   description = "Serviços acessados por PrivateLink (sem NAT)."
   default = [
     "ecr.api", "ecr.dkr", "logs", "monitoring", "xray", "sts", "kms", "secretsmanager",
-    "kinesis-streams", "sqs", "events", "elasticloadbalancing"
+    "kinesis-streams", "sqs", "events", "elasticloadbalancing", "ec2", "eks", "eks-auth"
   ]
 }
