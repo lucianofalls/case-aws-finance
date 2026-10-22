@@ -118,3 +118,7 @@ Os commits `d72c107` e `e2563e0` foram enviados a origin/main após o registro a
 Em 22/10/2026, `mvn clean verify` passou com JDK 21/Maven 3.9.9 em cópia temporária do baseline `607fd65`; Terraform 1.9.8 inicializou e validou prod (com avisos de atributo deprecated) e local. Quatro testes do importador OpenAPI passaram. Evidência: `docs/evidencias/fase-0-build-2026-10-22.txt` dentro de apresentacao-itau.
 
 Alterados: lockfiles prod/local (AWS prod 6.70.0; checksum local), teste OpenAPI que esperava versão antiga, teste IT para falhar sem Docker e novo `local/verificar-build.sh`. Teste IT alterado ainda pendente de execução; demo E2E, segurança, capacidade e demais fases não concluídas. Commit de progresso solicitado pelo usuário, sem declarar encerramento da fase.
+
+### Fechamento da validação da Fase 0
+
+Commit de implementação `0e0fede` enviado ao remoto. `mvn verify -Pintegracao` passou: 6 testes DynamoDB Local, zero falhas/erros/ignorados, além da suíte unitária. Nenhum E2E completo ou teste AWS está aprovado. Build em /tmp evita lentidão de leitura no workspace; fontes extraídas do Git e o teste IT atualizado copiado antes da execução. Erros conhecidos da Fase 0 resolvidos; avisos do provider e catalogação histórica registrados. Prosseguir sequencialmente à Fase 1.

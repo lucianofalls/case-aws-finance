@@ -5,7 +5,7 @@ Comando: mvn -B -ntp -Dmaven.repo.local=/tmp/itau-m2 clean verify
 Totais Surefire: tests=130 failures=0 errors=0 skipped=0
 
 [INFO] Reactor Summary for Plataforma de Limites e Autorização de Transações 1.0.0-SNAPSHOT:
-[INFO] 
+[INFO]
 [INFO] Plataforma de Limites e Autorização de Transações .. SUCCESS [  0.315 s]
 [INFO] Shared Kernel (DDD) — value objects comuns aos contextos SUCCESS [  6.125 s]
 [INFO] Published Language (DDD) — CloudEvents e payloads versionados SUCCESS [  4.587 s]
@@ -81,3 +81,24 @@ tests/corpo.tftest.hcl... tearing down
 tests/corpo.tftest.hcl... pass
 
 Success! 4 passed, 0 failed.
+
+Perfil integracao, após atualização de @Testcontainers:
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 19.85 s -- in br.com.itau.financas.limites.adapters.out.dynamodb.DynamoDbPosicaoRepositoryIT
+[INFO] Reactor Summary for Plataforma de Limites e Autorização de Transações 1.0.0-SNAPSHOT:
+[INFO]
+[INFO] Plataforma de Limites e Autorização de Transações .. SUCCESS [  0.795 s]
+[INFO] Shared Kernel (DDD) — value objects comuns aos contextos SUCCESS [  1.494 s]
+[INFO] Published Language (DDD) — CloudEvents e payloads versionados SUCCESS [  1.239 s]
+[INFO] Bounded Context Autorização (BIAN Transaction Authorization) SUCCESS [  4.521 s]
+[INFO] Bounded Context Limites (BIAN Position Keeping + Limit and Exposure Management) SUCCESS [ 24.901 s]
+[INFO] Bounded Context Contabilização (BIAN Financial Accounting) SUCCESS [  4.171 s]
+[INFO] Lambda: outbox relay (DynamoDB Streams → Kinesis / EventBridge) SUCCESS [  3.141 s]
+[INFO] Lambda: reconciliador de autorizações incertas (contexto Autorização) SUCCESS [  3.124 s]
+[INFO] Lambda: Anti-Corruption Layer do core banking (BIAN Sales Product Agreement / produtos) SUCCESS [  2.124 s]
+[INFO] Lambdas stub: antifraude (BIAN Fraud Evaluation) e notificações (BIAN Correspondence) SUCCESS [  0.967 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  46.836 s
+[INFO] Finished at: 2026-10-22T13:01:52-03:00
+[INFO] ------------------------------------------------------------------------
