@@ -11,7 +11,7 @@
 | P0 | EKS substitui ECS em prod | Módulo EKS + manifests | Terraform plan EKS Auto Mode sa-east-1, NLB TG binding |
 | P0 | RDS PostgreSQL substitui Aurora | `aws_db_instance` Multi-AZ | terraform plan, conexão TLS/JDBC, restauração backup |
 | P0 | Conciliação sem Data API Aurora | Lambda JDBC + Step Functions | Exercitar export AWS RDS `aws_s3` end-to-end |
-| P0 | Segurança de banco: sem app admin | **Pendente** | Role DML e job migração separadas; Secrets Manager/External Secrets |
+| P0 | Segurança de banco: sem app admin | Manifesto runtime com `contabilizacao_app` e Flyway desativado; runbook criado | Provisionar DB role/segredo, aplicar migrações com usuário DDL e provar conexão |
 | P0 | K8s Secrets e IAM | Pod Identity codificada | Pod consegue acessar Dynamo/Kinesis/SQS sem chaves estáticas |
 | P0 | JWT e zero trust interno | **Pendente** | validação token downstream, policy namespace/egress/TLS |
 | P1 | Cluster privado e PrivateLink | Endpoints ec2/eks-auth/ecr/s3/logs/... | Testar bootstrap de nodes sem NAT |

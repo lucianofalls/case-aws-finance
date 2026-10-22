@@ -380,7 +380,10 @@ spec:
             - name: DB_URL
               value: "jdbc:postgresql://$RDS_HOST:5432/contabilizacao?sslmode=require"
             - name: DB_USUARIO
-              value: "contabilizacao_admin"
+              value: "contabilizacao_app"
+            # Migracoes executadas fora dos Pods de runtime, com usuario DDL separado.
+            - name: SPRING_FLYWAY_ENABLED
+              value: "false"
             - name: DB_SENHA
               valueFrom:
                 secretKeyRef:
