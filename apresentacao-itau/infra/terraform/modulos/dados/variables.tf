@@ -44,21 +44,22 @@ variable "nome_aplicacao_kcl" {
   default = "contabilizacao-service"
 }
 
-variable "habilitar_aurora" {
-  type    = bool
-  default = true
-}
-
-variable "versao_aurora" {
-  type    = string
-  default = "16.4"
-}
-
-variable "classe_instancia_aurora" {
-  type        = string
-  description = "Graviton; dimensionar no teste de carga (~1,5k a 5k fatos/s com 3 a 4 inserts cada)."
-  default     = "db.r7g.2xlarge"
-}
+variable "habilitar_rds_postgres" { type=bool
+ default=true }
+variable "versao_postgres" { type=string
+ default="16.8" }
+variable "classe_instancia_postgres" { type=string
+ default="db.r7g.2xlarge" }
+variable "armazenamento_gb" { type=number
+ default=500 }
+variable "armazenamento_max_gb" { type=number
+ default=2000 }
+variable "iops_postgres" { type=number
+ default=12000 }
+variable "throughput_postgres" { type=number
+ default=500 }
+variable "origens_rds_security_groups" { type=list(string)
+ default=[] }
 
 variable "vpc_id" {
   type    = string

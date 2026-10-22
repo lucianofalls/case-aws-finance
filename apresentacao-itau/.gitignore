@@ -7,3 +7,6 @@ terraform.tfvars
 .idea/
 *.iml
 .vscode/
+
+# Gerado localmente pelo k8s/render.py; pode conter endpoints internos.
+k8s/rendered-stack.yaml

@@ -3,7 +3,7 @@
 #   EventBridge Scheduler (diário) → Step Functions "conciliacao"
 #     1. Lambda preparar-janela: janela (D-1 ou manual ≤ 24 h), prefixos e consultas
 #     2. em paralelo: exportação incremental de autorizacoes e limites (DynamoDB → S3, sem consumir capacidade)
-#                     + Aurora (Data API) exporta os evento_id contabilizados (aws_s3.query_export_to_s3)
+#                     + RDS PostgreSQL (Lambda JDBC na VPC) exporta os evento_id contabilizados (aws_s3.query_export_to_s3)
 #     3. Athena: fatos não publicados / não contabilizados → Lambda republicador → Kinesis
 #                operações sem decisão                      → Lambda agendar-orfas → fila de verificação
 #
@@ -249,7 +249,7 @@ resource "aws_athena_workgroup" "conciliacao" {
   }
 }
 
-# ---- Aurora exporta o razão para o S3 (aws_s3.query_export_to_s3) ---------------------------------------
+# ---- RDS PostgreSQL exporta o razão para o S3 (aws_s3.query_export_to_s3) ---------------------------------------
 resource "aws_iam_role" "aurora_exportacao" {
   name = "${var.prefixo}aurora-exportacao-conciliacao"
   assume_role_policy = jsonencode({
@@ -269,8 +269,8 @@ resource "aws_iam_role_policy" "aurora_exportacao" {
   })
 }
 
-resource "aws_rds_cluster_role_association" "exportacao" {
-  db_cluster_identifier = var.aurora.identificador
+resource "aws_db_instance_role_association" "exportacao" {
+  db_instance_identifier = var.rds_postgres.identificador
   feature_name          = "s3Export"
   role_arn              = aws_iam_role.aurora_exportacao.arn
 }
@@ -294,14 +294,12 @@ resource "aws_iam_role_policy" "maquina" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      { Effect = "Allow", Action = ["lambda:InvokeFunction"], Resource = [var.funcoes.preparar_janela, var.funcoes.republicador, var.funcoes.agendar_orfas] },
+      { Effect = "Allow", Action = ["lambda:InvokeFunction"], Resource = [var.funcoes.preparar_janela, var.funcoes.republicador, var.funcoes.agendar_orfas, var.funcoes.exportar_razao] },
       { Effect = "Allow", Action = ["dynamodb:ExportTableToPointInTime"], Resource = [var.tabela_autorizacoes.arn, var.tabela_limites.arn] },
       { Effect = "Allow", Action = ["dynamodb:DescribeExport"], Resource = ["${var.tabela_autorizacoes.arn}/export/*", "${var.tabela_limites.arn}/export/*"] },
       { Effect = "Allow", Action = ["s3:PutObject", "s3:AbortMultipartUpload", "s3:PutObjectAcl", "s3:GetObject"], Resource = "${aws_s3_bucket.conciliacao.arn}/*" },
       { Effect = "Allow", Action = ["s3:GetObject"], Resource = "${var.bucket_trilha.arn}/transacoes/*" },
       { Effect = "Allow", Action = ["s3:ListBucket", "s3:GetBucketLocation"], Resource = [aws_s3_bucket.conciliacao.arn, var.bucket_trilha.arn] },
-      { Effect = "Allow", Action = ["rds-data:ExecuteStatement"], Resource = var.aurora.arn },
-      { Effect = "Allow", Action = ["secretsmanager:GetSecretValue"], Resource = var.aurora.segredo_senha_arn },
       { Effect = "Allow", Action = ["athena:StartQueryExecution", "athena:GetQueryExecution", "athena:StopQueryExecution", "athena:GetQueryResults"], Resource = aws_athena_workgroup.conciliacao.arn },
       {
         Effect = "Allow", Action = ["glue:GetDatabase", "glue:GetTable", "glue:GetPartition", "glue:GetPartitions"],
@@ -332,8 +330,7 @@ resource "aws_sfn_state_machine" "conciliacao" {
     tabela_limites_arn      = var.tabela_limites.arn
     bucket                  = aws_s3_bucket.conciliacao.bucket
     kms_key_arn             = var.kms_key_arn
-    aurora_arn              = var.aurora.arn
-    aurora_segredo_arn      = var.aurora.segredo_senha_arn
+    exportar_razao_arn      = var.funcoes.exportar_razao
     workgroup               = aws_athena_workgroup.conciliacao.name
   })
 

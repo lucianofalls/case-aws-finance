@@ -35,3 +35,9 @@ variable "habilitar_eventbridge_transacoes" {
   default     = false
   description = "Ativa a ponte Kinesis -> EventBridge para TransacaoAutorizada, após review de quotas e custo. ADR-040."
 }
+
+variable "versao_kubernetes" {
+  type=string
+  description="EKS Auto Mode cluster version; conferir suporte sa-east-1 antes do plan"
+  default="1.34"
+}

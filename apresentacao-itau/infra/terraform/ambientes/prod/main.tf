@@ -3,10 +3,11 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.80"
+      version = ">= 6.15, < 7.0"
     }
   }
-  # Estado remoto (criar o bucket antes; lock nativo do S3):
+  # Estado remoto (criar o bucket antes
+ lock nativo do S3):
   # backend "s3" {
   #   bucket       = "itau-financas-terraform-state"
   #   key          = "plataforma-limites-autorizacao/prod.tfstate"
@@ -64,10 +65,12 @@ module "dados" {
   vpc_id           = module.rede.vpc_id
   cidr_vpc         = module.rede.cidr
   subnets_privadas = module.rede.subnets_privadas
+  origens_rds_security_groups = [module.eks.security_group_cluster_id, aws_security_group.lambda_interna.id]
 }
 
 module "eventos" {
-  # ADR-040: manter OFF até quota EventBridge/latência/custos validados; não altera o caminho transacional.
+  # ADR-040: manter OFF até quota EventBridge/latência/custos validados
+ não altera o caminho transacional.
   habilitar_eventbridge_transacoes = var.habilitar_eventbridge_transacoes
   source            = "../../modulos/eventos"
   kms_key_arn       = aws_kms_key.financas.arn
@@ -75,35 +78,31 @@ module "eventos" {
   diretorio_schemas = "${local.raiz}/contracts/schemas/eventos"
 }
 
-module "compute" {
-  source           = "../../modulos/compute"
+# EKS Auto Mode (não ECS). NLB interno é criado antes dos Pods e recebe IPs via TargetGroupBinding.
+module "eks" {
+  source           = "../../modulos/eks"
   vpc_id           = module.rede.vpc_id
   cidr_vpc         = module.rede.cidr
   subnets_privadas = module.rede.subnets_privadas
-  versao_imagem    = var.versao_imagem
+  kms_key_arn      = aws_kms_key.financas.arn
+  versao_kubernetes = var.versao_kubernetes
+}
 
-  ambiente_autorizacao = {
-    TABELA_AUTORIZACOES     = module.dados.tabela_autorizacoes.nome
-    LIMITES_URL             = "http://limites:8080" # ECS Service Connect
-    RETENCAO_AUTORIZACOES   = "35d"
-    FILA_RESERVAS_A_EXPIRAR = module.eventos.expiracao_de_reservas.fila_url
-  }
-  ambiente_limites = {
-    TABELA_LIMITES          = module.dados.tabela_limites.nome
-    FILA_LIMITES_CONCEDIDOS = module.eventos.filas["limites-concedidos"].url
-  }
-  ambiente_contabilizacao = {
-    DB_URL              = "jdbc:postgresql://${module.dados.aurora.endpoint}:5432/contabilizacao"
-    DB_USUARIO          = "contabilizacao_admin"
-    STREAM_TRANSACOES   = module.eventos.stream_transacoes.nome
-    KCL_APLICACAO       = module.dados.tabela_leases_kcl.nome
-    FILA_QUARENTENA_URL = module.eventos.fila_quarentena_contabilizacao.url
-  }
-  segredos_contabilizacao = {
-    DB_SENHA = "${module.dados.aurora.segredo_senha_arn}:password::"
-  }
+resource "aws_security_group" "lambda_interna" {
+  name = "financas-lambda-interna"
+  vpc_id = module.rede.vpc_id
+  description = "Reconciliador para NLB interno e RDS Postgres"
+  egress { from_port=0
+ to_port=0
+ protocol="-1"
+ cidr_blocks=["0.0.0.0/0"] }
+}
 
-  politica_iam_autorizacao = jsonencode({
+# Mesmo conjunto de ações IAM antes anexado às tarefas ECS, agora por ServiceAccount via EKS Pod Identity.
+# Revalidar estaticamente com iam-policy-autopilot antes de qualquer ambiente AWS.
+locals {
+  politicas_pod = {
+    autorizacao = jsonencode({
     Version = "2012-10-17"
     Statement = [
       { Effect = "Allow", Action = ["dynamodb:GetItem", "dynamodb:PutItem"], Resource = module.dados.tabela_autorizacoes.arn },
@@ -111,7 +110,7 @@ module "compute" {
       { Effect = "Allow", Action = ["kms:Decrypt", "kms:GenerateDataKey"], Resource = aws_kms_key.financas.arn },
     ]
   })
-  politica_iam_limites = jsonencode({
+    limites = jsonencode({
     Version = "2012-10-17"
     Statement = [
       { Effect = "Allow", Action = ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:UpdateItem"], Resource = module.dados.tabela_limites.arn },
@@ -119,7 +118,7 @@ module "compute" {
       { Effect = "Allow", Action = ["kms:Decrypt", "kms:GenerateDataKey"], Resource = aws_kms_key.financas.arn },
     ]
   })
-  politica_iam_contabilizacao = jsonencode({
+    contabilizacao = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -138,6 +137,26 @@ module "compute" {
       { Effect = "Allow", Action = ["kms:Decrypt", "kms:GenerateDataKey"], Resource = aws_kms_key.financas.arn },
     ]
   })
+  }
+}
+resource "aws_iam_role" "pod" {
+  for_each = local.politicas_pod
+  name = "financas-${each.key}-pod"
+  assume_role_policy = jsonencode({ Version="2012-10-17", Statement=[{
+    Effect="Allow", Principal={Service="pods.eks.amazonaws.com"}, Action=["sts:AssumeRole", "sts:TagSession"]
+  }]})
+}
+resource "aws_iam_role_policy" "pod" {
+  for_each = local.politicas_pod
+  role = aws_iam_role.pod[each.key].id
+  policy = each.value
+}
+resource "aws_eks_pod_identity_association" "servicos" {
+  for_each = local.politicas_pod
+  cluster_name = module.eks.cluster_name
+  namespace = "financas"
+  service_account = each.key
+  role_arn = aws_iam_role.pod[each.key].arn
 }
 
 module "funcoes" {
@@ -155,6 +174,11 @@ module "funcoes" {
     fila_arn  = module.eventos.expiracao_de_reservas.fila_arn
     dlq_arn   = module.eventos.expiracao_de_reservas.dlq_arn
   }
+  rds_postgres = {
+    endereco = module.dados.rds_postgres.endereco
+    segredo_senha_arn = module.dados.rds_postgres.segredo_senha_arn
+    identificador = module.dados.rds_postgres.identificador
+  }
   conciliacao = {
     bucket_nome = module.conciliacao.bucket.nome
     bucket_arn  = module.conciliacao.bucket.arn
@@ -162,9 +186,9 @@ module "funcoes" {
   }
   fila_corebanking_arn   = module.eventos.filas["corebanking-contratos"].arn
   fila_falhas_relay_arn  = module.eventos.fila_falhas_relay_arn
-  url_interna_limites    = module.compute.url_interna_limites
+  url_interna_limites    = module.eks.url_interna_limites
   subnets_privadas       = module.rede.subnets_privadas
-  security_group_lambdas = module.compute.security_group_servicos
+  security_group_lambdas = aws_security_group.lambda_interna.id
   kms_key_arn            = aws_kms_key.financas.arn
 }
 
@@ -176,23 +200,24 @@ module "conciliacao" {
   tabela_autorizacoes = { nome = module.dados.tabela_autorizacoes.nome, arn = module.dados.tabela_autorizacoes.arn }
   tabela_limites      = { nome = module.dados.tabela_limites.nome, arn = module.dados.tabela_limites.arn }
   bucket_trilha       = module.eventos.bucket_trilha
-  aurora = {
-    arn               = module.dados.aurora.arn
-    identificador     = module.dados.aurora.identificador
-    segredo_senha_arn = module.dados.aurora.segredo_senha_arn
+  rds_postgres = {
+    arn               = module.dados.rds_postgres.arn
+    identificador     = module.dados.rds_postgres.identificador
+    segredo_senha_arn = module.dados.rds_postgres.segredo_senha_arn
   }
   funcoes = {
     preparar_janela = module.funcoes.arns["preparar-janela"]
     republicador    = module.funcoes.arns["republicador"]
     agendar_orfas   = module.funcoes.arns["agendar-orfas"]
+    exportar_razao  = module.funcoes.arns["exportar-razao"]
   }
   topico_alarmes_arn = module.observabilidade.topico_alarmes_arn
 }
 
 module "api" {
   source                     = "../../modulos/api"
-  nlb_arn                    = module.compute.nlb.arn
-  nlb_dns_name               = module.compute.nlb.dns_name
+  nlb_arn                    = module.eks.nlb.arn
+  nlb_dns_name               = module.eks.nlb.dns_name
   contrato_openapi           = "${local.raiz}/contracts/openapi/autorizacoes-v1.yaml"
   schema_request_autorizacao = "${local.raiz}/contracts/openapi/schemas/autorizacao-request.json"
   sufixo_dominio_cognito     = data.aws_caller_identity.atual.account_id

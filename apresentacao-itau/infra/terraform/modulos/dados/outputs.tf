@@ -21,11 +21,12 @@ output "tabela_leases_kcl" {
   }
 }
 
-output "aurora" {
-  value = var.habilitar_aurora ? {
-    endpoint          = aws_rds_cluster.contabilizacao[0].endpoint
-    arn               = aws_rds_cluster.contabilizacao[0].arn
-    identificador     = aws_rds_cluster.contabilizacao[0].cluster_identifier
-    segredo_senha_arn = aws_rds_cluster.contabilizacao[0].master_user_secret[0].secret_arn
+output "rds_postgres" {
+  value = var.habilitar_rds_postgres ? {
+    endereco = aws_db_instance.contabilizacao[0].address
+    arn = aws_db_instance.contabilizacao[0].arn
+    identificador = aws_db_instance.contabilizacao[0].identifier
+    segredo_senha_arn = aws_db_instance.contabilizacao[0].master_user_secret[0].secret_arn
+    sg_id = aws_security_group.postgres[0].id
   } : null
 }

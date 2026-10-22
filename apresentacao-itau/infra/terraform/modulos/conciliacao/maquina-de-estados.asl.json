@@ -121,13 +121,12 @@
                 "States": {
                   "ExportarBlocoDoRazao": {
                     "Type": "Task",
-                    "Resource": "arn:aws:states:::aws-sdk:rdsdata:executeStatement",
+                    "Resource": "arn:aws:states:::lambda:invoke",
                     "Parameters": {
-                      "ResourceArn": "${aurora_arn}",
-                      "SecretArn": "${aurora_segredo_arn}",
-                      "Database": "contabilizacao",
-                      "Sql.$": "$"
+                      "FunctionName": "${exportar_razao_arn}",
+                      "Payload": { "sql.$": "$" }
                     },
+                    "OutputPath": "$.Payload",
                     "Retry": [{ "ErrorEquals": ["States.ALL"], "IntervalSeconds": 30, "MaxAttempts": 3, "BackoffRate": 2 }],
                     "End": true
                   }

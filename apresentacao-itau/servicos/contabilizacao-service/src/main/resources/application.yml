@@ -12,7 +12,7 @@ spring:
     username: ${DB_USUARIO:contabilizacao}
     password: ${DB_SENHA:contabilizacao}
     hikari:
-      maximum-pool-size: 10   # pool fixo por task: o motivo de a contabilização rodar em Fargate (ADR 023)
+      maximum-pool-size: 10   # por Pod no EKS; revisar max_connections do RDS e limites HPA (ADR-042)
   flyway:
     enabled: true
 
@@ -21,6 +21,10 @@ management:
     web:
       exposure:
         include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
 
 contabilizacao:
   regiao: ${AWS_REGION:sa-east-1}

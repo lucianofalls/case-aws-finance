@@ -1,7 +1,7 @@
 # Database-per-service (PDF §3.2):
 #   autorizacoes (DynamoDB) — contexto Autorização, outbox embutido no item, TTL 35 d
 #   limites      (DynamoDB) — contexto Limites, posição + operações + outbox explícito, uma partição por contrato
-#   contabilizacao (Aurora PostgreSQL) — razão em partidas dobradas
+#   contabilizacao (RDS PostgreSQL Multi-AZ) — razão em partidas dobradas
 #
 # Custo (docs/custos.md): em carga estável, PROVISIONED + auto scaling custa ~3x menos que on-demand.
 # On-demand fica para ambientes novos/imprevisíveis. Antes de picos planejados (Black Friday), pré-aquecer
@@ -157,55 +157,60 @@ resource "aws_appautoscaling_policy" "leitura" {
   }
 }
 
-# ---- Aurora PostgreSQL (contabilização) ------------------------------------------------------------------
+# ---- Amazon RDS PostgreSQL (NÃO Aurora) — writer e standby Multi-AZ síncrono ---------
 resource "aws_db_subnet_group" "contabilizacao" {
-  count      = var.habilitar_aurora ? 1 : 0
-  name       = "${var.prefixo}contabilizacao"
+  count = var.habilitar_rds_postgres ? 1 : 0
+  name = "${var.prefixo}contabilizacao"
   subnet_ids = var.subnets_privadas
 }
-
-resource "aws_security_group" "aurora" {
-  count       = var.habilitar_aurora ? 1 : 0
-  name        = "${var.prefixo}aurora-contabilizacao"
-  description = "PostgreSQL apenas a partir da VPC"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = [var.cidr_vpc]
+resource "aws_security_group" "postgres" {
+  count = var.habilitar_rds_postgres ? 1 : 0
+  name = "${var.prefixo}rds-postgres-contabilizacao"
+  description = "PostgreSQL 5432 de SGs autorizados EKS e Lambda conciliação, nunca CIDR VPC inteira"
+  vpc_id = var.vpc_id
+  dynamic "ingress" {
+    for_each=toset(var.origens_rds_security_groups)
+    content {
+      from_port=5432
+ to_port=5432
+ protocol="tcp"
+ security_groups=[ingress.value]
+    }
   }
+  egress { from_port=0
+ to_port=0
+ protocol="-1"
+ cidr_blocks=["0.0.0.0/0"] }
 }
-
-resource "aws_rds_cluster" "contabilizacao" {
-  count                               = var.habilitar_aurora ? 1 : 0
-  cluster_identifier                  = "${var.prefixo}contabilizacao"
-  engine                              = "aurora-postgresql"
-  engine_version                      = var.versao_aurora
-  database_name                       = "contabilizacao"
-  master_username                     = "contabilizacao_admin"
-  manage_master_user_password         = true # senha no Secrets Manager com rotação
-  iam_database_authentication_enabled = true
-  enable_http_endpoint                = true           # Data API: a conciliação exporta o razão para o S3 sem Lambda na VPC (ADR 034)
-  storage_type                        = "aurora-iopt1" # I/O-Optimized: ~4 inserts/transação tornariam o I/O avulso o maior custo
-  storage_encrypted                   = true
-  kms_key_id                          = var.kms_key_arn
-  db_subnet_group_name                = aws_db_subnet_group.contabilizacao[0].name
-  vpc_security_group_ids              = [aws_security_group.aurora[0].id]
-  backup_retention_period             = 14
-  deletion_protection                 = var.protecao_contra_exclusao
-  copy_tags_to_snapshot               = true
-  skip_final_snapshot                 = !var.protecao_contra_exclusao
-  final_snapshot_identifier           = var.protecao_contra_exclusao ? "${var.prefixo}contabilizacao-final" : null
-}
-
-resource "aws_rds_cluster_instance" "contabilizacao" {
-  count                        = var.habilitar_aurora ? 2 : 0 # writer + reader em AZs distintas (Multi-AZ)
-  identifier                   = "${var.prefixo}contabilizacao-${count.index}"
-  cluster_identifier           = aws_rds_cluster.contabilizacao[0].id
-  engine                       = aws_rds_cluster.contabilizacao[0].engine
-  engine_version               = aws_rds_cluster.contabilizacao[0].engine_version
-  instance_class               = var.classe_instancia_aurora # Graviton (r7g): custo e sustentabilidade
+resource "aws_db_instance" "contabilizacao" {
+  count = var.habilitar_rds_postgres ? 1 : 0
+  identifier = "${var.prefixo}contabilizacao"
+  engine = "postgres"
+  engine_version = var.versao_postgres
+  instance_class = var.classe_instancia_postgres
+  allocated_storage = var.armazenamento_gb
+  max_allocated_storage = var.armazenamento_max_gb
+  storage_type = "gp3"
+  iops = var.iops_postgres
+  storage_throughput = var.throughput_postgres
+  multi_az = true
+  publicly_accessible = false
+  db_name = "contabilizacao"
+  username = "contabilizacao_admin"
+  manage_master_user_password = true
+  master_user_secret_kms_key_id = var.kms_key_arn
+  db_subnet_group_name = aws_db_subnet_group.contabilizacao[0].name
+  vpc_security_group_ids = [aws_security_group.postgres[0].id]
+  storage_encrypted = true
+  kms_key_id = var.kms_key_arn
+  backup_retention_period = 30
+  deletion_protection = var.protecao_contra_exclusao
+  skip_final_snapshot = !var.protecao_contra_exclusao
+  final_snapshot_identifier = var.protecao_contra_exclusao ? "${var.prefixo}contabilizacao-final" : null
+  auto_minor_version_upgrade = true
   performance_insights_enabled = true
+  performance_insights_kms_key_id = var.kms_key_arn
+  enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+  copy_tags_to_snapshot = true
+  apply_immediately = false
 }

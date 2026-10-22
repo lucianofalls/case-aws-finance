@@ -20,14 +20,14 @@ variable "bucket_trilha" {
   type        = object({ nome = string, arn = string })
 }
 
-variable "aurora" {
-  description = "Cluster da contabilização (Data API habilitada) e segredo do usuário administrador."
+variable "rds_postgres" {
+  description = "Instância RDS PostgreSQL (sem Data API) e segredo do usuário administrador."
   type        = object({ arn = string, identificador = string, segredo_senha_arn = string })
 }
 
 variable "funcoes" {
   description = "ARN (alias) das Lambdas da conciliação."
-  type        = object({ preparar_janela = string, republicador = string, agendar_orfas = string })
+  type        = object({ preparar_janela = string, republicador = string, agendar_orfas = string, exportar_razao=string })
 }
 
 variable "topico_alarmes_arn" {

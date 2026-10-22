@@ -45,7 +45,7 @@ module "dados" {
   source                   = "../../modulos/dados"
   modo_cobranca            = "PAY_PER_REQUEST"
   protecao_contra_exclusao = false
-  habilitar_aurora         = false
+  habilitar_rds_postgres   = false
 }
 
 module "eventos" {

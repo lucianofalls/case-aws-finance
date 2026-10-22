@@ -11,7 +11,7 @@ data "aws_region" "atual" {}
 
 locals {
   # Lambdas da conciliação diária (ADR 034): só existem quando a conciliação está habilitada (prod).
-  nomes_conciliacao = ["preparar-janela", "republicador", "agendar-orfas"]
+  nomes_conciliacao = ["preparar-janela", "republicador", "agendar-orfas", "exportar-razao"]
 
   todas = {
     relay-autorizacoes = {
@@ -124,6 +124,20 @@ locals {
       na_vpc   = false
       ambiente = { BANCO_GLUE = try(var.conciliacao.banco_glue, ""), BUCKET_CONCILIACAO = try(var.conciliacao.bucket_nome, "") }
       politica = []
+    }
+    exportar-razao = {
+      artefato = "reconciliador"
+      handler = "br.com.itau.financas.reconciliador.conciliacao.ExportarRazaoJdbcHandler::handleRequest"
+      memoria = 512
+      timeout = 240
+      na_vpc = true # acesso privado à instância RDS PostgreSQL e Secrets Manager endpoint
+      ambiente = {
+        RDS_ENDPOINT = try(var.rds_postgres.endereco, "")
+        RDS_SECRET_ARN = try(var.rds_postgres.segredo_senha_arn, "")
+      }
+      politica = [
+        { acoes = ["secretsmanager:GetSecretValue"], recursos = [try(var.rds_postgres.segredo_senha_arn, "")] },
+      ]
     }
     republicador = {
       artefato = "outbox-relay"
