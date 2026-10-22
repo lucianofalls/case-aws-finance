@@ -39,7 +39,7 @@ class ExpirarReservaServiceTest {
                 new RegraDeConsumoDeLimite(limites, relogio, Duration.ofDays(7)),
                 new RegraDeCredito(limites, relogio),
                 new RegraDeEstorno(autorizacoes, limites, relogio),
-                new RegraDeMovimentoDaReserva(autorizacoes, limites, relogio)));
+                new RegraDeMovimentoDaReserva(autorizacoes, limites, relogio)), (id, ctr, conta) -> {});
         expirar = new ExpirarReservaService(autorizacoes, autorizar);
     }
 

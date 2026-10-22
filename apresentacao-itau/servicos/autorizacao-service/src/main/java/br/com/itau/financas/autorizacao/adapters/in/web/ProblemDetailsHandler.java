@@ -1,6 +1,7 @@
 package br.com.itau.financas.autorizacao.adapters.in.web;
 
 import br.com.itau.financas.autorizacao.application.ConflitoDeConcorrenciaException;
+import br.com.itau.financas.autorizacao.application.AcessoNegadoException;
 import br.com.itau.financas.autorizacao.application.LimitesIndisponivelException;
 import br.com.itau.financas.autorizacao.application.OperacaoEncerradaException;
 import br.com.itau.financas.autorizacao.domain.RegraDeNegocioVioladaException;
@@ -24,6 +25,11 @@ import java.util.stream.Collectors;
 public class ProblemDetailsHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProblemDetailsHandler.class);
+
+    @ExceptionHandler(AcessoNegadoException.class)
+    ResponseEntity<ProblemDetail> acessoNegado(AcessoNegadoException e) {
+        return responder(HttpStatus.FORBIDDEN, "acesso-negado", "Acesso negado", e.getMessage());
+    }
 
     @ExceptionHandler(RegraDeNegocioVioladaException.class)
     ResponseEntity<ProblemDetail> regraDeNegocio(RegraDeNegocioVioladaException e) {

@@ -38,6 +38,10 @@ for _ in $(seq 1 90); do
   curl -sf "$LIMITES/v1/contratos/$CONTRATO/posicao" >/dev/null && break; sleep 2
 done
 curl -s "$LIMITES/v1/contratos/$CONTRATO/posicao"; echo "   (limite R\$ 1.000,00)"
+# APENAS DEMO LOCAL: provisão simulada de entitlement por fonte confiável.
+# Em produção, um fluxo administrativo autenticado/ACL de identidade deve alimentar esta tabela.
+"${COMPOSE[@]}" exec -T localstack awslocal dynamodb put-item \
+  --table-name permissoes-contratos --item "{\"id_cliente\":{\"S\":\"canal-demo\"},\"id_contrato\":{\"S\":\"$CONTRATO\"},\"id_conta\":{\"S\":\"0001-123456\"},\"ativo\":{\"BOOL\":true}}" >/dev/null
 
 CHAVE=$(uuid)
 passo "1. Autorização aprovada → 201 com saldo_reservado"

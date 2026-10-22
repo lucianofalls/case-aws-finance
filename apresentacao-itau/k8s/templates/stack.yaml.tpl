@@ -105,6 +105,8 @@ spec:
               value: "$REGION"
             - name: TABELA_AUTORIZACOES
               value: "$TABELA_AUTORIZACOES"
+            - name: TABELA_PERMISSOES_CONTRATOS
+              value: "$TABELA_PERMISSOES_CONTRATOS"
             - name: LIMITES_URL
               value: "http://limites.financas.svc.cluster.local:8080"
             - name: RETENCAO_AUTORIZACOES

@@ -106,6 +106,7 @@ locals {
     Version = "2012-10-17"
     Statement = [
       { Effect = "Allow", Action = ["dynamodb:GetItem", "dynamodb:PutItem"], Resource = module.dados.tabela_autorizacoes.arn },
+      { Effect = "Allow", Action = ["dynamodb:GetItem"], Resource = module.dados.tabela_permissoes_contratos.arn },
       { Effect = "Allow", Action = ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:ChangeMessageVisibility", "sqs:GetQueueAttributes", "sqs:GetQueueUrl"], Resource = module.eventos.expiracao_de_reservas.fila_arn }, # ADR 035
       { Effect = "Allow", Action = ["kms:Decrypt", "kms:GenerateDataKey"], Resource = aws_kms_key.financas.arn },
     ]

@@ -47,7 +47,20 @@ class AutorizarTransacaoServiceTest {
                 new RegraDeConsumoDeLimite(limites, relogio, Duration.ofDays(7)),
                 new RegraDeCredito(limites, relogio),
                 new RegraDeEstorno(autorizacoes, limites, relogio),
-                new RegraDeMovimentoDaReserva(autorizacoes, limites, relogio)));
+                new RegraDeMovimentoDaReserva(autorizacoes, limites, relogio)), (id, ctr, conta) -> {});
+    }
+
+    @Test
+    void clienteSemPermissaoNaoMovimentaLimite() {
+        AutorizarTransacaoService bloqueado = new AutorizarTransacaoService(autorizacoes, List.of(
+                new RegraDeConsumoDeLimite(limites, relogio, Duration.ofDays(7)),
+                new RegraDeCredito(limites, relogio),
+                new RegraDeEstorno(autorizacoes, limites, relogio),
+                new RegraDeMovimentoDaReserva(autorizacoes, limites, relogio)),
+                (id, ctr, conta) -> { throw new AcessoNegadoException(); });
+        assertThatThrownBy(() -> bloqueado.executar(debito(UUID.randomUUID(), "10.00")))
+                .isInstanceOf(AcessoNegadoException.class);
+        assertThat(limites.chamadas()).isZero();
     }
 
     @Test
@@ -190,7 +203,8 @@ class AutorizarTransacaoServiceTest {
                     new RegraDeMovimentoDaReserva(autorizacoes, limites,
                             Clock.offset(relogio, Duration.ofDays(8))),
                     new RegraDeConsumoDeLimite(limites, relogio, Duration.ofDays(7)),
-                    new RegraDeCredito(limites, relogio), new RegraDeEstorno(autorizacoes, limites, relogio)));
+                    new RegraDeCredito(limites, relogio), new RegraDeEstorno(autorizacoes, limites, relogio)),
+                    (id, ctr, conta) -> {});
 
             assertThatThrownBy(() -> oitoDiasDepois.executar(solicitacao(UUID.randomUUID(), "10.00", "CAPTURA", original)))
                     .isInstanceOf(RegraDeNegocioVioladaException.class).hasMessageContaining("expirou");

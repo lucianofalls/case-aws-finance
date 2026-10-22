@@ -4,6 +4,8 @@ import br.com.itau.financas.autorizacao.adapters.out.dynamodb.DynamoDbAutorizaca
 import br.com.itau.financas.autorizacao.adapters.out.limites.LimitesHttpAdapter;
 import br.com.itau.financas.autorizacao.application.LimitesIndisponivelException;
 import br.com.itau.financas.autorizacao.application.port.out.AutorizacaoRepository;
+import br.com.itau.financas.autorizacao.application.port.out.AcessoClienteContratoPort;
+import br.com.itau.financas.autorizacao.adapters.out.dynamodb.DynamoDbAcessoClienteContratoAdapter;
 import br.com.itau.financas.autorizacao.application.port.out.OperacaoDeLimitePort;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
@@ -44,6 +46,12 @@ public class AdaptersConfig {
     AutorizacaoRepository autorizacaoRepository(DynamoDbClient dynamo, AutorizacaoProperties propriedades) {
         return new DynamoDbAutorizacaoRepository(dynamo, propriedades.aws().tabelaAutorizacoes(),
                 propriedades.aws().retencao());
+    }
+
+    @Bean
+    AcessoClienteContratoPort acessoClienteContrato(DynamoDbClient dynamo) {
+        return new DynamoDbAcessoClienteContratoAdapter(dynamo,
+                System.getenv().getOrDefault("TABELA_PERMISSOES_CONTRATOS", "permissoes-contratos"));
     }
 
     @Bean

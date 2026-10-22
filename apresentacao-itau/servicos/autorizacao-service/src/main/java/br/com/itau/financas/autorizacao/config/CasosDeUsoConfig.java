@@ -3,6 +3,8 @@ package br.com.itau.financas.autorizacao.config;
 import br.com.itau.financas.autorizacao.application.AutorizarTransacaoService;
 import br.com.itau.financas.autorizacao.application.port.in.AutorizarTransacao;
 import br.com.itau.financas.autorizacao.application.port.out.AutorizacaoRepository;
+import br.com.itau.financas.autorizacao.application.port.out.AcessoClienteContratoPort;
+import br.com.itau.financas.autorizacao.application.port.in.AutorizarTransacaoInterna;
 import br.com.itau.financas.autorizacao.application.port.out.OperacaoDeLimitePort;
 import br.com.itau.financas.autorizacao.application.regras.RegraDeConsumoDeLimite;
 import br.com.itau.financas.autorizacao.application.regras.RegraDeCredito;
@@ -28,17 +30,18 @@ public class CasosDeUsoConfig {
     }
 
     @Bean
-    AutorizarTransacao autorizarTransacao(AutorizacaoRepository autorizacoes, OperacaoDeLimitePort limites,
-                                          Clock relogio, AutorizacaoProperties propriedades) {
+    AutorizarTransacaoService autorizarTransacao(AutorizacaoRepository autorizacoes, OperacaoDeLimitePort limites,
+                                          Clock relogio, AutorizacaoProperties propriedades,
+                                          AcessoClienteContratoPort acesso) {
         return new AutorizarTransacaoService(autorizacoes, List.of(
                 new RegraDeConsumoDeLimite(limites, relogio, propriedades.reserva().validade()),
                 new RegraDeCredito(limites, relogio),
                 new RegraDeEstorno(autorizacoes, limites, relogio),
-                new RegraDeMovimentoDaReserva(autorizacoes, limites, relogio)));
+                new RegraDeMovimentoDaReserva(autorizacoes, limites, relogio)), acesso);
     }
 
     @Bean
-    ExpirarReservaService expirarReservaService(AutorizacaoRepository autorizacoes, AutorizarTransacao autorizar) {
+    ExpirarReservaService expirarReservaService(AutorizacaoRepository autorizacoes, AutorizarTransacaoService autorizar) {
         return new ExpirarReservaService(autorizacoes, autorizar);
     }
 

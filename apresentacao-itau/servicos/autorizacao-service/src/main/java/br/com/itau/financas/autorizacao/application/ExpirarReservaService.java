@@ -1,6 +1,6 @@
 package br.com.itau.financas.autorizacao.application;
 
-import br.com.itau.financas.autorizacao.application.port.in.AutorizarTransacao;
+import br.com.itau.financas.autorizacao.application.port.in.AutorizarTransacaoInterna;
 import br.com.itau.financas.autorizacao.application.port.out.AutorizacaoRepository;
 import br.com.itau.financas.autorizacao.domain.Autorizacao;
 import br.com.itau.financas.autorizacao.domain.AutorizacaoId;
@@ -27,9 +27,9 @@ public final class ExpirarReservaService {
     public static final String CLIENTE_EXPIRACAO = "sistema-expiracao-de-reservas";
 
     private final AutorizacaoRepository autorizacoes;
-    private final AutorizarTransacao autorizar;
+    private final AutorizarTransacaoInterna autorizar;
 
-    public ExpirarReservaService(AutorizacaoRepository autorizacoes, AutorizarTransacao autorizar) {
+    public ExpirarReservaService(AutorizacaoRepository autorizacoes, AutorizarTransacaoInterna autorizar) {
         this.autorizacoes = autorizacoes;
         this.autorizar = autorizar;
     }
@@ -45,7 +45,7 @@ public final class ExpirarReservaService {
             return Desfecho.NADA_A_LIBERAR;
         }
         UUID chave = UUID.nameUUIDFromBytes(("expiracao:" + idReserva).getBytes(StandardCharsets.UTF_8));
-        autorizar.executar(new SolicitacaoDeAutorizacao(CLIENTE_EXPIRACAO, chave.toString(),
+        autorizar.executarInternamente(new SolicitacaoDeAutorizacao(CLIENTE_EXPIRACAO, chave.toString(),
                 reserva.contratoId().valor(), reserva.contaId().valor(), reserva.saldoDaReserva().valor(),
                 reserva.valor().codigoMoeda(), TipoOperacao.LIBERACAO.name(), null, idReserva,
                 reserva.rastreio().correlationId(), null));

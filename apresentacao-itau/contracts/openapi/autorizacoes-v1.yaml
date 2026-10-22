@@ -68,6 +68,11 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Autorizacao' }
+        '403':
+          description: Cliente autenticado sem acesso ao contrato ou à conta
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
         '402':
           description: Limite insuficiente (recusa por regra de negócio)
           content:

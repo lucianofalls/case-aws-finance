@@ -2,6 +2,7 @@ package br.com.itau.financas.autorizacao.application;
 
 import br.com.itau.financas.autorizacao.application.port.in.AutorizarTransacao;
 import br.com.itau.financas.autorizacao.application.port.out.AutorizacaoRepository;
+import br.com.itau.financas.autorizacao.application.port.out.AcessoClienteContratoPort;
 import br.com.itau.financas.autorizacao.application.regras.RegraDeOperacao;
 import br.com.itau.financas.autorizacao.application.regras.RegraDeOperacao.Decisao;
 import br.com.itau.financas.autorizacao.domain.Autorizacao;
@@ -31,12 +32,15 @@ import java.util.Optional;
  *       é verificada 15 min depois pelo agendamento do próprio Limites (ADR 032): esta task pode até cair.</li>
  * </ol>
  */
-public final class AutorizarTransacaoService implements AutorizarTransacao {
+public final class AutorizarTransacaoService implements AutorizarTransacao, br.com.itau.financas.autorizacao.application.port.in.AutorizarTransacaoInterna {
 
     private final AutorizacaoRepository autorizacoes;
+    private final AcessoClienteContratoPort acessoCliente;
     private final Map<TipoOperacao, RegraDeOperacao> regras = new EnumMap<>(TipoOperacao.class);
 
-    public AutorizarTransacaoService(AutorizacaoRepository autorizacoes, List<RegraDeOperacao> regras) {
+    public AutorizarTransacaoService(AutorizacaoRepository autorizacoes, List<RegraDeOperacao> regras,
+                                    AcessoClienteContratoPort acessoCliente) {
+        this.acessoCliente = acessoCliente;
         this.autorizacoes = autorizacoes;
         regras.forEach(regra -> regra.tiposAtendidos().forEach(tipo -> this.regras.put(tipo, regra)));
         for (TipoOperacao tipo : TipoOperacao.values()) {
@@ -48,6 +52,16 @@ public final class AutorizarTransacaoService implements AutorizarTransacao {
 
     @Override
     public ResultadoAutorizacao executar(SolicitacaoDeAutorizacao solicitacao) {
+        // Checagem antes de cache idempotente e ANTES de qualquer operação do Limites.
+        // O cliente é derivado do token validado no edge; nunca confiar no body.
+        acessoCliente.exigirAcesso(solicitacao.clienteId(), solicitacao.idContrato(), solicitacao.idConta());
+        return executarInternamente(solicitacao);
+    }
+
+    @Override
+    public ResultadoAutorizacao executarInternamente(SolicitacaoDeAutorizacao solicitacao) {
+        // Uso EXCLUSIVO pela expiração interna. A mensagem traz somente id da reserva;
+        // ExpirarReservaService recupera contrato/conta da autorização já persistida.
         NovaAutorizacao pedido = interpretar(solicitacao);
 
         Optional<ResultadoAutorizacao> repeticao = repeticaoIdempotente(pedido);

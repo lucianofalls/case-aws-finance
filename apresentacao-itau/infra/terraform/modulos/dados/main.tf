@@ -106,6 +106,20 @@ resource "aws_dynamodb_table" "leases_kcl" {
   }
 }
 
+# Projeção de permissões cliente/contrato/conta provisionada por fonte de identidade CORPORATIVA.
+# P0 fail closed: não inferir titularidade de simples recebimento do ID do contrato.
+resource "aws_dynamodb_table" "permissoes_contratos" {
+  name = "${var.prefixo}permissoes-contratos"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key = "id_cliente"
+  range_key = "id_contrato"
+  deletion_protection_enabled = var.protecao_contra_exclusao
+  attribute { name="id_cliente"; type="S" }
+  attribute { name="id_contrato"; type="S" }
+  point_in_time_recovery { enabled=true }
+  server_side_encryption { enabled=true; kms_key_arn=var.kms_key_arn }
+}
+
 # ---- Auto scaling (só no modo provisionado) -------------------------------------------------------------
 resource "aws_appautoscaling_target" "escrita" {
   for_each           = local.provisionado ? local.tabelas : {}

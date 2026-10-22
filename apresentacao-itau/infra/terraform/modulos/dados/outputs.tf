@@ -30,3 +30,7 @@ output "rds_postgres" {
     sg_id = aws_security_group.postgres[0].id
   } : null
 }
+
+output "tabela_permissoes_contratos" {
+  value = { nome=aws_dynamodb_table.permissoes_contratos.name, arn=aws_dynamodb_table.permissoes_contratos.arn }
+}
