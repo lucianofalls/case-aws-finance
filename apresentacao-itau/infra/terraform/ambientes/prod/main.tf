@@ -195,7 +195,7 @@ module "funcoes" {
   }
   rds_postgres = {
     endereco = module.dados.rds_postgres.endereco
-    segredo_senha_arn = module.dados.rds_postgres.segredo_senha_arn
+    segredo_senha_arn = var.segredo_exportacao_rds_arn
     identificador = module.dados.rds_postgres.identificador
   }
   # Valores determinísticos, para NÃO criar ciclo funcoes ↔ conciliacao.
