@@ -34,10 +34,12 @@ class RepublicadorTest {
     }
 
     @Test
-    void itemQueNaoExisteMaisEhContadoESemFalha() {
+    void itemQueNaoExisteMaisBloqueiaConclusaoDaConciliacao() {
         var republicador = new Republicador(ids -> Map.of(), destinoQueAceita());
 
-        assertThat(republicador.republicar(List.of("aut-x")).naoEncontrados()).isEqualTo(1);
+        assertThatThrownBy(() -> republicador.republicar(List.of("aut-x")))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("trilha S3");
         assertThat(publicados).isEmpty();
     }
 

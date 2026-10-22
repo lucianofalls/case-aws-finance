@@ -34,10 +34,19 @@ colchetes são os blocos do pôster.
 | Pergunta | Resposta curta | Detalhe |
 |---|---|---|
 | E se duas transações debitarem o mesmo contrato ao mesmo tempo? | escrita condicional pela versão; a perdedora relê e tenta de novo | `docs/concorrencia.md` (C1–C11) |
-| E se o Limites aplicar o débito e a resposta se perder? | id determinístico + verificação em 15 min pelo reconciliador; janelas disjuntas | ADR 027 |
+| E se o Limites aplicar o débito e a resposta se perder? | id determinístico + Streams de Limites→SQS atrasada→reconciliador; reconciliação diária para falhas longas, sem SLA garantido de 15 min | ADR 027 |
 | E se o relay ficar parado? | o Streams guarda por 24 h; há alarme de `IteratorAge` e reconciliação diária pela trilha S3 | `visao-da-solucao.md` §6.3 |
 | Por que não Lambda no síncrono? | cold start na cauda, circuit breaker por ambiente, custo 4–6× | ADR 022 |
 | Por que não EKS? | operação de cluster sem benefício para 3 serviços | ADR 002 |
 | Como evolui um contrato? | campo opcional = mesma versão; breaking = `/v2` ou `.v2`, em paralelo | `visao-da-solucao.md` §5.4 e §5.6 |
 | Quanto custa? | ~US$ 35 mil/mês, US$ 8,90 por milhão | `docs/custos.md` |
 | Usou IA? | sim, como o PDF permite; cada decisão está registrada com o porquê e as fontes oficiais | ADRs + `MEMORIA.md` |
+
+
+### Nota do apresentador — mudanças C01–C12
+
+A demonstração deve incluir RESERVA, CAPTURA, LIBERACAO e expiração simulada via SQS. Os
+mecanismos de Scheduler/DLQ e conciliação S3/Athena em AWS **não são simulados integralmente**.
+A ponte Kinesis→EventBridge para `TransacaoAutorizada` é configurável e **OFF por padrão**, pois a
+quota e o custo precisam ser validados antes. A defesa deve separar código, validação estática e
+prova operacional. Não citar custo de cenário como economia realizada pelo banco.

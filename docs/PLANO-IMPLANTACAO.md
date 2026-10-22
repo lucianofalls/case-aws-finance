@@ -1,7 +1,7 @@
 # Plano de Implantação — Desafio Itaú POD99 (Plataforma de Limites e Autorização)
 
 > Passo a passo para construir **tudo o que o PDF pede**, na ordem: BIAN → DDD → contratos → arquitetura AWS → banco → microsserviços → eventos → API → segurança → observabilidade → IaC → demo → entrega e defesa.
-> Base: decisões e validações registradas em [MEMORIA.md](MEMORIA.md). Este documento é **só planejamento**: nada aqui foi implementado ainda.
+> Base: decisões e validações registradas em [MEMORIA.md](MEMORIA.md). **Este é um plano histórico de 21/10, NÃO um status de execução.** O código foi implementado e auditado posteriormente: ver [`../apresentacao-itau/docs/adr/README.md`](../apresentacao-itau/docs/adr/README.md) e [`../apresentacao-itau/docs/STATUS-FASES.md`](../apresentacao-itau/docs/STATUS-FASES.md). Itens antigos e cronograma abaixo são preservados para rastreabilidade.
 
 ---
 

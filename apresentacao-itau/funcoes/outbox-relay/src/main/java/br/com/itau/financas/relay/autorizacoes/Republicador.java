@@ -43,11 +43,19 @@ public final class Republicador {
         for (String id : idsAutorizacao) {
             Optional.ofNullable(itens.get(id)).map(Republicador::evento).ifPresent(eventos::add);
         }
+        int ausentes = idsAutorizacao.size() - eventos.size();
+        // Publica todos os itens ainda presentes, mas não encerra a janela silenciosamente se algum
+        // id já saiu pelo TTL: será preciso reidratar o CloudEvent original pela trilha S3 WORM.
         Set<String> falhas = destino.publicar(eventos);
         if (!falhas.isEmpty()) {
             throw new IllegalStateException(falhas.size() + " evento(s) não republicado(s); a máquina de estados retenta");
         }
-        return new Resultado(eventos.size(), idsAutorizacao.size() - eventos.size());
+        if (ausentes > 0) {
+            throw new IllegalStateException(ausentes + " autorização(ões) ausentes no DynamoDB: "
+                    + "não é possível reconstruir o evento após o TTL; replay deve usar a trilha S3 "
+                    + "com o event_id original. A conciliação NÃO será marcada como concluída.");
+        }
+        return new Resultado(eventos.size(), 0);
     }
 
     private static EventoParaPublicar evento(Map<String, AttributeValue> item) {

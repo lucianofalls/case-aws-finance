@@ -3,7 +3,7 @@
 **Objeto:** `itau-pod99-solucao.zip` (entrega do Claude Code para o desafio Itaú POD99).
 **Parecer da auditoria:** aprovar a continuidade com ressalvas; não declarar conformidade integral ainda.
 **Este documento:** registra, para **cada** achado, o que foi verificado no código, a correção, os arquivos, os
-testes e o critério de aceite. Nenhuma correção deste plano foi executada ainda (status inicial: *a fazer*).
+testes e o critério de aceite. A tabela original abaixo registra o **plano histórico**. O status de código vigente está em [`../apresentacao-itau/docs/STATUS-FASES.md`](../apresentacao-itau/docs/STATUS-FASES.md); não tratar os antigos "a fazer" como realidade atual.
 
 Legenda de esforço: **P** até meio dia · **M** 1 dia · **G** 2 dias ou mais.
 
@@ -13,18 +13,18 @@ Legenda de esforço: **P** até meio dia · **M** 1 dia · **G** 2 dias ou mais.
 
 | ID | Achado | Prioridade | Veredito após verificação | Esforço | Status |
 |---|---|---|---|---|---|
-| C01 | Compensação de operação órfã sem garantia (SQS best-effort; "reconciliação diária" inexistente) | **P0** | Procede | M | a fazer |
-| C02 | `PutRecords` e o relay paralelo não garantem ordem por contrato | **P0** | Procede; correção é retirar a promessa e provar a independência de ordem | P | a fazer |
-| C03 | Outbox da Autorização sem recuperação acima de 24 h (retenção do DynamoDB Streams) | P1 | Procede → **D1**: exportação incremental diária + conciliação + republicador | G | a fazer |
-| C04 | Divergência da arquitetura de referência e do exemplo de EventBridge | P1 | Procede em parte → **D3**: ADR comparativa + caminho derivado via Pipes | M | a fazer |
-| C05 | RESERVA e DÉBITO com o mesmo efeito; sem ciclo de vida da reserva | P1 | Procede em parte → **D2**: implementar `AmountBlock` (BIAN) | G | a fazer |
-| C06 | Quarentena da Contabilização avança o checkpoint; falha da quarentena perde o fato | P1 | **Procede, e é mais grave do que o relatado** | M | a fazer |
-| C07 | Falta a role de CloudWatch do API Gateway (`aws_api_gateway_account`) | P2 | **Procede; é bug de `apply` em produção** | P | a fazer |
-| C08 | Ambiente local não demonstrado; LocalStack 4.0 legado | P2 | Procede | P (código) + execução na máquina de teste | a fazer |
-| C09 | Modelo FinOps ilustrativo, sem sensibilidade | P2 | Procede | P | a fazer |
-| C10 | Diagramas sem ícones AWS; faltam deployment, compensação e estados | P3 | Procede (melhoria) | M | a fazer |
-| C11 | Roteiro de aceitação executável (seção 6 da auditoria) | — | Procede; o `demo.sh` não cobre estorno nem falhas induzidas | M | a fazer |
-| C12 | Documentação que promete o que não existe | — | Achado transversal (C01, C02, C03) | P | a fazer |
+| C01 | Compensação de operação órfã sem garantia (SQS best-effort; "reconciliação diária" inexistente) | **P0** | Procede | M | **Ver STATUS-FASES.md** |
+| C02 | `PutRecords` e o relay paralelo não garantem ordem por contrato | **P0** | Procede; correção é retirar a promessa e provar a independência de ordem | P | **Ver STATUS-FASES.md** |
+| C03 | Outbox da Autorização sem recuperação acima de 24 h (retenção do DynamoDB Streams) | P1 | Procede → **D1**: exportação incremental diária + conciliação + republicador | G | **Ver STATUS-FASES.md** |
+| C04 | Divergência da arquitetura de referência e do exemplo de EventBridge | P1 | Procede em parte → **D3**: ADR comparativa + caminho derivado via Pipes | M | **Ver STATUS-FASES.md** |
+| C05 | RESERVA e DÉBITO com o mesmo efeito; sem ciclo de vida da reserva | P1 | Procede em parte → **D2**: implementar `AmountBlock` (BIAN) | G | **Ver STATUS-FASES.md** |
+| C06 | Quarentena da Contabilização avança o checkpoint; falha da quarentena perde o fato | P1 | **Procede, e é mais grave do que o relatado** | M | **Ver STATUS-FASES.md** |
+| C07 | Falta a role de CloudWatch do API Gateway (`aws_api_gateway_account`) | P2 | **Procede; é bug de `apply` em produção** | P | **Ver STATUS-FASES.md** |
+| C08 | Ambiente local não demonstrado; LocalStack 4.0 legado | P2 | Procede | P (código) + execução na máquina de teste | **Ver STATUS-FASES.md** |
+| C09 | Modelo FinOps ilustrativo, sem sensibilidade | P2 | Procede | P | **Ver STATUS-FASES.md** |
+| C10 | Diagramas sem ícones AWS; faltam deployment, compensação e estados | P3 | Procede (melhoria) | M | **Ver STATUS-FASES.md** |
+| C11 | Roteiro de aceitação executável (seção 6 da auditoria) | — | Procede; o `demo.sh` não cobre estorno nem falhas induzidas | M | **Ver STATUS-FASES.md** |
+| C12 | Documentação que promete o que não existe | — | Achado transversal (C01, C02, C03) | P | **Ver STATUS-FASES.md** |
 
 **Ordem de execução:** C07 → C02 → C12 → C06 → C01 → C03 → C05 → C04 → C11 → C09 → C08 → C10.
 Começa pelo que é rápido e já elimina afirmações falsas; depois a confiabilidade (C06, C01, C03); por fim, a

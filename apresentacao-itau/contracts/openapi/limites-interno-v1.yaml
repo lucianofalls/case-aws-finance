@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: API interna do contexto Limites
-  version: 1.0.0
+  version: 1.1.0
   description: |
     Leste-oeste (ECS Service Connect / NLB interno). Não exposta no API Gateway.
     Relação Customer/Supplier: o contexto Autorização é o cliente.
@@ -10,7 +10,11 @@ paths:
   /v1/contratos/{id_contrato}/operacoes:
     post:
       operationId: aplicarOperacao
-      summary: Aplica débito/reserva/crédito/estorno na posição do contrato (BIAN Position Keeping Control/Capture)
+      summary: Aplica débito, reserva, captura, liberação, crédito ou estorno na posição do contrato (BIAN AmountBlock)
+      description: |
+        RESERVA movimenta disponível para bloqueado; CAPTURA movimenta bloqueado para utilizado;
+        LIBERACAO retorna bloqueado ao disponível. CAPTURA e LIBERACAO requerem
+        id_operacao_original referenciando a RESERVA, e todos os comandos são idempotentes por id_operacao.
       parameters:
         - { name: id_contrato, in: path, required: true, schema: { type: string } }
       requestBody:
@@ -22,11 +26,11 @@ paths:
               required: [id_operacao, tipo_operacao, valor, moeda, impressao_digital]
               properties:
                 id_operacao: { type: string, format: uuid }
-                tipo_operacao: { type: string, enum: [DEBITO, CREDITO, RESERVA, ESTORNO] }
+                tipo_operacao: { type: string, enum: [DEBITO, CREDITO, RESERVA, CAPTURA, LIBERACAO, ESTORNO] }
                 valor: { type: string, pattern: '^\d{1,16}(\.\d{1,2})?$' }
                 moeda: { type: string, pattern: '^[A-Z]{3}$' }
                 impressao_digital: { type: string, description: hash do conteúdo de negócio }
-                id_operacao_original: { type: string, format: uuid }
+                id_operacao_original: { type: string, format: uuid, description: Obrigatório para CAPTURA e LIBERACAO; ID da reserva original. ESTORNO referencia DEBITO/CAPTURA. }
       responses:
         '201': { description: Operação aplicada, content: { application/json: { schema: { $ref: '#/components/schemas/Posicao' } } } }
         '200': { description: Repetição idempotente, content: { application/json: { schema: { $ref: '#/components/schemas/Posicao' } } } }

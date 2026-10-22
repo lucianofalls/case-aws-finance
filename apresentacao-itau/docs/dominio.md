@@ -31,7 +31,7 @@ flowchart LR
 | Autorização | CR *Interactive Transaction Assessment* (Transaction Authorization) | `autorizacao.domain.Autorizacao` |
 | Avaliar transação | Action Term *Evaluate* | `AutorizarTransacao` / `AutorizarTransacaoService` |
 | Posição do contrato (limite, disponível) | CR *Financial Position Log* (Position Keeping): *Position Limit Value*, *Amount Block* | `limites.domain.Posicao` |
-| Operação (débito, reserva, crédito, estorno) | BQ *Financial Transaction Capture* | `limites.domain.Operacao` |
+| Operação (débito, reserva, captura, liberação, crédito, estorno) | BQ *Financial Transaction Capture* | `limites.domain.Operacao` |
 | Aplicar operação | Action Terms *Control* / *Capture* | `AplicarOperacaoService` |
 | Registro contábil | CR *Financial Booking Log* (Financial Accounting) | `contabilizacao.domain.RegistroContabil` |
 | Lançamento (partida dobrada) | BQ *Ledger Posting* (*Posting Direction*, *credit/debit pair*) | `contabilizacao.domain.Lancamento` |
@@ -42,7 +42,7 @@ flowchart LR
 
 | Agregado | Invariantes | Onde é garantida |
 |---|---|---|
-| `Autorizacao` | só APROVADA/ESTORNADA_PARCIALMENTE de DEBITO/RESERVA aceita estorno; Σ estornos ≤ valor aprovado; mesma Idempotency-Key nunca com outro conteúdo | `Autorizacao.validarEstorno/comEstorno/garantirMesmaRequisicao` + versão otimista no repositório |
+| `Autorizacao` | só DEBITO/CAPTURA aprovados aceitam estorno, Σ estornos ≤ valor utilizado; uma RESERVA só aceita CAPTURA/LIBERACAO até o bloqueado remanescente; mesma Idempotency-Key nunca com outro conteúdo | `Autorizacao.validarEstorno/comEstorno/garantirMesmaRequisicao` + versão otimista no repositório |
 | `Posicao` | consumo só se `disponivel ≥ valor`; devolução ≤ utilizado; limite do legado só com `versaoOrigem` mais nova | `Posicao.aplicar/comNovoLimite` + condição `versao` e `disponivel >= :valor` na escrita |
 | `Operacao` | idempotente por id; revertida nunca é ressuscitada; repetição só dentro da janela (10 min) | `Operacao.garantirRepeticaoValida` |
 | `RegistroContabil` | Σ devedor = Σ credor; imutável | construtor do record + trigger `DEFERRABLE` no Postgres |
@@ -68,14 +68,24 @@ flowchart LR
 | **I**SP | ports pequenos: `OperacaoDeLimitePort` (uma operação), `VerificacaoPosteriorPort`, `Quarentena`, `ConsultaDeAutorizacoes`/`ReversaoNoLimite` |
 | **D**IP | `domain` e `application` dependem só de ports; Spring, AWS SDK, Resilience4j e JDBC ficam em `adapters`/`config` — verificado por `ArquiteturaTest` (ArchUnit) |
 
-## Semântica de `tipo_operacao` (ADR 021)
+## Semântica atual de `tipo_operacao` (ADRs 021 e 035 — ciclo AmountBlock)
+
+Invariante da posição: **limiteConcedido = disponível + bloqueado + utilizado**. O campo
+`saldo_reservado` representa **bloqueado + utilizado**, não somente o valor pendente.
 
 | Tipo | Efeito no limite | Evento | Contabilização |
 |---|---|---|---|
-| DEBITO | consome (`disponivel −= valor`) | TransacaoAutorizada | D clientes a receber / C obrigações com estabelecimentos |
-| RESERVA | consome (pré-autorização; captura fora do escopo) | TransacaoAutorizada | sem lançamento (não é fato contábil) |
-| CREDITO | devolve até o utilizado (pagamento) | TransacaoAutorizada | D disponibilidades / C clientes a receber |
-| ESTORNO | devolve; exige `metadata.id_autorizacao_original` | EstornoRealizado | inverso do débito |
+| DEBITO | disponível → utilizado | TransacaoAutorizada | D clientes a receber / C obrigações |
+| RESERVA | disponível → bloqueado | TransacaoAutorizada (com expiração) | não gera lançamento |
+| CAPTURA | bloqueado → utilizado; referencia RESERVA | TransacaoAutorizada | lança como DEBITO |
+| LIBERACAO | bloqueado → disponível; referencia RESERVA | TransacaoAutorizada | não gera lançamento |
+| CREDITO | utilizado → disponível | TransacaoAutorizada | D disponibilidades / C clientes a receber |
+| ESTORNO | usado → disponível; referencia DEBITO/CAPTURA | EstornoRealizado | contra-lançamento |
+| Expiração | libera saldo **remanescente** de RESERVA via comando LIBERACAO | TransacaoAutorizada de LIBERACAO | não gera lançamento |
+
+CAPTURA/LIBERACAO/ESTORNO usam `metadata.id_autorizacao_original` no OpenAPI externo,
+`id_operacao_original` no contrato interno. O agendamento do Scheduler pode atrasar, falhar
+ou ser reentregue: comandos idempotentes e DLQs preservam a capacidade de recuperação.
 
 Redução do limite pelo legado abaixo do já utilizado deixa o disponível negativo: bloqueia novas operações sem
 desfazer as aprovadas.

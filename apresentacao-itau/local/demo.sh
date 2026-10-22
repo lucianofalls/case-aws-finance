@@ -84,6 +84,9 @@ for _ in $(seq 1 60); do
 done
 "${COMPOSE[@]}" exec -T postgres psql -U contabilizacao -c "$CONSULTA LIMIT 6;"
 
-passo "9. Traces ponta a ponta: http://localhost:16686 (serviço autorizacao-service)"
+passo "9. Ciclo BIAN AmountBlock: RESERVA → CAPTURA → LIBERACAO → expiração simulada (contrato isolado)"
+bash "$(dirname "$0")/demo-ciclo-reserva.sh"
+
+passo "10. Traces ponta a ponta: http://localhost:16686 (serviço autorizacao-service)"
 echo "429 (usage plan), Cognito e WAF são do API Gateway: estão em infra/terraform/ambientes/prod (não sobem no LocalStack)."
 rm -f "$RESPOSTA"

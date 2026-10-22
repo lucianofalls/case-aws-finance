@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: API de Autorização de Transações
-  version: 1.0.0
+  version: 1.1.0
   description: |
     Autorização síncrona com verificação e reserva de limite por contrato (PDF §2.3).
 
@@ -12,6 +12,11 @@ info:
 
     **Versionamento:** major no path (`/v1`). Mudanças aditivas não mudam a versão. Breaking change → `/v2`,
     convivência mínima de 6 meses, headers `Deprecation` e `Sunset` (RFC 9745 / RFC 8594) na versão antiga.
+
+    **Ciclo de reserva (BIAN AmountBlock):** RESERVA bloqueia limite, CAPTURA consome do bloqueado,
+    LIBERACAO devolve do bloqueado ao disponível e a expiração libera o saldo remanescente.
+    CAPTURA/LIBERACAO exigem `metadata.id_autorizacao_original` com o ID de RESERVA aprovada.
+    ESTORNO referencia uma autorização de DEBITO ou CAPTURA aprovada.
 
     **Erros:** RFC 7807 (`application/problem+json`) com `codigo` e `correlation_id`.
   contact:
@@ -40,6 +45,12 @@ paths:
             examples:
               debito:
                 value: { id_conta: "0001-123456", valor: 1500.00, moeda: BRL, tipo_operacao: DEBITO, id_estabelecimento: "EST-42" }
+              captura:
+                value: { id_conta: "0001-123456", valor: 30.00, moeda: BRL, tipo_operacao: CAPTURA,
+                         metadata: { id_autorizacao_original: "9b2e6f0e-4d3c-5a1b-8e7f-0123456789ab" } }
+              liberacao:
+                value: { id_conta: "0001-123456", valor: 20.00, moeda: BRL, tipo_operacao: LIBERACAO,
+                         metadata: { id_autorizacao_original: "9b2e6f0e-4d3c-5a1b-8e7f-0123456789ab" } }
               estorno:
                 value: { id_conta: "0001-123456", valor: 300.00, moeda: BRL, tipo_operacao: ESTORNO,
                          metadata: { id_autorizacao_original: "9b2e6f0e-4d3c-5a1b-8e7f-0123456789ab" } }

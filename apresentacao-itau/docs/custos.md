@@ -52,3 +52,21 @@ Desenho implementado (v2)
 - 1.500 TPS médios é premissa; o custo de DynamoDB, Kinesis e API Gateway escala linearmente com ela.
 - Número de tasks e classe do Aurora são estimativas até o teste de carga (`tests/k6`).
 - Preços de lista; um banco desse porte normalmente tem desconto negociado.
+
+## Sensibilidade e feature flag — auditoria C09 (22/10/2026)
+
+```bash
+python3 docs/custos/sensibilidade.py
+```
+
+O script varia o **TPS médio hipotético**, não o pico (5.000 TPS pedido pelo PDF), e apresenta
+uma **estimativa incremental ilustrativa** caso a ponte opcional Kinesis → EventBridge Pipes →
+EventBridge → SNS → SQS esteja ligada. A flag real `habilitar_eventbridge_transacoes` no Terraform
+continua desligada por padrão. A coluna de delta considera, para cada fato, uma chamada Pipes,
+um evento EventBridge, uma publicação SNS e três requests SQS — **não cobre** DLQs, retries,
+retenção, quotas, novos consumidores, fan-out adicional ou custos de novos recursos.
+
+As linhas do script original não consideram integralmente as mudanças C01/C03/C05 (agendamento de
+expiração, conciliação diária, exportação S3, Athena, Step Functions, DLQs e rateio por produto),
+portanto **os US$ 35 mil são um cenário antigo, não TCO completo nem economia validada**. Antes de
+qualquer deploy, obter nova precificação, medição de payloads, tráfego médio por horário e `terraform plan`.

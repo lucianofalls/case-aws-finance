@@ -65,8 +65,10 @@ Exemplo: débito de R$ 150,00 no contrato `CT-123`.
 
 ### 2.3 Exceção — resultado incerto (passo 12)
 
-Se o Limites não responder a tempo, a Autorização não sabe se o débito foi aplicado. Ela responde **503** e agenda
-uma verificação numa fila SQS com atraso de 15 minutos. O **reconciliador** confere e, se a operação ficou órfã
+Se o Limites não responder a tempo, a Autorização não sabe se o débito foi aplicado. Ela responde **503**. A própria operação persistida no **Limites** é capturada pelo **DynamoDB Streams**
+e a Lambda `agendador-verificacao` a entrega à SQS com atraso de 15 minutos, **independentemente** da task
+Autorização estar viva. A entrega é at-least-once e conta com DLQ; quando houver uma falha prolongada,
+a conciliação diária por exportações DynamoDB/Athena/Aurora complementa a recuperação. O **reconciliador** confere e, se a operação ficou órfã
 (debitada sem decisão gravada), **reverte** o débito.
 
 O cliente pode retentar com a mesma `Idempotency-Key` por até **10 minutos**, e a reversão só acontece depois
@@ -421,7 +423,7 @@ nas notificações reais ao cliente (hoje um stub).
 | Decisão | Ganho | Custo aceito | ADR |
 |---|---|---|---|
 | Relay Lambda em vez de EventBridge Pipes | ~US$ 2,7 mil/mês economizados | Código pequeno a manter (testado) | 026 |
-| Id determinístico + reconciliação posterior | 1 escrita por autorização no caminho feliz | Limite de uma operação órfã fica preso até 15 min | 027 |
+| Id determinístico + reconciliação posterior | 1 escrita por autorização no caminho feliz | Limite órfão é investigado após ~15 min, podendo demorar mais com falhas/retentativas | 027 |
 | DynamoDB Streams como transporte do outbox | Sem dual-write, gatilho nativo | Retenção de 24 h: relay parado por mais de 1 dia perde eventos. Mitigado por alarme de `IteratorAge` e reconciliação diária pela trilha S3 | 026 |
 | DR regional ativo-passivo | Consistência do limite preservada | RTO regional maior; Global Tables multi-região forte (MRSC) não está disponível em sa-east-1 | 010 |
 
@@ -453,3 +455,16 @@ nas notificações reais ao cliente (hoje um stub).
 | Os contratos | `../contracts/` (OpenAPI, AsyncAPI, JSON Schemas) |
 | A infraestrutura | `../infra/terraform/` |
 | Como rodar | [../README.md](../README.md) · `../local/LEIAME.md` |
+
+
+### Atualização de auditoria — 22/10/2026
+
+- **C01/C03:** agendador de verificações derivado de Streams do Limites, SQS atrasada e conciliação diária
+  com exportações DynamoDB/Athena/Aurora já existem. **Não há garantia absoluta de correção em 15 minutos**.
+- **C05:** modelo AmountBlock agora distingue RESERVA→CAPTURA/LIBERACAO e expiração, com regras de domínio.
+- **C06:** eventos de tipo desconhecido não são descartados pela contabilização; devem ir à quarentena/DLQ.
+- **C04:** ponte Kinesis→EventBridge Pipes `TransacaoAutorizada` v1 e fan-out SNS→SQS agora são
+  configuráveis por Terraform, **desligados por padrão** até validação de quota/custo (ADR-040).
+- **C03 remanescente:** republicação automática baseada no item atual não recupera evento expirado pelo TTL;
+  a conciliação falha em vez de encerrar silenciosamente e há runbook de replay a partir da trilha S3 WORM.
+- Resultados de Maven/LocalStack/Terraform após estas alterações **ainda não foram executados**.
