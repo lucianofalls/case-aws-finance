@@ -1,7 +1,7 @@
 # ADR-037 — Evento transacional: Kinesis versus requisito de EventBridge
 
 **Data:** 2026-10-21  
-**Status:** PROPOSTA / gap contratual pendente de validação com avaliadores  
+**Status:** complementada pela ADR-040 em 22/10/2026; ponte opcional no Terraform, OFF por padrão; validação funcional pendente  
 **Foco:** AWS Well-Architected (Reliability, Performance Efficiency, Cost Optimization) e contrato de eventos POD99
 
 ## Requisito do PDF original
@@ -50,4 +50,4 @@ Manter o desenho atual por throughput/custo e defender a exceção com análise 
 - `docs/adr/README.md` (ADR-028).
 - `contracts/asyncapi/financas-eventos.yaml`.
 
-**Estado:** ADR documentada, ponte **não implementada**; execução de teste de integração Kinesis→EventBridge depende de definição de escopo e benchmark.
+**Estado atualizado em 22/10:** a ponte Kinesis→Pipes→EventBridge e SNS→SQS foram **implementadas em Terraform** pela [ADR-040](040-ponte-kinesis-eventbridge-opcional.md), mas estão **desligadas por padrão**, sem `terraform validate/plan` atual nem execução AWS. O gap de prova operacional e dimensionamento permanece aberto.

@@ -114,3 +114,36 @@ Arquivos e testes presentes **não equivalem a testes aprovados**.
 Para uma entrega de entrevista, a prioridade imediata é **obter evidência de execução local íntegra** e fechar o gap do evento EventBridge. Para produção bancária, ainda faltam validação de requisitos operacionais, segurança, custos, SLO e testes de recuperação.
 
 **Esta auditoria não ativou GitHub Actions e não criou recursos AWS.**
+
+
+---
+
+## Atualização de correções (22/10/2026) — referência atual
+
+O conteúdo acima é a auditoria-base de 21/10. Os arquivos seguintes representam **alterações
+posteriores** que ainda precisam de Maven, Terraform e Docker/LocalStack no Mac.
+Não considerar as pendências antigas C04/C08/C09/C10/C11/C12 como completamente ausentes.
+
+| Fase de 22/10 | Correção publicada | Situação atual |
+|---|---|---|
+| Confiabilidade | Scheduler retry+DLQ separado da SQS consumer DLQ; mensagens Jackson; accounting unknown-event fail-closed; ADR-039 | Código/IaC presentes, E2E pendente |
+| Eventos | Pipe opcional Kinesis→EventBridge com CloudEvent em detail.event; regra SNS→SQS; ADR-040 | OFF por padrão, sem quota, plan ou teste AWS |
+| Domínio/contratos | CAPTURA, LIBERACAO e reserva em OpenAPI, domínio e demo manual | Código publicado, verificação local pendente |
+| Recuperação histórica | Republicador falha quando item após TTL desapareceu, utilitário manual S3 NDJSON dry-run; ADR-041 | **Não é recuperação automática histórica completa** |
+| FinOps | Sensibilidade por TPS médio e estimativa incremental da ponte | Cenário ilustrativo; custos de conciliação/Scheduler não incorporados no TCO |
+| Local | Imagem LocalStack configurável, portas 127.0.0.1, demo de ciclo AmountBlock, COMO-RODAR atualizado | **Não testado em Docker nesta revisão** |
+| Diagramas | `docs/diagramas/fluxos-atuais.md` com sequência, eventos e estados | PNG/SVG originais preservados mas ainda não redesenhados com ícones AWS |
+
+A matriz atual por item encontra-se em
+[STATUS-FASES](../../apresentacao-itau/docs/STATUS-FASES.md).
+
+### Bloqueios antes de declarar produção / solução totalmente validada
+
+1. Executar Maven, ArchUnit, Testcontainers e validação Terraform incluindo a flag opcional ON/OFF.
+2. Confirmar integração real da ponte, filtros CloudEvents, permissão SNS/SQS/DLQ e desempenho de pico.
+3. Injetar falhas na saga, expiração e conciliação; provar recuperação entre dois commits.
+4. Fechar recuperação automática se DynamoDB TTL já apagou a autorização; a trilha WORM sozinha não garante conter fato nunca publicado.
+5. Incluir custos reais de conciliação, Scheduler, retenção, observabilidade e segurança no TCO.
+6. Atualizar diagramas finais oficiais AWS após validar topologia em execução.
+
+**GitHub Actions não foi utilizado nem recriado. Nenhum recurso AWS foi aplicado.**

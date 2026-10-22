@@ -70,3 +70,21 @@ Cada reserva **não** vira evento próprio: o saldo resultante já vai em `Trans
 | Replay | Kinesis 7 dias; EventBridge archive 90 dias; trilha S3 (WORM) |
 | Envenenamento | KCL: 3 tentativas → quarentena SQS, segue o shard; stubs: `bisect_batch_on_function_error` |
 | Custo de filtragem | filtros nos event source mappings: registros descartados não invocam nem cobram a Lambda |
+
+
+## Atualização pós-auditoria: ponte de compatibilidade EventBridge (ADR-040)
+
+O fluxo contábil principal continua no **Kinesis**. Foi adicionada uma ponte opcional e
+**desligada por padrão** via EventBridge Pipes, que filtra somente
+`br.com.itau.financas.autorizacao.transacao-autorizada.v1`, envolve o CloudEvent em
+`detail.event` (preservando o `event_id`) e publica na custom bus. Uma regra destina
+esse fato a um tópico SNS e uma SQS de notificação, ambos com DLQs e retries relevantes.
+
+**Não confundir IaC com execução:** a feature flag
+`habilitar_eventbridge_transacoes` ainda exige validação de Terraform, quota EventBridge
+no pico 5.000 TPS, leitores adicionais do Kinesis e orçamento. A SQS ainda não contém
+um consumidor de notificação real. Consulte [fluxos atuais](diagramas/fluxos-atuais.md).
+
+O prazo de retenção de DynamoDB Streams é 24h; conciliação diária e replay histórico
+precisam ser testados. Após TTL, a recuperação da trilha S3 é **manual** e a trilha pode
+não conter um evento que nunca chegou ao Kinesis (ADR-041).
