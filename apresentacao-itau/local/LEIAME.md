@@ -1,32 +1,28 @@
-# Ambiente local
+# Executar localmente
 
-O passo a passo completo (pré-requisitos por sistema, resultado esperado e problemas comuns) está em
-[../COMO-RODAR.md](../COMO-RODAR.md).
+Pré-requisitos e diagnóstico: [COMO-RODAR.md](../COMO-RODAR.md).
 
 ```bash
-bash local/subir.sh     # pré-requisitos → build + testes → LocalStack/Postgres/Jaeger → terraform apply (local) → serviços
-bash local/demo.sh      # roteiro dos passos 0–9 (201, 200, 422, 402, concorrência, 503, eventos, traces)
-bash local/derrubar.sh  # remove containers, dados e o estado local do Terraform
+bash local/executar-tudo.sh
+# ou em etapas:
+bash local/subir.sh
+bash local/demo.sh
+# ao terminar (remove dados locais):
+bash local/derrubar.sh
 ```
 
-| Componente | Local | AWS |
+| Componente | Execução local | Arquitetura de produção |
 |---|---|---|
-| autorizacao / limites / contabilizacao | containers (mesma imagem) | ECS Fargate ARM64 |
-| DynamoDB, Streams, Kinesis, SQS, EventBridge, Lambdas | LocalStack 4.0 (mesmos módulos Terraform) | serviços gerenciados |
-| Aurora PostgreSQL | `postgres:16` | Aurora (Graviton, Multi-AZ) |
-| API Gateway, Cognito, WAF, usage plans (429) | fora (chamada direta com `X-Client-Id`) | `ambientes/prod` |
-| Glue Schema Registry, Firehose/S3 Object Lock | desligados por flag (`modulos/eventos`) | `ambientes/prod` |
-| X-Ray | Jaeger (mesmo agente OpenTelemetry) | ADOT → X-Ray |
+| Autorização, Limites, Contabilização | Containers Docker Compose | Pods no EKS Auto Mode |
+| DynamoDB/Streams/Kinesis/SQS/EventBridge/Lambda | LocalStack; módulos Terraform compartilhados | Serviços AWS |
+| Ledger e Inbox PostgreSQL | PostgreSQL 16 + Flyway no container | RDS PostgreSQL convencional Multi-AZ |
+| Identidade da entrada | JWT RS256 local, assinatura/issuer/client_id/scope validados | IdP/Cognito + Resource Server |
+| Expiração | Validade local de 2 minutos; mensagem SQS após o vencimento | Política de 7 dias + EventBridge Scheduler |
+| Observabilidade | Jaeger | Collector/ADOT e monitoramento corporativo |
 
-Diferenças de configuração em relação à AWS, todas no `docker-compose.yml`:
-
-| Configuração | Por quê |
-|---|---|
-| `localstack/localstack:4.0` fixado | última linha Community sem cadastro; as versões de 2026 exigem auth token |
-| `LAMBDA_IGNORE_ARCHITECTURE=1` | as Lambdas são `arm64` (Graviton) na AWS; localmente rodam na arquitetura da máquina |
-| `LOCALSTACK_HOST=localstack:4566` | as URLs de fila devolvidas pelo LocalStack precisam ser resolvíveis de dentro dos containers |
-| `KCL_MODO_LEITURA=polling` | o enhanced fan-out do KCL usa HTTP/2 (`SubscribeToShard`), confiável só na AWS |
-| `AWS_CBOR_ENABLED=false` | Kinesis em JSON no emulador (SDK v2: `aws.cborEnabled`) |
-
-Os testes de concorrência também rodam sem Docker, com repositórios em memória de mesma semântica. O teste do
-adaptador DynamoDB real roda com `mvn verify -Pintegracao` (Testcontainers; exige Docker).
+LocalStack usa imagem legada `4.0` para manter o baseline do projeto; não representa
+suporte validado nas versões atuais. Não é necessário inserir credenciais AWS.
+O teste não emula EKS, Pod Identity, NLB, WAF, Cognito real, TLS/failover RDS,
+Scheduler, conciliação Athena/Glue/S3 diária ou performance de 5.000 TPS. Esses aceites
+continuam separados no backlog. Autorização/ledger/eventos são exercitados de ponta a
+ponta nos componentes locais, sem prometer equivalência operacional com produção.

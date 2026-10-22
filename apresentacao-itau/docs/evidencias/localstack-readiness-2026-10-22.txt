@@ -1,0 +1,97 @@
+Revisão local em fases — 22/10/2026
+Baseline remoto: 052971fadc9d943d80589b8b33e18e2264b6b9e4
+Correção HTTP/ADRs: 50df502
+
+EXECUTADO:
+- JDK Temurin 21.0.5, Maven 3.9.9, clean verify no reactor completo: BUILD SUCCESS.
+- Surefire XML: tests=142 failures=0 errors=0 skipped=0.
+- Para executar neste runtime: proxy Maven temporário + truststore do sistema;
+  Byte Buddy carregado com -javaagent nos testes, por restrição de self-attach.
+  Nenhuma validação TLS foi desabilitada; configuração temporária fora do repositório.
+- Primeiras tentativas do build falharam por DNS/truststore e self-attach do Mockito;
+  a execução final acima foi a correção desses limites do runtime.
+- python3 -m unittest discover -s local -p test_*.py -v: 3 testes, OK.
+- python3 scripts/verificar-migracao-eks-rds.py: 11 controles, exit 0.
+- python3 local/verificar-estatico.py: exit 0 (JSON/XML/Python/Bash/YAML/SVG/PNG).
+- terraform 1.9.8 fmt -check em ambientes/local: exit 0.
+- terraform init -backend=false e providers lock -platform=linux_amd64: concluídos.
+  validate local falhou por checksum do provider em cache. Lockfile versionado
+  preservado; nenhum checksum manualmente inventado ou validacao contornada.
+
+NÃO EXECUTADO/APROVADO NESTA REVISÃO:
+- Docker/LocalStack E2E, Testcontainers (*IT): Docker ausente.
+- Apply local, criação de imagens e runtimes Lambda neste host.
+- AWS real: nenhuma operação de deploy, apply ou ativação de Actions.
+- Produção EKS/RDS/IAM/TLS/DR/capacidade/5.000 TPS.
+
+Resumo da execução final Java:
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.108 s -- in br.com.itau.financas.kernel.DinheiroTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.426 s -- in br.com.itau.financas.eventos.ContratoDeEventosTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.033 s -- in br.com.itau.financas.eventos.CodecDeEventosTest
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.145 s -- in br.com.itau.financas.autorizacao.application.ExpirarReservaServiceTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s -- in br.com.itau.financas.autorizacao.application.AutorizarTransacaoServiceTest$ResultadoIncerto
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in br.com.itau.financas.autorizacao.application.AutorizarTransacaoServiceTest$Reserva
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in br.com.itau.financas.autorizacao.application.AutorizarTransacaoServiceTest$Estorno
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s -- in br.com.itau.financas.autorizacao.application.AutorizarTransacaoServiceTest$Concorrencia
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in br.com.itau.financas.autorizacao.application.AutorizarTransacaoServiceTest$Idempotencia
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.133 s -- in br.com.itau.financas.autorizacao.application.AutorizarTransacaoServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.102 s -- in br.com.itau.financas.autorizacao.config.SegurancaConfigTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.241 s -- in br.com.itau.financas.autorizacao.adapters.out.dynamodb.AcessoClienteContratoTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.227 s -- in br.com.itau.financas.autorizacao.adapters.in.web.AutorizacaoControllerTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in br.com.itau.financas.autorizacao.domain.AutorizacaoIdTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in br.com.itau.financas.autorizacao.domain.AutorizacaoTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.622 s -- in br.com.itau.financas.autorizacao.ArquiteturaTest
+[INFO] Tests run: 52, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.132 s -- in br.com.itau.financas.limites.application.AplicarOperacaoServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in br.com.itau.financas.limites.application.AplicarLimiteDoLegadoServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.160 s -- in br.com.itau.financas.limites.adapters.out.dynamodb.EventosParaCloudEventTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.492 s -- in br.com.itau.financas.limites.ArquiteturaTest
+[INFO] Tests run: 21, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.312 s -- in br.com.itau.financas.contabilizacao.application.ContabilizarFatoServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.568 s -- in br.com.itau.financas.contabilizacao.adapters.in.kinesis.TransacoesRecordProcessorTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.033 s -- in br.com.itau.financas.contabilizacao.adapters.in.sqs.ReprocessadorDeQuarentenaTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.029 s -- in br.com.itau.financas.contabilizacao.domain.PlanoDeContasTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.070 s -- in br.com.itau.financas.contabilizacao.ArquiteturaTest
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.280 s -- in br.com.itau.financas.relay.RelayDeOutboxTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.044 s -- in br.com.itau.financas.relay.autorizacoes.RepublicadorTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.111 s -- in br.com.itau.financas.reconciliador.VerificarAutorizacaoIncertaTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.174 s -- in br.com.itau.financas.reconciliador.expiracao.AgendadorDeExpiracaoHandlerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in br.com.itau.financas.reconciliador.AgendadorDeVerificacaoHandlerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in br.com.itau.financas.reconciliador.adapters.SqsFilaDeVerificacaoTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.044 s -- in br.com.itau.financas.reconciliador.conciliacao.ConciliacaoTest
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.275 s -- in br.com.itau.financas.acl.TradutorDeContratoLegadoTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.302 s -- in br.com.itau.financas.stubs.ConsumidorDeTransacoesTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Plataforma de Limites e Autorização de Transações .. SUCCESS [  0.091 s]
+[INFO] Shared Kernel (DDD) — value objects comuns aos contextos SUCCESS [  1.853 s]
+[INFO] Published Language (DDD) — CloudEvents e payloads versionados SUCCESS [  1.331 s]
+[INFO] Bounded Context Autorização (BIAN Transaction Authorization) SUCCESS [ 25.964 s]
+[INFO] Bounded Context Limites (BIAN Position Keeping + Limit and Exposure Management) SUCCESS [  4.962 s]
+[INFO] Bounded Context Contabilização (BIAN Financial Accounting) SUCCESS [ 15.067 s]
+[INFO] Lambda: outbox relay (DynamoDB Streams → Kinesis / EventBridge) SUCCESS [  4.438 s]
+[INFO] Lambda: reconciliador de autorizações incertas (contexto Autorização) SUCCESS [  3.571 s]
+[INFO] Lambda: Anti-Corruption Layer do core banking (BIAN Sales Product Agreement / produtos) SUCCESS [  1.980 s]
+[INFO] Lambdas stub: antifraude (BIAN Fraud Evaluation) e notificações (BIAN Correspondence) SUCCESS [  1.191 s]
+[INFO] BUILD SUCCESS
+[INFO] Total time:  01:00 min
+
+## Revisão do setup LocalStack — 22/10/2026
+
+Preparados `local/verificar-infra.py` e regressões: prontidão real dos recursos,
+falha imediata para Lambda Failed, diagnóstico automático de containers, versões
+mínimas e lockfile readonly. O estado local só é removido quando DynamoDB retorna
+ResourceNotFoundException, sem confundir falha de conexão com emulador recriado.
+
+Validações executadas nesta revisão: seis testes Python aprovados, verificadores
+estáticos EKS/RDS e local aprovados, bash -n e git diff --check aprovados.
+Sem Docker/Maven/Terraform instalados neste host: não houve novo build Java,
+validate Terraform ou E2E. Scripts preparados para Docker Desktop no Mac.
+Arquivos adicionais: `local/{verificar-infra.py,test_verificar_infra.py,preflight.py,
+subir.sh,executar-tudo.sh}`, COMO-RODAR e ADR-046. Commit: consultar histórico
+`fix(local): prepara setup e barreira de prontidao LocalStack` para SHA final.

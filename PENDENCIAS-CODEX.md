@@ -78,8 +78,8 @@
 
 ## Fase 5 — Testes locais para executar no Mac [P1]
 
-- [ ] Atualizar `local/subir.sh`, `local/demo.sh`, `local/demo-ciclo-reserva.sh`, Docker Compose e instruções para o Java/entitlement/reserva/RDS PostgreSQL atualizados; **não usar Aurora em nenhum ambiente**.
-- [ ] Preparar testes HTTP: autorização, replay mesma chave, chave com outro conteúdo, conta/tenant negado 403, limite insuficiente, dois débitos concorrentes, `CAPTURA/LIBERACAO` parciais, expiração e estorno.
+- [x] Atualizar `local/subir.sh`, `local/demo.sh`, `local/demo-ciclo-reserva.sh`, Docker Compose e instruções para o Java/entitlement/reserva/RDS PostgreSQL atualizados; **não usar Aurora em nenhum ambiente**.
+- [x] Preparar testes HTTP: autorização, replay mesma chave, chave com outro conteúdo, conta/tenant negado 403, limite insuficiente, dois débitos concorrentes, `CAPTURA/LIBERACAO` parciais, expiração e estorno.
 - [ ] Demonstrar Postgres local: schema Flyway, Inbox, ledger e partidas dobradas; Kinesis/SQS/EventBridge simulados conforme suporte real do LocalStack escolhido.
 - [ ] Adicionar cenário local **kind/k3d** opcional, com overlay diferente dos manifests exclusivos do EKS (`TargetGroupBinding`, Pod Identity), ou explicar objetivamente a limitação. LocalStack não comprova EKS gerenciado.
 - [ ] Documentar os comandos na ordem exata, pré-requisitos no Mac, logs esperados, critérios de aceite e diagnóstico de falhas; **não dizer que passaram antes de execução**.
@@ -151,3 +151,60 @@ Implementados JWT RS256 no backend com issuer/validade/token_use/client_id/scope
 Arquivos: configuração/DTO HTTP/testes de Autorização, adaptador/testes DynamoDB de Limites, pom, contratos HTTP/entitlement, renderer/manifests, scripts/Compose locais e ADR-045. Seed local passou a usar JWT assinado e validade; chaves efêmeras ignoradas no Git, portas restritas ao loopback.
 
 Riscos/dependências: ingestão da fonte corporativa de entitlement depende do contrato do banco (desenho versionado na ADR-045; não implantado); integração Cognito real/JWKS no cluster privado e E2E local pendentes. Cognito existente autentica canais M2M, não 80 milhões de contas/usuários. Segurança leste-oeste e TLS RDS continuam nas fases seguintes. A conclusão dos testes não é aprovação de produção.
+
+## Revisão incremental Fase 1 — contrato HTTP (22/10/2026)
+
+Baseline `052971f`. Corrigidos: campo desconhecido rejeitado pelo Jackson conforme
+`additionalProperties: false`; `metadata.id_autorizacao_original` exige string UUID
+canônica; schema explicita múltiplos de centavo; respostas 401/403 do filtro incluem
+`codigo`; OpenAPI possui exemplos das seis operações. ADRs 042–044 reconciliadas
+com as evidências anteriores. Acrescentados três testes HTTP de regressão.
+
+Validações desta revisão: verificadores Python EKS/RDS e estático local passaram.
+Build Java e E2E desta revisão serão registrados separadamente; os testes anteriores
+não atestam automaticamente o código alterado. Checklist amplo da Fase 1 permanece
+aberto para os cenários ainda sem evidência (timeout após commit, mudanças de limite,
+integração corporativa). Não há fechamento da fase nem aprovação de produção.
+
+Por instrução atual do usuário, a próxima etapa é preparar e corrigir a execução local
+com LocalStack (subfase local da Fase 5), mantendo os P0 de produção visíveis. Isso
+não muda a arquitetura e não declara concluídas as Fases 2–4.
+
+## Subfase local — execução reproduzível (22/10/2026)
+
+Correção de contrato: `50df502`. Preparação local priorizada por instrução do usuário.
+`local/executar-tudo.sh` coordena build/setup/aceite e guarda log local; `demo.sh` e
+`demo-ciclo-reserva.sh` usam verificador Python com falha explícita. Conferidos: status
+HTTP, vínculo canal/contrato/conta, revogação, replay, concorrência, saldo individual,
+expiração após prazo real, Inbox e partidas dobradas. Estes são **cenários implementados**,
+não E2E aprovado. Rede Docker explícita e Terraform local restrito ao loopback.
+
+Validações executadas: 142 testes Java sem falhas/erros/skip, três testes Python do
+verificador, dois verificadores estáticos e fmt Terraform local. Evidências e limites:
+`apresentacao-itau/docs/evidencias/localstack-readiness-2026-10-22.txt` e ADR-046.
+Docker ausente: E2E/IT pendentes no Mac. Terraform validate desta revisão bloqueado por
+checksum do provider em cache; lockfile original preservado. Sem Actions/apply AWS.
+
+Arquivos alterados nesta subfase: `local/{executar-tudo.sh,subir.sh,demo.sh,demo-ciclo-reserva.sh,
+verificar-demo.py,preflight.py,test_verificar_demo.py,docker-compose.yml,LEIAME.md}`,
+`COMO-RODAR.md`, `.gitignore`, comentários do Dockerfile e ambiente Terraform local,
+validação do endpoint local, README da raiz, MIGRACAO-EKS-RDS, STATUS e ADR-046.
+
+**Abertos:** produção Fases 2–4/6–7; fonte de entitlement; TLS/identidade interna; TLS e
+roles SQL; recuperação, capacidade e operação AWS. O aceite do Mac será a evidência
+necessária para fechar os itens de demonstração da Fase 5.
+
+## Revisão do setup LocalStack — 22/10/2026
+
+Preparados `local/verificar-infra.py` e regressões: prontidão real dos recursos,
+falha imediata para Lambda Failed, diagnóstico automático de containers, versões
+mínimas e lockfile readonly. O estado local só é removido quando DynamoDB retorna
+ResourceNotFoundException, sem confundir falha de conexão com emulador recriado.
+
+Validações executadas nesta revisão: seis testes Python aprovados, verificadores
+estáticos EKS/RDS e local aprovados, bash -n e git diff --check aprovados.
+Sem Docker/Maven/Terraform instalados neste host: não houve novo build Java,
+validate Terraform ou E2E. Scripts preparados para Docker Desktop no Mac.
+Arquivos adicionais: `local/{verificar-infra.py,test_verificar_infra.py,preflight.py,
+subir.sh,executar-tudo.sh}`, COMO-RODAR e ADR-046. Commit: consultar histórico
+`fix(local): prepara setup e barreira de prontidao LocalStack` para SHA final.

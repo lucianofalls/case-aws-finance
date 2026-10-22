@@ -1,6 +1,23 @@
 # Checklist de implementação EKS/RDS PostgreSQL — 22/10/2026
 
-**Ramo `main`, sem GitHub Actions; sem aplicar AWS.**
+**Sem GitHub Actions; sem aplicar AWS.**
+
+## Situação atual consolidada — revisão LocalStack de 22/10/2026
+
+- Revisão do contrato sobre `052971f`: commit `50df502`.
+- Build Java desta revisão: **142 testes, zero falhas/erros/ignorados**.
+- Verificadores estáticos EKS/RDS e local, e três testes do verificador financeiro: aprovados.
+- Roteiro LocalStack: implementado em `local/executar-tudo.sh`, com aceite automático.
+- **E2E Docker/LocalStack e Testcontainers desta revisão não executados** (Docker ausente no runtime).
+- Terraform local: fmt passou; init e providers lock concluíram, mas validate foi bloqueado
+  por divergência do checksum do cache do provider neste runtime. Lockfile versionado preservado;
+  nenhum hash ajustado manualmente. Validar novamente no Mac antes do apply local.
+- Fases 2–4 e 6–7 de produção continuam abertas. O aceite local não as encerra.
+- ADR-046 registra decisões e limites; `COMO-RODAR.md` é o roteiro atual de execução.
+
+Os registros abaixo preservam a cronologia; declarações antigas de "pendente" ou "parcial"
+são superadas apenas pelas evidências explicitamente registradas após cada revisão.
+
 
 | Pri. | Requisito | Status no Git | Aceite obrigatório |
 |---|---|---|---|
@@ -13,7 +30,7 @@
 | P0 | Conciliação sem Data API Aurora | Lambda JDBC + Step Functions | Exercitar export AWS RDS `aws_s3` end-to-end |
 | P0 | Segurança de banco: sem app admin | Manifesto runtime com `contabilizacao_app` e Flyway desativado; runbook criado | Provisionar DB role/segredo, aplicar migrações com usuário DDL e provar conexão |
 | P0 | K8s Secrets e IAM | Pod Identity codificada | Pod consegue acessar Dynamo/Kinesis/SQS sem chaves estáticas |
-| P0 | JWT e zero trust interno | **Pendente** | validação token downstream, policy namespace/egress/TLS |
+| P0 | JWT e zero trust interno | JWT de entrada implementado; identidade interna pendente | validação token downstream, policy namespace/egress/TLS |
 | P1 | Cluster privado e PrivateLink | Endpoints ec2/eks-auth/ecr/s3/logs/... | Testar bootstrap de nodes sem NAT |
 | P1 | Autoscaling | HPA + EKS Auto Mode; instalação de metrics-server não localizada | Teste escala 5.000 TPS, backpressure Kinesis e p99 |
 | P1 | Durabilidade RDS | Multi-AZ+backups+proteção exclusão | PITR/restore e RPO/RTO medidos |
@@ -25,7 +42,7 @@
 | P2 | Diagramas AWS e custos EKS/RDS | Docs Markdown atualizados | PNG AWS official icons, PRICING CALCULATOR na região |
 | P2 | RTO/RPO e DR | Documentado | Exercício regional e runbook validado |
 
-## Testes no Mac (SOMENTE após receber confirmação de conclusão do ciclo de correções)
+## Testes no Mac (roteiro atual em COMO-RODAR.md)
 
 ```bash
 cd case-aws-finance/apresentacao-itau
@@ -130,3 +147,36 @@ Implementados JWT RS256 no backend com issuer/validade/token_use/client_id/scope
 Arquivos: configuração/DTO HTTP/testes de Autorização, adaptador/testes DynamoDB de Limites, pom, contratos HTTP/entitlement, renderer/manifests, scripts/Compose locais e ADR-045. Seed local passou a usar JWT assinado e validade; chaves efêmeras ignoradas no Git, portas restritas ao loopback.
 
 Riscos/dependências: ingestão da fonte corporativa de entitlement depende do contrato do banco (desenho versionado na ADR-045; não implantado); integração Cognito real/JWKS no cluster privado e E2E local pendentes. Cognito existente autentica canais M2M, não 80 milhões de contas/usuários. Segurança leste-oeste e TLS RDS continuam nas fases seguintes. A conclusão dos testes não é aprovação de produção.
+
+## Revisão incremental Fase 1 — contrato HTTP (22/10/2026)
+
+Baseline `052971f`. Corrigidos: campo desconhecido rejeitado pelo Jackson conforme
+`additionalProperties: false`; `metadata.id_autorizacao_original` exige string UUID
+canônica; schema explicita múltiplos de centavo; respostas 401/403 do filtro incluem
+`codigo`; OpenAPI possui exemplos das seis operações. ADRs 042–044 reconciliadas
+com as evidências anteriores. Acrescentados três testes HTTP de regressão.
+
+Validações desta revisão: verificadores Python EKS/RDS e estático local passaram.
+Build Java e E2E desta revisão serão registrados separadamente; os testes anteriores
+não atestam automaticamente o código alterado. Checklist amplo da Fase 1 permanece
+aberto para os cenários ainda sem evidência (timeout após commit, mudanças de limite,
+integração corporativa). Não há fechamento da fase nem aprovação de produção.
+
+Por instrução atual do usuário, a próxima etapa é preparar e corrigir a execução local
+com LocalStack (subfase local da Fase 5), mantendo os P0 de produção visíveis. Isso
+não muda a arquitetura e não declara concluídas as Fases 2–4.
+
+## Revisão do setup LocalStack — 22/10/2026
+
+Preparados `local/verificar-infra.py` e regressões: prontidão real dos recursos,
+falha imediata para Lambda Failed, diagnóstico automático de containers, versões
+mínimas e lockfile readonly. O estado local só é removido quando DynamoDB retorna
+ResourceNotFoundException, sem confundir falha de conexão com emulador recriado.
+
+Validações executadas nesta revisão: seis testes Python aprovados, verificadores
+estáticos EKS/RDS e local aprovados, bash -n e git diff --check aprovados.
+Sem Docker/Maven/Terraform instalados neste host: não houve novo build Java,
+validate Terraform ou E2E. Scripts preparados para Docker Desktop no Mac.
+Arquivos adicionais: `local/{verificar-infra.py,test_verificar_infra.py,preflight.py,
+subir.sh,executar-tudo.sh}`, COMO-RODAR e ADR-046. Commit: consultar histórico
+`fix(local): prepara setup e barreira de prontidao LocalStack` para SHA final.

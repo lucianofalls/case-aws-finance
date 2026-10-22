@@ -10,9 +10,9 @@ O payload do cliente não pode ser fonte de permissão.
 ## Decisão
 - `AutorizarTransacaoService.executar` verifica `id_cliente`, `id_contrato`, `id_conta`
   em DynamoDB `permissoes-contratos` (leitura fortemente consistente).
-- Um entitlement só é válido quando `ativo=true` e `id_conta` corresponde.
+- Um entitlement só é válido quando `ativo=true`, `id_conta` corresponde e `valido_ate` ainda não venceu (ADR-045).
 - Ausência/revogação/inconsistência implica **HTTP 403 e nenhuma chamada ao Limites**.
-- O ID do cliente deve vir do token Cognito, validado/injetado no API Gateway;
+- O ID do canal vem de `client_id` do JWT validado no próprio backend (ADR-045);
   o NLB é privado e não deve ser publicado fora da VPC.
 - A expiração originada em SQS usa porta de aplicação **interna**, alimentada
   por uma reserva persistida previamente, não um header técnico falsificável.
@@ -22,9 +22,9 @@ O payload do cliente não pode ser fonte de permissão.
 1. Definir **a fonte corporativa da concessão/revogação de entitlements** (IAM do banco/core,
    papéis de app, contratos e relacionamento entre organizações). O evento de criação de
    contrato do core não prova que qualquer canal possa acessá-lo.
-2. Autenticar e autorizar também no backend: hoje `X-Client-Id` é confiado ao
-   gateway. Adicionar JWT Resource Server com validação de issuer, assinatura, audience/client_id e scope
-   ou mTLS/identidade end-to-end. Proibir acesso por caminhos internos alternativos.
+2. JWT Resource Server implementado na Fase 1, com rejeição de identidade forjada por header;
+   integração Cognito/JWKS no cluster privado ainda depende de validação. Identidade de workload
+   Autorização→Limites é uma responsabilidade distinta (Fase 2).
 3. Revisar segredos, revogação imediata, logs de decisões negativas (sem PII) e trilha de auditoria.
 4. Simular duas contas/contratos e negar acesso cruzado em IT/E2E.
 

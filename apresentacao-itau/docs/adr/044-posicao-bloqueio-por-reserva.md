@@ -1,6 +1,6 @@
 # ADR-044 — Invariante de valor bloqueado POR RESERVA no DynamoDB
 
-**Data:** 2026-10-22. **Status:** implementado no adaptador DynamoDB; teste integração pendente.
+**Data:** 2026-10-22. **Status:** implementado no adaptador DynamoDB; 9 testes de integração DynamoDB Local registrados na evidência da Fase 1; E2E pendente.
 
 ## Contexto
 O saldo bloqueado agregado do contrato não permite distinguir CAPTURA/LIBERACAO

@@ -18,13 +18,17 @@ command -v java >/dev/null || falhar "Java não encontrado (precisa do JDK 21)"
 java -version 2>&1 | grep -Eq 'version "21' || falhar "precisa do JDK 21 (encontrado: $(java -version 2>&1 | head -1))"
 command -v mvn >/dev/null || falhar "Maven não encontrado (precisa do 3.9+)"
 command -v terraform >/dev/null || falhar "Terraform não encontrado (precisa do 1.9+)"
+command -v python3 >/dev/null || falhar "Python 3 não encontrado"
+command -v openssl >/dev/null || falhar "OpenSSL não encontrado"
 command -v curl >/dev/null || falhar "curl não encontrado"
-echo "ok: docker, java 21, maven, terraform, curl"
+echo "ok: docker, java 21, maven, terraform, python3, openssl, curl"
+"${COMPOSE[@]}" config --quiet
+python3 local/preflight.py
 
 python3 local/token-demo.py --preparar
 
 etapa "1/5 build e testes (Maven)"
-mvn -q -B install
+mvn -B -ntp install
 
 etapa "2/5 artefatos das Lambdas"
 mkdir -p artefatos
@@ -37,24 +41,32 @@ etapa "3/5 LocalStack, Postgres e Jaeger"
 
 etapa "4/5 infraestrutura local (Terraform → LocalStack)"
 # Estado do Terraform só vale para o LocalStack que está de pé: se ele foi recriado, o estado antigo é descartado.
-if [[ -f infra/terraform/ambientes/local/terraform.tfstate ]] && \
-   ! "${COMPOSE[@]}" exec -T localstack awslocal dynamodb describe-table --table-name autorizacoes >/dev/null 2>&1; then
-  echo "LocalStack novo: descartando estado anterior do Terraform"
-  rm -f infra/terraform/ambientes/local/terraform.tfstate infra/terraform/ambientes/local/terraform.tfstate.backup
+if [[ -f infra/terraform/ambientes/local/terraform.tfstate ]]; then
+  if ! resultado=$("${COMPOSE[@]}" exec -T localstack awslocal --region sa-east-1 dynamodb describe-table --table-name autorizacoes 2>&1); then
+    if [[ "$resultado" == *ResourceNotFoundException* ]]; then
+      echo "LocalStack novo: descartando estado anterior do Terraform"
+      rm -f infra/terraform/ambientes/local/terraform.tfstate infra/terraform/ambientes/local/terraform.tfstate.backup
+    else
+      falhar "Não foi possível conferir estado do LocalStack; estado Terraform preservado: $resultado"
+    fi
+  fi
 fi
-"${TF[@]}" init -input=false -no-color >/dev/null
+"${TF[@]}" init -input=false -no-color -lockfile=readonly
+"${TF[@]}" validate -no-color
 "${TF[@]}" apply -input=false -auto-approve -no-color
 
-etapa "5/5 serviços (mesma imagem do Fargate)"
+python3 local/verificar-infra.py
+
+etapa "5/5 serviços (mesma imagem do EKS)"
 "${COMPOSE[@]}" up -d --build limites autorizacao contabilizacao
 
 aguardar() { # $1=nome $2=url
-  for _ in $(seq 1 90); do
+  for _ in $(seq 1 150); do
     curl -sf "$2" >/dev/null 2>&1 && { echo "ok: $1"; return 0; }
     sleep 2
   done
   "${COMPOSE[@]}" logs --tail 60 "$1" >&2
-  falhar "$1 não ficou saudável em 3 min (logs acima)"
+  falhar "$1 não ficou saudável em 5 min (logs acima)"
 }
 aguardar limites http://localhost:8082/actuator/health
 aguardar autorizacao http://localhost:8080/actuator/health

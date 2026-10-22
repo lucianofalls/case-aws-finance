@@ -1,5 +1,5 @@
 # Demo local (PDF §5: "demonstrar execução local com docker"). Ver local/LEIAME.md.
-# Mesma imagem dos serviços que roda no Fargate; AWS emulada pelo LocalStack.
+# Mesma imagem dos serviços que roda no EKS; AWS emulada pelo LocalStack.
 name: financas
 
 x-aws-local: &aws-local
@@ -81,6 +81,7 @@ services:
       TABELA_AUTORIZACOES: autorizacoes
       TABELA_PERMISSOES_CONTRATOS: permissoes-contratos
       LIMITES_URL: http://limites:8080
+      VALIDADE_RESERVA: ${VALIDADE_RESERVA_LOCAL:-PT2M} # somente demo; produção permanece P7D
       FILA_RESERVAS_A_EXPIRAR: reservas-a-expirar   # ADR 035 (no LocalStack a entrega é simulada)
     ports:
       - "127.0.0.1:8080:8080"
@@ -112,3 +113,8 @@ services:
         condition: service_healthy
       localstack:
         condition: service_healthy
+
+# Nome explícito: as Lambdas lançadas pelo LocalStack precisam encontrar os serviços.
+networks:
+  default:
+    name: financas_default

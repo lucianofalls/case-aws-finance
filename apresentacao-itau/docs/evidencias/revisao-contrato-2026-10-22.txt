@@ -1,0 +1,5 @@
+Baseline: 052971f
+python3 scripts/verificar-migracao-eks-rds.py: exit 0, 11 controles estáticos
+python3 local/verificar-estatico.py: exit 0
+Maven/JDK21 desta revisão: execução ainda pendente no momento do commit
+Docker/LocalStack E2E: não executado neste ambiente (Docker ausente).

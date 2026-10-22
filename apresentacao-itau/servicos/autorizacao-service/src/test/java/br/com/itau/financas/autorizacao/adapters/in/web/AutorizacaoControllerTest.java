@@ -47,6 +47,7 @@ class AutorizacaoControllerTest {
             .addFilters(new CorrelationIdFilter())
             .setMessageConverters(new MappingJackson2HttpMessageConverter(Jackson2ObjectMapperBuilder.json()
                     .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+                    .failOnUnknownProperties(true)
                     .build()))
             .build();
 
@@ -100,6 +101,27 @@ class AutorizacaoControllerTest {
                 {"id_conta":"","valor":-1,"moeda":"real","tipo_operacao":"SAQUE"}
                 """).andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.codigo").value("payload-invalido"));
+    }
+
+    @Test
+    void campoDesconhecidoNaoEhIgnorado() throws Exception {
+        enviar(CORPO.replace("100.00", "100.00, \"campo_fora_do_contrato\":true"))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void referenciaOriginalNaoAceitaObjetoNumeroOuUuidAbreviado() throws Exception {
+        for (String original : java.util.List.of("123", "{}", "\"1-1-1-1-1\"")) {
+            enviar(CORPO.replace("\"DEBITO\"", "\"CAPTURA\", \"metadata\":{\"id_autorizacao_original\":" + original + "}"))
+                    .andExpect(status().isUnprocessableEntity());
+        }
+    }
+
+    @Test
+    void valorComFracaoDeCentavoOuMaisDeDezesseisInteirosEhNegado() throws Exception {
+        for (String valor : java.util.List.of("0.001", "10000000000000000.00")) {
+            enviar(CORPO.replace("100.00", valor)).andExpect(status().isUnprocessableEntity());
+        }
     }
 
     private ResultActions enviar(String corpo) throws Exception {

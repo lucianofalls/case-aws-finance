@@ -65,11 +65,11 @@ public class SegurancaConfig {
                 .oauth2ResourceServer(o -> o.jwt(j -> {}).authenticationEntryPoint((req, res, e) -> {
                     res.setStatus(401); res.setHeader("WWW-Authenticate", "Bearer");
                     res.setContentType("application/problem+json");
-                    res.getWriter().write("{\"type\":\"about:blank\",\"title\":\"Não autenticado\",\"status\":401}");
+                    res.getWriter().write("{\"type\":\"about:blank\",\"title\":\"Não autenticado\",\"status\":401,\"codigo\":\"nao-autenticado\"}");
                 }))
                 .exceptionHandling(e -> e.accessDeniedHandler((req, res, ex) -> {
                     res.setStatus(403); res.setContentType("application/problem+json");
-                    res.getWriter().write("{\"type\":\"about:blank\",\"title\":\"Acesso negado\",\"status\":403}");
+                    res.getWriter().write("{\"type\":\"about:blank\",\"title\":\"Acesso negado\",\"status\":403,\"codigo\":\"acesso-negado\"}");
                 })).build();
     }
 }

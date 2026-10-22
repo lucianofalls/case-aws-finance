@@ -1,6 +1,6 @@
 # ADR-042 — EKS Auto Mode + RDS PostgreSQL Multi-AZ (substitui ECS Fargate e Aurora)
 
-**Status:** Implementação Terraform proposta; `terraform validate/plan` e deploy em AWS pendentes. 22/10/2026.
+**Status:** Implementação Terraform proposta; `terraform validate` registrado na Fase 0; plan e deploy em AWS pendentes. 22/10/2026.
 
 ## Decisão obrigatória do case
 

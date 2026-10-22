@@ -45,6 +45,10 @@ paths:
             examples:
               debito:
                 value: { id_conta: "0001-123456", valor: 1500.00, moeda: BRL, tipo_operacao: DEBITO, id_estabelecimento: "EST-42" }
+              credito:
+                value: { id_conta: "0001-123456", valor: 50.00, moeda: BRL, tipo_operacao: CREDITO }
+              reserva:
+                value: { id_conta: "0001-123456", valor: 100.00, moeda: BRL, tipo_operacao: RESERVA }
               captura:
                 value: { id_conta: "0001-123456", valor: 30.00, moeda: BRL, tipo_operacao: CAPTURA,
                          metadata: { id_autorizacao_original: "9b2e6f0e-4d3c-5a1b-8e7f-0123456789ab" } }
@@ -70,6 +74,9 @@ paths:
               schema: { $ref: '#/components/schemas/Autorizacao' }
         '401':
           description: Token ausente, inválido, expirado ou cliente não permitido
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
         '403':
           description: Cliente autenticado sem acesso ao contrato ou à conta
           content:

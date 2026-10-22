@@ -13,3 +13,7 @@ k8s/rendered-stack.yaml
 
 # Chaves efêmeras exclusivamente locais; nunca versionar.
 local/.segredos-demo/
+
+# Logs de execução do ambiente local (podem conter dados sintéticos/endpoints).
+local/evidencias/
+__pycache__/

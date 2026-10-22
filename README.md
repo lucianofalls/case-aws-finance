@@ -2,6 +2,20 @@
 
 Este repositório contém o trabalho integral entregue pelo Claude Code e uma auditoria técnica incremental, **sem GitHub Actions e sem infraestrutura AWS provisionada**.
 
+## Executar a revisão local
+
+```bash
+cd apresentacao-itau
+bash local/executar-tudo.sh
+```
+
+O roteiro prepara LocalStack/PostgreSQL/Jaeger, sobe os serviços com JWT local e executa
+asserções financeiras/HTTP/Inbox/ledger. Pré-requisitos e diagnóstico em
+[COMO-RODAR.md](apresentacao-itau/COMO-RODAR.md). **142 testes Java e três testes Python
+passaram nesta revisão; E2E Docker/LocalStack ainda precisa ser executado no Mac.**
+A arquitetura de produção permanece EKS Auto Mode + RDS PostgreSQL convencional Multi-AZ.
+Consulte [ADR-046](apresentacao-itau/docs/adr/046-aceite-localstack-financeiro.md).
+
 ## Status da auditoria
 
 | Fase | Entrega |
@@ -35,7 +49,7 @@ Para o teste completo, siga `COMO-RODAR.md`. **`local/subir.sh` aplica Terraform
 
 ## Principais pendências
 
-1. Executar Maven, Terraform validate/plan e Docker/LocalStack E2E na máquina do usuário.
+1. Executar o aceite Docker/LocalStack no Mac e validar novamente Terraform local. Build Java desta revisão passou; validações operacionais de produção continuam pendentes.
 2. Validar em execução a compensação de operação entre dois commits independentes.
 3. Validar a ponte **opcional e desligada** Kinesis→EventBridge Pipes→SNS/SQS (ADR-040), suas quotas, custos e compatibilidade com o exemplo do PDF.
 4. Provar recuperação acima da retenção de 24h do DynamoDB Streams e fechar automação histórica após TTL de 35 dias; runbook/manual não substitui mecanismo de produção.

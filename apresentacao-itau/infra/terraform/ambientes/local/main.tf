@@ -1,5 +1,5 @@
 # Ambiente local (LocalStack) — mesmos módulos de dados, eventos e funções da produção.
-# Rede, ECS, API Gateway/Cognito e Aurora ficam fora: os serviços rodam no docker-compose (mesma imagem)
+# Rede EKS, API Gateway/Cognito e RDS PostgreSQL ficam fora: os serviços rodam no docker-compose (mesma imagem)
 # e o Postgres é um container. Recursos não suportados na edição gratuita do LocalStack são desligados por flag.
 
 terraform {
