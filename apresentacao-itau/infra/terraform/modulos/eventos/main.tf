@@ -397,3 +397,208 @@ resource "aws_iam_role_policy" "agendador_reservas" {
     ] }]
   })
 }
+
+
+# ---- C04: integração OPCIONAL de TransacaoAutorizada no EventBridge (PDF §2.4) ---------------------------
+# Mantém Kinesis no caminho transacional; NÃO cria segunda escrita no HTTP nem muda a ordem de fatos.
+# A ponte consome o stream existente via iterator compartilhado; dimensionar leitores por shard e quotas.
+# Atenção: EventBridge Pipes descarta registros que não atendam ao filtro; somente CloudEvents JSON válidos.
+resource "aws_sqs_queue" "pipe_transacoes_dlq" {
+  count                     = var.habilitar_eventbridge_transacoes ? 1 : 0
+  name                      = "${var.prefixo}pipe-transacoes-dlq"
+  message_retention_seconds = 1209600
+  sqs_managed_sse_enabled   = true
+}
+
+resource "aws_iam_role" "pipe_transacoes" {
+  count = var.habilitar_eventbridge_transacoes ? 1 : 0
+  name  = "${var.prefixo}pipe-transacoes"
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [{ Effect = "Allow", Principal = { Service = "pipes.amazonaws.com" }, Action = "sts:AssumeRole" }]
+  })
+}
+
+resource "aws_iam_role_policy" "pipe_transacoes" {
+  count = var.habilitar_eventbridge_transacoes ? 1 : 0
+  role  = aws_iam_role.pipe_transacoes[0].id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["kinesis:DescribeStream", "kinesis:DescribeStreamSummary", "kinesis:ListShards", "kinesis:GetShardIterator", "kinesis:GetRecords"]
+        Resource = aws_kinesis_stream.transacoes.arn
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["events:PutEvents"]
+        Resource = aws_cloudwatch_event_bus.financas.arn
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["sqs:SendMessage"]
+        Resource = aws_sqs_queue.pipe_transacoes_dlq[0].arn
+      }
+    ]
+  })
+}
+
+resource "aws_pipes_pipe" "transacoes_para_eventbridge" {
+  count    = var.habilitar_eventbridge_transacoes ? 1 : 0
+  name     = "${var.prefixo}transacoes-para-eventbridge"
+  role_arn = aws_iam_role.pipe_transacoes[0].arn
+  source   = aws_kinesis_stream.transacoes.arn
+  target   = aws_cloudwatch_event_bus.financas.arn
+
+  source_parameters {
+    filter_criteria {
+      filter {
+        pattern = jsonencode({
+          data = { type = ["br.com.itau.financas.autorizacao.transacao-autorizada.v1"] }
+        })
+      }
+    }
+    kinesis_stream_parameters {
+      starting_position               = "TRIM_HORIZON"
+      batch_size                      = 10
+      maximum_retry_attempts          = 100
+      maximum_record_age_in_seconds   = 604800
+      dead_letter_config { arn = aws_sqs_queue.pipe_transacoes_dlq[0].arn }
+    }
+  }
+
+  target_parameters {
+    # A origem Kinesis contém CloudEvent JSON em data (base64 no envelope);
+    # EventBridge Pipes descompacta JSON para filtro/template. O evento vira detail.
+    # Preserva o CloudEvent completo, sem invalidar JSON quando o record é um objeto.
+    input_template = "{\"event\": <$.data>}"
+    eventbridge_event_bus_parameters {
+      source      = "itau.financas.autorizacao"
+      detail_type = "TransacaoAutorizada.v1"
+    }
+  }
+
+  depends_on = [aws_iam_role_policy.pipe_transacoes]
+}
+
+# Fan-out de notificações de negócio: EventBridge -> SNS -> SQS (PDF §3.3).
+# A fila é uma integração para um consumidor futuro (não constitui notificações enviadas ao cliente).
+resource "aws_sns_topic" "notificacoes_negocio" {
+  count = var.habilitar_eventbridge_transacoes ? 1 : 0
+  name  = "${var.prefixo}notificacoes-negocio"
+}
+
+resource "aws_cloudwatch_event_rule" "notificacoes_negocio" {
+  count          = var.habilitar_eventbridge_transacoes ? 1 : 0
+  name           = "${var.prefixo}notificacoes-negocio"
+  event_bus_name = aws_cloudwatch_event_bus.financas.name
+  event_pattern = jsonencode({
+    source        = ["itau.financas.autorizacao"]
+    "detail-type" = ["TransacaoAutorizada.v1"]
+    detail        = { event = { type = ["br.com.itau.financas.autorizacao.transacao-autorizada.v1"] } }
+  })
+}
+
+resource "aws_sns_topic_policy" "notificacoes_negocio" {
+  count = var.habilitar_eventbridge_transacoes ? 1 : 0
+  arn   = aws_sns_topic.notificacoes_negocio[0].arn
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Action    = "sns:Publish"
+      Resource  = aws_sns_topic.notificacoes_negocio[0].arn
+      Principal = { Service = "events.amazonaws.com" }
+      Condition = {
+        ArnEquals    = { "aws:SourceArn" = aws_cloudwatch_event_rule.notificacoes_negocio[0].arn }
+        StringEquals = { "aws:SourceAccount" = data.aws_caller_identity.atual.account_id }
+      }
+    }]
+  })
+}
+
+resource "aws_cloudwatch_event_target" "notificacoes_negocio" {
+  count          = var.habilitar_eventbridge_transacoes ? 1 : 0
+  event_bus_name = aws_cloudwatch_event_bus.financas.name
+  rule           = aws_cloudwatch_event_rule.notificacoes_negocio[0].name
+  arn            = aws_sns_topic.notificacoes_negocio[0].arn
+  retry_policy {
+    maximum_event_age_in_seconds = 3600
+    maximum_retry_attempts       = 20
+  }
+  dead_letter_config { arn = aws_sqs_queue.dlq_eventbridge.arn }
+  depends_on = [aws_sns_topic_policy.notificacoes_negocio]
+}
+
+resource "aws_sqs_queue" "notificacoes_negocio_dlq" {
+  count                     = var.habilitar_eventbridge_transacoes ? 1 : 0
+  name                      = "${var.prefixo}notificacoes-negocio-dlq"
+  message_retention_seconds = 1209600
+  sqs_managed_sse_enabled   = true
+}
+
+resource "aws_sqs_queue" "notificacoes_negocio" {
+  count                    = var.habilitar_eventbridge_transacoes ? 1 : 0
+  name                     = "${var.prefixo}notificacoes-negocio"
+  sqs_managed_sse_enabled  = true
+  visibility_timeout_seconds = 90
+  redrive_policy = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.notificacoes_negocio_dlq[0].arn
+    maxReceiveCount     = 5
+  })
+}
+
+resource "aws_sqs_queue_policy" "notificacoes_negocio" {
+  count     = var.habilitar_eventbridge_transacoes ? 1 : 0
+  queue_url = aws_sqs_queue.notificacoes_negocio[0].id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Action    = "sqs:SendMessage"
+      Resource  = aws_sqs_queue.notificacoes_negocio[0].arn
+      Principal = { Service = "sns.amazonaws.com" }
+      Condition = {
+        ArnEquals    = { "aws:SourceArn" = aws_sns_topic.notificacoes_negocio[0].arn }
+        StringEquals = { "aws:SourceAccount" = data.aws_caller_identity.atual.account_id }
+      }
+    }]
+  })
+}
+
+# Outra DLQ distinta: falha SNS ao ENTREGAR para a SQS (não falha do consumidor).
+resource "aws_sqs_queue" "notificacoes_sns_dlq" {
+  count                     = var.habilitar_eventbridge_transacoes ? 1 : 0
+  name                      = "${var.prefixo}notificacoes-sns-entrega-dlq"
+  message_retention_seconds = 1209600
+  sqs_managed_sse_enabled   = true
+}
+
+resource "aws_sqs_queue_policy" "notificacoes_sns_dlq" {
+  count     = var.habilitar_eventbridge_transacoes ? 1 : 0
+  queue_url = aws_sqs_queue.notificacoes_sns_dlq[0].id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Action    = "sqs:SendMessage"
+      Resource  = aws_sqs_queue.notificacoes_sns_dlq[0].arn
+      Principal = { Service = "sns.amazonaws.com" }
+      Condition = {
+        ArnEquals    = { "aws:SourceArn" = aws_sns_topic.notificacoes_negocio[0].arn }
+        StringEquals = { "aws:SourceAccount" = data.aws_caller_identity.atual.account_id }
+      }
+    }]
+  })
+}
+
+resource "aws_sns_topic_subscription" "notificacoes_negocio" {
+  count     = var.habilitar_eventbridge_transacoes ? 1 : 0
+  topic_arn = aws_sns_topic.notificacoes_negocio[0].arn
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.notificacoes_negocio[0].arn
+  raw_message_delivery = true
+  redrive_policy = jsonencode({ deadLetterTargetArn = aws_sqs_queue.notificacoes_sns_dlq[0].arn })
+  depends_on = [aws_sqs_queue_policy.notificacoes_negocio, aws_sqs_queue_policy.notificacoes_sns_dlq]
+}

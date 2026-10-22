@@ -67,6 +67,8 @@ module "dados" {
 }
 
 module "eventos" {
+  # ADR-040: manter OFF até quota EventBridge/latência/custos validados; não altera o caminho transacional.
+  habilitar_eventbridge_transacoes = var.habilitar_eventbridge_transacoes
   source            = "../../modulos/eventos"
   kms_key_arn       = aws_kms_key.financas.arn
   shards_transacoes = var.shards_transacoes

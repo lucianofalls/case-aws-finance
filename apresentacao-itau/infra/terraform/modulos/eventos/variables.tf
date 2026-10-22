@@ -51,3 +51,9 @@ variable "habilitar_expiracao_agendada" {
   type        = bool
   default     = true
 }
+
+variable "habilitar_eventbridge_transacoes" {
+  description = "C04 / ADR-040: ponte Kinesis -> EventBridge Pipes para TransacaoAutorizada v1. Padrão false até revisar quota PutEvents, leituras adicionais do Kinesis e TCO."
+  type        = bool
+  default     = false
+}

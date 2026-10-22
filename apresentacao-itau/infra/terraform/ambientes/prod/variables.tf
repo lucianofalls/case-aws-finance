@@ -28,3 +28,10 @@ variable "shards_transacoes" {
   type    = number
   default = 8
 }
+
+
+variable "habilitar_eventbridge_transacoes" {
+  type        = bool
+  default     = false
+  description = "Ativa a ponte Kinesis -> EventBridge para TransacaoAutorizada, após review de quotas e custo. ADR-040."
+}

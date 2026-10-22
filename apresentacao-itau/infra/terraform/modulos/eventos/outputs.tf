@@ -20,6 +20,11 @@ output "dlqs" {
   value = merge(
     { for nome, fila in aws_sqs_queue.dlq : nome => fila.arn },
     (var.habilitar_expiracao_agendada ? { scheduler-expiracao-dlq = aws_sqs_queue.scheduler_expiracao_dlq[0].arn } : {}),
+    (var.habilitar_eventbridge_transacoes ? {
+      pipe-transacoes-dlq        = aws_sqs_queue.pipe_transacoes_dlq[0].arn
+      notificacoes-negocio-dlq   = aws_sqs_queue.notificacoes_negocio_dlq[0].arn
+      notificacoes-sns-dlq       = aws_sqs_queue.notificacoes_sns_dlq[0].arn
+    } : {}),
     {
       eventbridge               = aws_sqs_queue.dlq_eventbridge.arn
       contabilizacao-quarentena = aws_sqs_queue.quarentena_contabilizacao.arn
@@ -33,6 +38,11 @@ output "dlq_nomes" {
   value = merge(
     { for nome, fila in aws_sqs_queue.dlq : nome => fila.name },
     (var.habilitar_expiracao_agendada ? { scheduler-expiracao-dlq = aws_sqs_queue.scheduler_expiracao_dlq[0].name } : {}),
+    (var.habilitar_eventbridge_transacoes ? {
+      pipe-transacoes-dlq        = aws_sqs_queue.pipe_transacoes_dlq[0].name
+      notificacoes-negocio-dlq   = aws_sqs_queue.notificacoes_negocio_dlq[0].name
+      notificacoes-sns-dlq       = aws_sqs_queue.notificacoes_sns_dlq[0].name
+    } : {}),
     {
       eventbridge                   = aws_sqs_queue.dlq_eventbridge.name
       contabilizacao-quarentena     = aws_sqs_queue.quarentena_contabilizacao.name
@@ -65,4 +75,17 @@ output "expiracao_de_reservas" {
     fila_url  = aws_sqs_queue.fila["reservas-a-expirar"].url
     dlq_arn   = var.habilitar_expiracao_agendada ? aws_sqs_queue.scheduler_expiracao_dlq[0].arn : null
   }
+}
+
+
+output "eventbridge_transacoes" {
+  description = "Ponte opcional (padrão OFF), DLQ, SNS e SQS de notificações de negócio."
+  value = var.habilitar_eventbridge_transacoes ? {
+    pipe_nome       = aws_pipes_pipe.transacoes_para_eventbridge[0].name
+    pipe_dlq_arn    = aws_sqs_queue.pipe_transacoes_dlq[0].arn
+    sns_arn         = aws_sns_topic.notificacoes_negocio[0].arn
+    sqs_url         = aws_sqs_queue.notificacoes_negocio[0].url
+    sqs_dlq_arn     = aws_sqs_queue.notificacoes_negocio_dlq[0].arn
+    sns_dlq_arn     = aws_sqs_queue.notificacoes_sns_dlq[0].arn
+  } : null
 }
