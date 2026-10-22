@@ -47,7 +47,7 @@ Antes do deploy:
 1. Como operador DBA autorizado, execute as migrações Flyway **uma vez**, com uma identidade DDL de curta duração e logs de mudança. O serviço em execução não deve ter `CREATE/ALTER/DROP`.
 2. Provisione a role `contabilizacao_app` usando o runbook [RDS usuários e segredos](../docs/runbooks/rds-postgres-acessos.md). Crie seu segredo próprio no Secrets Manager e sincronize a chave `password` para o Secret Kubernetes `rds-contabilizacao` por External Secrets Operator ou integração corporativa equivalente.
 3. **Não reutilize** `master_user_secret` (RDS admin) para `DB_SENHA` da aplicação.
-4. A Lambda de exportação do razão ainda usa o segredo administrativo; antes de produção deve migrar para role de leitura/exportação com permissões mínimas e credenciais independentes.
+4. A Lambda de exportação do razão usa o **ARN obrigatório da role de exportação**, configurado em `TF_VAR_segredo_exportacao_rds_arn`. Provisionar a role e o segredo antes do `terraform plan`; a credencial master do RDS não é mais utilizada pelo exportador.
 5. Validar TLS PostgreSQL com `sslmode=verify-full` e CA RDS corporativamente confiável, não apenas `sslmode=require`.
 6. Testar rotação do Secret/rolling restart, failover Multi-AZ, total de conexões e backpressure do Kinesis.
 

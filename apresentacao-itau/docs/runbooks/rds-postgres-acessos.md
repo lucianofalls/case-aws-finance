@@ -6,7 +6,7 @@
 
 - `contabilizacao_admin` (RDS master): usado somente por DBA/bootstrap e migração inicial; **não** em Deployment.
 - `contabilizacao_app`: role de execução com `CONNECT`, `USAGE` e DML nas tabelas de Inbox/razão; **sem privilégios DDL**.
-- `contabilizacao_export` (futuro): separar leitura/exportação do reconciliador da credencial admin. Sem ela, produção permanece com risco pendente.
+- `contabilizacao_export`: credencial **obrigatória e separada** para a Lambda de exportação da conciliação. O Terraform prod agora requer `segredo_exportacao_rds_arn`; não aceita mais usar o segredo master como substituto.
 
 ## Bootstrap (DBA autorizado via psql seguro na VPC)
 
@@ -45,6 +45,32 @@ Mantenha Flyway desativado nos Pods de runtime; cada mudança de esquema deve se
 - Nenhum Pod contém senha de administrador e nenhum secret está em Git/Terraform state.
 - O pool JDBC tem tamanho total compatível com `max_connections` e número máximo de Pods.
 - `sslmode=verify-full`, CA RDS, certificado/SAN e rotação de certificado validados.
-- Role separada `contabilizacao_export` para a Lambda de conciliação ainda pendente.
+- Role `contabilizacao_export` criada por DBA e segredo específico configurado em `segredo_exportacao_rds_arn` (obrigatório em prod). Conferir que ela não possui DDL ou acesso de escrita ao razão.
 
 **Não ativar GitHub Actions; não executar `terraform apply` AWS sem autorização.**
+
+
+## Conta dedicada ao reconciliador (mudança obrigatória)
+
+O Terraform de produção exige `segredo_exportacao_rds_arn`. Este segredo **não é criado automaticamente**:
+provisioná-lo na conta autorizada com governança e rotação corporativas. Sem o ARN válido, o plano de produção
+fica incompleto **deliberadamente**, para não executar exportações com o usuário administrador.
+
+Sob sessão controlada de DBA, **depois de instalar `aws_s3`/`aws_commons`**:
+
+```sql
+CREATE ROLE contabilizacao_export LOGIN;
+GRANT CONNECT ON DATABASE contabilizacao TO contabilizacao_export;
+GRANT USAGE ON SCHEMA public TO contabilizacao_export;
+GRANT SELECT ON public.evento_processado TO contabilizacao_export;
+GRANT USAGE ON SCHEMA aws_s3, aws_commons TO contabilizacao_export;
+-- Conceder EXECUTE apenas à assinatura efetivamente usada de query_export_to_s3;
+-- obter a assinatura no catálogo PostgreSQL e revisar com o DBA antes do GRANT.
+```
+
+Defina a senha interativamente (`\\password contabilizacao_export`) e cadastre um segredo
+JSON com `username`/`password` exclusivo para essa role. Depois informe o ARN pelo tfvars privado
+ou `TF_VAR_segredo_exportacao_rds_arn`. **Não use o ARN de `master_user_secret`.**
+
+**Verificações:** a Lambda consegue exportar somente `evento_processado.evento_id` com o filtro temporal,
+e não consegue ler outras tabelas, inserir ou executar DDL. Rodar isso em sandbox antes de liberar produção.
