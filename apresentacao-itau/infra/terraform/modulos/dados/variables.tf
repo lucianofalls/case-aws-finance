@@ -44,22 +44,38 @@ variable "nome_aplicacao_kcl" {
   default = "contabilizacao-service"
 }
 
-variable "habilitar_rds_postgres" { type=bool
- default=true }
-variable "versao_postgres" { type=string
- default="16.8" }
-variable "classe_instancia_postgres" { type=string
- default="db.r7g.2xlarge" }
-variable "armazenamento_gb" { type=number
- default=500 }
-variable "armazenamento_max_gb" { type=number
- default=2000 }
-variable "iops_postgres" { type=number
- default=12000 }
-variable "throughput_postgres" { type=number
- default=500 }
-variable "origens_rds_security_groups" { type=list(string)
- default=[] }
+variable "habilitar_rds_postgres" {
+  type    = bool
+  default = true
+}
+variable "versao_postgres" {
+  type    = string
+  default = "16.8"
+}
+variable "classe_instancia_postgres" {
+  type    = string
+  default = "db.r7g.2xlarge"
+}
+variable "armazenamento_gb" {
+  type    = number
+  default = 500
+}
+variable "armazenamento_max_gb" {
+  type    = number
+  default = 2000
+}
+variable "iops_postgres" {
+  type    = number
+  default = 12000
+}
+variable "throughput_postgres" {
+  type    = number
+  default = 500
+}
+variable "origens_rds_security_groups" {
+  type    = list(string)
+  default = []
+}
 
 variable "vpc_id" {
   type    = string

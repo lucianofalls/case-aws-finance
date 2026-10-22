@@ -6,6 +6,7 @@ Não substitui terraform validate, mvn verify ou testes E2E.
 """
 from pathlib import Path
 import sys
+import re
 
 BASE = Path(__file__).resolve().parents[1]
 
@@ -20,6 +21,12 @@ def ler(relativo):
 def verificar(nome, condicao, detalhe):
     print(f"{'OK' if condicao else 'FALHA'} | {nome}" + (f' — {detalhe}' if not condicao else ''))
     return bool(condicao)
+
+
+def atributo(texto, nome, valor):
+    """Checagem textual independente do alinhamento aplicado por terraform fmt."""
+    return re.search(rf"^\s*{re.escape(nome)}\s*=\s*{re.escape(valor)}\s*(?:#.*)?$",
+                     texto, re.MULTILINE) is not None
 
 
 def main():
@@ -37,8 +44,8 @@ def main():
     tests = [
         ('EKS em produção, ECS inativo', 'module "eks"' in prod and 'module "compute"' not in prod, 'Fargate ainda referenciado como módulo ativo'),
         ('RDS PostgreSQL, sem Aurora', 'resource "aws_db_instance" "contabilizacao"' in dados and 'resource "aws_rds_cluster" "contabilizacao"' not in dados, 'Ainda existe um cluster Aurora'),
-        ('RDS Multi-AZ e privado', 'multi_az = true' in dados and 'publicly_accessible = false' in dados, 'RDS precisa de standby e rede privada'),
-        ('EKS privado e Auto Mode', 'endpoint_public_access = false' in eks and 'compute_config {' in eks, 'Cluster não tem as duas restrições'),
+        ('RDS Multi-AZ e privado', atributo(dados, 'multi_az', 'true') and atributo(dados, 'publicly_accessible', 'false'), 'RDS precisa de standby e rede privada'),
+        ('EKS privado e Auto Mode', atributo(eks, 'endpoint_public_access', 'false') and 'compute_config {' in eks, 'Cluster não tem as duas restrições'),
         ('Pod Identity por serviço', 'aws_eks_pod_identity_association' in prod and 'pods.eks.amazonaws.com' in prod, 'Associação IAM ausente'),
         ('Contabilidade com senha independente da master', 'var.segredo_exportacao_rds_arn' in prod and 'variable "segredo_exportacao_rds_arn"' in vars_prod, 'Lambda de exportação deve ter segredo próprio'),
         ('Reconciliação sem Aurora Data API', 'aws-sdk:rdsdata' not in conciliacao and 'exportar_razao_arn' in conciliacao, 'Machine state ainda depende da Data API'),

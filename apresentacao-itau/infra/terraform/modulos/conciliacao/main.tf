@@ -271,8 +271,8 @@ resource "aws_iam_role_policy" "aurora_exportacao" {
 
 resource "aws_db_instance_role_association" "exportacao" {
   db_instance_identifier = var.rds_postgres.identificador
-  feature_name          = "s3Export"
-  role_arn              = aws_iam_role.aurora_exportacao.arn
+  feature_name           = "s3Export"
+  role_arn               = aws_iam_role.aurora_exportacao.arn
 }
 
 # ---- Máquina de estados -------------------------------------------------------------------------------

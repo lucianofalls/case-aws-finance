@@ -127,12 +127,12 @@ locals {
     }
     exportar-razao = {
       artefato = "reconciliador"
-      handler = "br.com.itau.financas.reconciliador.conciliacao.ExportarRazaoJdbcHandler::handleRequest"
-      memoria = 512
-      timeout = 240
-      na_vpc = true # acesso privado à instância RDS PostgreSQL e Secrets Manager endpoint
+      handler  = "br.com.itau.financas.reconciliador.conciliacao.ExportarRazaoJdbcHandler::handleRequest"
+      memoria  = 512
+      timeout  = 240
+      na_vpc   = true # acesso privado à instância RDS PostgreSQL e Secrets Manager endpoint
       ambiente = {
-        RDS_ENDPOINT = try(var.rds_postgres.endereco, "")
+        RDS_ENDPOINT   = try(var.rds_postgres.endereco, "")
         RDS_SECRET_ARN = try(var.rds_postgres.segredo_senha_arn, "")
       }
       politica = [

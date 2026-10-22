@@ -390,7 +390,7 @@ resource "aws_iam_role_policy" "agendador_reservas" {
   count = var.habilitar_expiracao_agendada ? 1 : 0
   role  = aws_iam_role.agendador_reservas[0].id
   policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [{ Effect = "Allow", Action = ["sqs:SendMessage"], Resource = [
       aws_sqs_queue.fila["reservas-a-expirar"].arn,
       aws_sqs_queue.scheduler_expiracao_dlq[0].arn
@@ -460,10 +460,10 @@ resource "aws_pipes_pipe" "transacoes_para_eventbridge" {
       }
     }
     kinesis_stream_parameters {
-      starting_position               = "TRIM_HORIZON"
-      batch_size                      = 10
-      maximum_retry_attempts          = 100
-      maximum_record_age_in_seconds   = 604800
+      starting_position             = "TRIM_HORIZON"
+      batch_size                    = 10
+      maximum_retry_attempts        = 100
+      maximum_record_age_in_seconds = 604800
       dead_letter_config { arn = aws_sqs_queue.pipe_transacoes_dlq[0].arn }
     }
   }
@@ -539,9 +539,9 @@ resource "aws_sqs_queue" "notificacoes_negocio_dlq" {
 }
 
 resource "aws_sqs_queue" "notificacoes_negocio" {
-  count                    = var.habilitar_eventbridge_transacoes ? 1 : 0
-  name                     = "${var.prefixo}notificacoes-negocio"
-  sqs_managed_sse_enabled  = true
+  count                      = var.habilitar_eventbridge_transacoes ? 1 : 0
+  name                       = "${var.prefixo}notificacoes-negocio"
+  sqs_managed_sse_enabled    = true
   visibility_timeout_seconds = 90
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.notificacoes_negocio_dlq[0].arn
@@ -594,11 +594,11 @@ resource "aws_sqs_queue_policy" "notificacoes_sns_dlq" {
 }
 
 resource "aws_sns_topic_subscription" "notificacoes_negocio" {
-  count     = var.habilitar_eventbridge_transacoes ? 1 : 0
-  topic_arn = aws_sns_topic.notificacoes_negocio[0].arn
-  protocol  = "sqs"
-  endpoint  = aws_sqs_queue.notificacoes_negocio[0].arn
+  count                = var.habilitar_eventbridge_transacoes ? 1 : 0
+  topic_arn            = aws_sns_topic.notificacoes_negocio[0].arn
+  protocol             = "sqs"
+  endpoint             = aws_sqs_queue.notificacoes_negocio[0].arn
   raw_message_delivery = true
-  redrive_policy = jsonencode({ deadLetterTargetArn = aws_sqs_queue.notificacoes_sns_dlq[0].arn })
-  depends_on = [aws_sqs_queue_policy.notificacoes_negocio, aws_sqs_queue_policy.notificacoes_sns_dlq]
+  redrive_policy       = jsonencode({ deadLetterTargetArn = aws_sqs_queue.notificacoes_sns_dlq[0].arn })
+  depends_on           = [aws_sqs_queue_policy.notificacoes_negocio, aws_sqs_queue_policy.notificacoes_sns_dlq]
 }

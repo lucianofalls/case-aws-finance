@@ -109,15 +109,24 @@ resource "aws_dynamodb_table" "leases_kcl" {
 # Projeção de permissões cliente/contrato/conta provisionada por fonte de identidade CORPORATIVA.
 # P0 fail closed: não inferir titularidade de simples recebimento do ID do contrato.
 resource "aws_dynamodb_table" "permissoes_contratos" {
-  name = "${var.prefixo}permissoes-contratos"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key = "id_cliente"
-  range_key = "id_contrato"
+  name                        = "${var.prefixo}permissoes-contratos"
+  billing_mode                = "PAY_PER_REQUEST"
+  hash_key                    = "id_cliente"
+  range_key                   = "id_contrato"
   deletion_protection_enabled = var.protecao_contra_exclusao
-  attribute { name="id_cliente"; type="S" }
-  attribute { name="id_contrato"; type="S" }
-  point_in_time_recovery { enabled=true }
-  server_side_encryption { enabled=true; kms_key_arn=var.kms_key_arn }
+  attribute {
+    name = "id_cliente"
+    type = "S"
+  }
+  attribute {
+    name = "id_contrato"
+    type = "S"
+  }
+  point_in_time_recovery { enabled = true }
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = var.kms_key_arn
+  }
 }
 
 # ---- Auto scaling (só no modo provisionado) -------------------------------------------------------------
@@ -173,58 +182,60 @@ resource "aws_appautoscaling_policy" "leitura" {
 
 # ---- Amazon RDS PostgreSQL (NÃO Aurora) — writer e standby Multi-AZ síncrono ---------
 resource "aws_db_subnet_group" "contabilizacao" {
-  count = var.habilitar_rds_postgres ? 1 : 0
-  name = "${var.prefixo}contabilizacao"
+  count      = var.habilitar_rds_postgres ? 1 : 0
+  name       = "${var.prefixo}contabilizacao"
   subnet_ids = var.subnets_privadas
 }
 resource "aws_security_group" "postgres" {
-  count = var.habilitar_rds_postgres ? 1 : 0
-  name = "${var.prefixo}rds-postgres-contabilizacao"
+  count       = var.habilitar_rds_postgres ? 1 : 0
+  name        = "${var.prefixo}rds-postgres-contabilizacao"
   description = "PostgreSQL 5432 de SGs autorizados EKS e Lambda conciliação, nunca CIDR VPC inteira"
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
   dynamic "ingress" {
-    for_each=toset(var.origens_rds_security_groups)
+    for_each = toset(var.origens_rds_security_groups)
     content {
-      from_port=5432
- to_port=5432
- protocol="tcp"
- security_groups=[ingress.value]
+      from_port       = 5432
+      to_port         = 5432
+      protocol        = "tcp"
+      security_groups = [ingress.value]
     }
   }
-  egress { from_port=0
- to_port=0
- protocol="-1"
- cidr_blocks=["0.0.0.0/0"] }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 resource "aws_db_instance" "contabilizacao" {
-  count = var.habilitar_rds_postgres ? 1 : 0
-  identifier = "${var.prefixo}contabilizacao"
-  engine = "postgres"
-  engine_version = var.versao_postgres
-  instance_class = var.classe_instancia_postgres
-  allocated_storage = var.armazenamento_gb
-  max_allocated_storage = var.armazenamento_max_gb
-  storage_type = "gp3"
-  iops = var.iops_postgres
-  storage_throughput = var.throughput_postgres
-  multi_az = true
-  publicly_accessible = false
-  db_name = "contabilizacao"
-  username = "contabilizacao_admin"
-  manage_master_user_password = true
-  master_user_secret_kms_key_id = var.kms_key_arn
-  db_subnet_group_name = aws_db_subnet_group.contabilizacao[0].name
-  vpc_security_group_ids = [aws_security_group.postgres[0].id]
-  storage_encrypted = true
-  kms_key_id = var.kms_key_arn
-  backup_retention_period = 30
-  deletion_protection = var.protecao_contra_exclusao
-  skip_final_snapshot = !var.protecao_contra_exclusao
-  final_snapshot_identifier = var.protecao_contra_exclusao ? "${var.prefixo}contabilizacao-final" : null
-  auto_minor_version_upgrade = true
-  performance_insights_enabled = true
+  count                           = var.habilitar_rds_postgres ? 1 : 0
+  identifier                      = "${var.prefixo}contabilizacao"
+  engine                          = "postgres"
+  engine_version                  = var.versao_postgres
+  instance_class                  = var.classe_instancia_postgres
+  allocated_storage               = var.armazenamento_gb
+  max_allocated_storage           = var.armazenamento_max_gb
+  storage_type                    = "gp3"
+  iops                            = var.iops_postgres
+  storage_throughput              = var.throughput_postgres
+  multi_az                        = true
+  publicly_accessible             = false
+  db_name                         = "contabilizacao"
+  username                        = "contabilizacao_admin"
+  manage_master_user_password     = true
+  master_user_secret_kms_key_id   = var.kms_key_arn
+  db_subnet_group_name            = aws_db_subnet_group.contabilizacao[0].name
+  vpc_security_group_ids          = [aws_security_group.postgres[0].id]
+  storage_encrypted               = true
+  kms_key_id                      = var.kms_key_arn
+  backup_retention_period         = 30
+  deletion_protection             = var.protecao_contra_exclusao
+  skip_final_snapshot             = !var.protecao_contra_exclusao
+  final_snapshot_identifier       = var.protecao_contra_exclusao ? "${var.prefixo}contabilizacao-final" : null
+  auto_minor_version_upgrade      = true
+  performance_insights_enabled    = true
   performance_insights_kms_key_id = var.kms_key_arn
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
-  copy_tags_to_snapshot = true
-  apply_immediately = false
+  copy_tags_to_snapshot           = true
+  apply_immediately               = false
 }

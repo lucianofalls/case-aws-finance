@@ -27,7 +27,7 @@ variable "rds_postgres" {
 
 variable "funcoes" {
   description = "ARN (alias) das Lambdas da conciliação."
-  type        = object({ preparar_janela = string, republicador = string, agendar_orfas = string, exportar_razao=string })
+  type        = object({ preparar_janela = string, republicador = string, agendar_orfas = string, exportar_razao = string })
 }
 
 variable "topico_alarmes_arn" {

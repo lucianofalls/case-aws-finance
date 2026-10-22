@@ -59,12 +59,12 @@ module "rede" {
 }
 
 module "dados" {
-  source           = "../../modulos/dados"
-  modo_cobranca    = var.modo_cobranca_dynamodb
-  kms_key_arn      = aws_kms_key.financas.arn
-  vpc_id           = module.rede.vpc_id
-  cidr_vpc         = module.rede.cidr
-  subnets_privadas = module.rede.subnets_privadas
+  source                      = "../../modulos/dados"
+  modo_cobranca               = var.modo_cobranca_dynamodb
+  kms_key_arn                 = aws_kms_key.financas.arn
+  vpc_id                      = module.rede.vpc_id
+  cidr_vpc                    = module.rede.cidr
+  subnets_privadas            = module.rede.subnets_privadas
   origens_rds_security_groups = [module.eks.security_group_cluster_id, aws_security_group.lambda_interna.id]
 }
 
@@ -72,46 +72,46 @@ module "eventos" {
   # ADR-040: manter OFF até quota EventBridge/latência/custos validados
   # Não altera o caminho transacional.
   habilitar_eventbridge_transacoes = var.habilitar_eventbridge_transacoes
-  source            = "../../modulos/eventos"
-  kms_key_arn       = aws_kms_key.financas.arn
-  shards_transacoes = var.shards_transacoes
-  diretorio_schemas = "${local.raiz}/contracts/schemas/eventos"
+  source                           = "../../modulos/eventos"
+  kms_key_arn                      = aws_kms_key.financas.arn
+  shards_transacoes                = var.shards_transacoes
+  diretorio_schemas                = "${local.raiz}/contracts/schemas/eventos"
 }
 
 # EKS Auto Mode (não ECS). NLB interno é criado antes dos Pods e recebe IPs via TargetGroupBinding.
 module "eks" {
-  source           = "../../modulos/eks"
-  vpc_id           = module.rede.vpc_id
-  cidr_vpc         = module.rede.cidr
-  subnets_privadas = module.rede.subnets_privadas
-  kms_key_arn      = aws_kms_key.financas.arn
+  source            = "../../modulos/eks"
+  vpc_id            = module.rede.vpc_id
+  cidr_vpc          = module.rede.cidr
+  subnets_privadas  = module.rede.subnets_privadas
+  kms_key_arn       = aws_kms_key.financas.arn
   versao_kubernetes = var.versao_kubernetes
 }
 
 resource "aws_security_group" "lambda_interna" {
-  name = "financas-lambda-interna"
-  vpc_id = module.rede.vpc_id
+  name        = "financas-lambda-interna"
+  vpc_id      = module.rede.vpc_id
   description = "Reconciliador para NLB interno e RDS Postgres"
   # Somente API AWS via interface/gateway endpoints e recursos internos.
   egress {
     description = "AWS PrivateLink / VPC endpoints"
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = [module.rede.cidr]
   }
   egress {
     description = "RDS PostgreSQL na VPC"
-    from_port = 5432
-    to_port = 5432
-    protocol = "tcp"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
     cidr_blocks = [module.rede.cidr]
   }
   egress {
     description = "NLB interno de Limites"
-    from_port = 8081
-    to_port = 8081
-    protocol = "tcp"
+    from_port   = 8081
+    to_port     = 8081
+    protocol    = "tcp"
     cidr_blocks = [module.rede.cidr]
   }
 }
@@ -121,61 +121,61 @@ resource "aws_security_group" "lambda_interna" {
 locals {
   politicas_pod = {
     autorizacao = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      { Effect = "Allow", Action = ["dynamodb:GetItem", "dynamodb:PutItem"], Resource = module.dados.tabela_autorizacoes.arn },
-      { Effect = "Allow", Action = ["dynamodb:GetItem"], Resource = module.dados.tabela_permissoes_contratos.arn },
-      { Effect = "Allow", Action = ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:ChangeMessageVisibility", "sqs:GetQueueAttributes", "sqs:GetQueueUrl"], Resource = module.eventos.expiracao_de_reservas.fila_arn }, # ADR 035
-      { Effect = "Allow", Action = ["kms:Decrypt", "kms:GenerateDataKey"], Resource = aws_kms_key.financas.arn },
-    ]
-  })
+      Version = "2012-10-17"
+      Statement = [
+        { Effect = "Allow", Action = ["dynamodb:GetItem", "dynamodb:PutItem"], Resource = module.dados.tabela_autorizacoes.arn },
+        { Effect = "Allow", Action = ["dynamodb:GetItem"], Resource = module.dados.tabela_permissoes_contratos.arn },
+        { Effect = "Allow", Action = ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:ChangeMessageVisibility", "sqs:GetQueueAttributes", "sqs:GetQueueUrl"], Resource = module.eventos.expiracao_de_reservas.fila_arn }, # ADR 035
+        { Effect = "Allow", Action = ["kms:Decrypt", "kms:GenerateDataKey"], Resource = aws_kms_key.financas.arn },
+      ]
+    })
     limites = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      { Effect = "Allow", Action = ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:UpdateItem", "dynamodb:TransactWriteItems"], Resource = module.dados.tabela_limites.arn },
-      { Effect = "Allow", Action = ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:ChangeMessageVisibility", "sqs:GetQueueAttributes", "sqs:GetQueueUrl"], Resource = module.eventos.filas["limites-concedidos"].arn },
-      { Effect = "Allow", Action = ["kms:Decrypt", "kms:GenerateDataKey"], Resource = aws_kms_key.financas.arn },
-    ]
-  })
+      Version = "2012-10-17"
+      Statement = [
+        { Effect = "Allow", Action = ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:UpdateItem", "dynamodb:TransactWriteItems"], Resource = module.dados.tabela_limites.arn },
+        { Effect = "Allow", Action = ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:ChangeMessageVisibility", "sqs:GetQueueAttributes", "sqs:GetQueueUrl"], Resource = module.eventos.filas["limites-concedidos"].arn },
+        { Effect = "Allow", Action = ["kms:Decrypt", "kms:GenerateDataKey"], Resource = aws_kms_key.financas.arn },
+      ]
+    })
     contabilizacao = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = ["kinesis:DescribeStream", "kinesis:DescribeStreamSummary", "kinesis:GetRecords", "kinesis:GetShardIterator",
-        "kinesis:ListShards", "kinesis:SubscribeToShard", "kinesis:RegisterStreamConsumer", "kinesis:DescribeStreamConsumer", "kinesis:ListStreamConsumers"]
-        Resource = [module.eventos.stream_transacoes.arn, "${module.eventos.stream_transacoes.arn}/consumer/*"]
-      },
-      {
-        Effect   = "Allow"
-        Action   = ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:UpdateItem", "dynamodb:DeleteItem", "dynamodb:Scan", "dynamodb:Query", "dynamodb:DescribeTable"]
-        Resource = module.dados.tabela_leases_kcl.arn
-      },
-      { Effect = "Allow", Action = ["cloudwatch:PutMetricData"], Resource = "*" },
-      { Effect = "Allow", Action = ["sqs:SendMessage", "sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:ChangeMessageVisibility"], Resource = module.eventos.fila_quarentena_contabilizacao.arn }, # envia e reprocessa (C06)
-      { Effect = "Allow", Action = ["kms:Decrypt", "kms:GenerateDataKey"], Resource = aws_kms_key.financas.arn },
-    ]
-  })
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Effect = "Allow"
+          Action = ["kinesis:DescribeStream", "kinesis:DescribeStreamSummary", "kinesis:GetRecords", "kinesis:GetShardIterator",
+          "kinesis:ListShards", "kinesis:SubscribeToShard", "kinesis:RegisterStreamConsumer", "kinesis:DescribeStreamConsumer", "kinesis:ListStreamConsumers"]
+          Resource = [module.eventos.stream_transacoes.arn, "${module.eventos.stream_transacoes.arn}/consumer/*"]
+        },
+        {
+          Effect   = "Allow"
+          Action   = ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:UpdateItem", "dynamodb:DeleteItem", "dynamodb:Scan", "dynamodb:Query", "dynamodb:DescribeTable"]
+          Resource = module.dados.tabela_leases_kcl.arn
+        },
+        { Effect = "Allow", Action = ["cloudwatch:PutMetricData"], Resource = "*" },
+        { Effect = "Allow", Action = ["sqs:SendMessage", "sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:ChangeMessageVisibility"], Resource = module.eventos.fila_quarentena_contabilizacao.arn }, # envia e reprocessa (C06)
+        { Effect = "Allow", Action = ["kms:Decrypt", "kms:GenerateDataKey"], Resource = aws_kms_key.financas.arn },
+      ]
+    })
   }
 }
 resource "aws_iam_role" "pod" {
   for_each = local.politicas_pod
-  name = "financas-${each.key}-pod"
-  assume_role_policy = jsonencode({ Version="2012-10-17", Statement=[{
-    Effect="Allow", Principal={Service="pods.eks.amazonaws.com"}, Action=["sts:AssumeRole", "sts:TagSession"]
-  }]})
+  name     = "financas-${each.key}-pod"
+  assume_role_policy = jsonencode({ Version = "2012-10-17", Statement = [{
+    Effect = "Allow", Principal = { Service = "pods.eks.amazonaws.com" }, Action = ["sts:AssumeRole", "sts:TagSession"]
+  }] })
 }
 resource "aws_iam_role_policy" "pod" {
   for_each = local.politicas_pod
-  role = aws_iam_role.pod[each.key].id
-  policy = each.value
+  role     = aws_iam_role.pod[each.key].id
+  policy   = each.value
 }
 resource "aws_eks_pod_identity_association" "servicos" {
-  for_each = local.politicas_pod
-  cluster_name = module.eks.cluster_name
-  namespace = "financas"
+  for_each        = local.politicas_pod
+  cluster_name    = module.eks.cluster_name
+  namespace       = "financas"
   service_account = each.key
-  role_arn = aws_iam_role.pod[each.key].arn
+  role_arn        = aws_iam_role.pod[each.key].arn
 }
 
 module "funcoes" {
@@ -194,9 +194,9 @@ module "funcoes" {
     dlq_arn   = module.eventos.expiracao_de_reservas.dlq_arn
   }
   rds_postgres = {
-    endereco = module.dados.rds_postgres.endereco
+    endereco          = module.dados.rds_postgres.endereco
     segredo_senha_arn = var.segredo_exportacao_rds_arn
-    identificador = module.dados.rds_postgres.identificador
+    identificador     = module.dados.rds_postgres.identificador
   }
   # Valores determinísticos, para NÃO criar ciclo funcoes ↔ conciliacao.
   # A mesma convenção é usada pelo módulo de conciliação.

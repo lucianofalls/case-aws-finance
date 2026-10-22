@@ -30,7 +30,7 @@
 
 - [ ] Ler o **PDF original do Itaú**, `MIGRACAO-EKS-RDS.md`, `apresentacao-itau/docs/visao-eks-rds.md`, `STATUS-EKS-RDS.md`, ADRs 026–044 e a implementação. Não substituir fatos do enunciado por hipóteses.
 - [ ] Conferir árvore real e diffs desde a importação; identificar código inacabado, classes não referenciadas, Terraform `compute/` histórico e documentos ECS/Aurora antigos.
-- [ ] Validar estaticamente `python3 scripts/verificar-migracao-eks-rds.py` e `python3 local/verificar-estatico.py`; corrigir erros verificáveis.
+- [x] Validar estaticamente `python3 scripts/verificar-migracao-eks-rds.py` e `python3 local/verificar-estatico.py`; corrigir erros verificáveis. Evidência: `apresentacao-itau/docs/evidencias/fase-0-2026-10-22.txt`.
 - [ ] Revisar `mvn clean verify` e `mvn verify -Pintegracao` no ambiente Codex **somente se disponíveis**; preparar instruções ao usuário caso dependam do Docker Mac.
 - [ ] Validar `terraform fmt -check -recursive`, `terraform init -backend=false`, `terraform validate` em `infra/terraform/ambientes/prod` (sem `plan/apply` com credenciais reais). Corrigir erros de HCL, providers, interpolação, tipos, endpoints e relações de dependência.
 - **Aceite:** erros conhecidos resolvidos ou classificados em `docs/STATUS-EKS-RDS.md` com evidências reais e pendências explícitas.
@@ -111,3 +111,17 @@
 4. Commitar cada fase separadamente; atualizar **este checklist** e `apresentacao-itau/docs/STATUS-EKS-RDS.md` marcando `[x]` somente com evidência de conclusão.
 5. Entregar resumo por fase: arquivos alterados, comandos efetivamente executados, testes pendentes no Mac, riscos em aberto e SHA do commit.
 6. Não interromper o processo para pedir informações que já existem nos ADRs, no código ou no PDF. Se faltar um dado **de negócio** ou de **conta AWS**, documentar como hipótese/pendência, nunca inventar.
+
+## Execução da Fase 0 — 22/10/2026
+
+**Parcial; não iniciar a Fase 1 ainda.** Baseline local e GitHub `main` conferidos em
+`87551fe9b71ceb611a44d57b77fec4e3f2832ed8`. Histórico recuperado com `git fetch --unshallow origin`;
+diff desde `ad35be77` inspecionado (115 arquivos), marco preservado.
+
+- Corrigidos blocos HCL inválidos em `dados`, `eks` e outputs de produção; formatação recursiva em 15 arquivos Terraform.
+- Verificador EKS/RDS corrigido para aceitar alinhamento de `terraform fmt`.
+- Passaram: os dois verificadores Python e `terraform fmt -check -recursive`.
+- Pendentes: Maven ausente, Java 17 em vez de 21; init bloqueado pelo Terraform 1.5.7 (<1.9); validate sem provider instalado. Lockfile AWS 5.100.0 diverge do requisito >=6.15,<7.0.
+- PDF não localizado; ADRs 026–031 lidos no catálogo, 036–044 em arquivos; 032–035 não possuem registros individuais e sua catalogação continua pendente. `docs/MEMORIA.md` consultado via Git porque o checkout é esparso.
+- Inventário, arquivos, riscos, comandos para o Mac e evidências: [STATUS-EKS-RDS](apresentacao-itau/docs/STATUS-EKS-RDS.md#revisão-da-fase-0--22102026).
+- Commit desta correção: registrado abaixo após criação do commit; sem push.

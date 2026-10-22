@@ -1,0 +1,76 @@
+Fase 0 — 22/10/2026 — cwd: apresentacao-itau
+Sem plan/apply, deploy, Docker ou credenciais AWS.
+
+$ java -version
+java version "17.0.6" 2023-01-17 LTS
+Java(TM) SE Runtime Environment (build 17.0.6+9-LTS-190)
+Java HotSpot(TM) 64-Bit Server VM (build 17.0.6+9-LTS-190, mixed mode, sharing)
+EXIT=0
+
+$ mvn clean verify
+NÃO EXECUTADO: executável ausente no PATH.
+
+$ mvn verify -Pintegracao
+NÃO EXECUTADO: executável ausente no PATH.
+
+$ terraform version
+Terraform v1.5.7
+on darwin_arm64
+
+Your version of Terraform is out of date! The latest version
+is 1.17.0. You can update by downloading from https://www.terraform.io/downloads.html
+EXIT=0
+
+$ python3 scripts/verificar-migracao-eks-rds.py
+OK | EKS em produção, ECS inativo
+OK | RDS PostgreSQL, sem Aurora
+OK | RDS Multi-AZ e privado
+OK | EKS privado e Auto Mode
+OK | Pod Identity por serviço
+OK | Contabilidade com senha independente da master
+OK | Reconciliação sem Aurora Data API
+OK | Lambda JDBC substituta
+OK | Manifests do EKS
+OK | Contrato de seis operações
+OK | Proibição de GitHub Actions
+APROVADO: verificações estáticas de consistência EKS/RDS. NÃO valida nuvem ou código executável.
+EXIT=0
+
+$ python3 local/verificar-estatico.py
+Validação estática local (não provisiona recursos AWS):
+  JSON: 9 arquivo(s) verificados
+  XML: 10 arquivo(s) verificados
+  SVG: 2 arquivo(s) verificados
+  Python: 8 arquivo(s) verificados
+  Bash: 5 arquivo(s) verificados
+  PNG: 2 arquivo(s) verificados
+  *.yaml: 3 arquivo(s) verificados
+  *.yml: 4 arquivo(s) verificados
+OK: estrutura e sintaxe dos formatos verificados
+PENDENTE: Maven/JUnit, Docker/LocalStack E2E, Terraform validate/plan e testes de carga
+EXIT=0
+
+$ terraform -chdir=infra/terraform fmt -check -recursive -no-color
+EXIT=0
+
+$ terraform -chdir=infra/terraform/ambientes/prod init -backend=false -input=false -no-color
+Initializing modules...
+
+Error: Unsupported Terraform Core version
+
+  on main.tf line 2, in terraform:
+   2:   required_version = ">= 1.9"
+
+This configuration does not support Terraform version 1.5.7. To proceed,
+either choose another supported Terraform version or update this version
+constraint. Version constraints are normally set for good reason, so updating
+the constraint may lead to other errors or unexpected behavior.
+
+EXIT=1
+
+$ terraform -chdir=infra/terraform/ambientes/prod validate -no-color
+
+Error: registry.terraform.io/hashicorp/aws: there is no package for registry.terraform.io/hashicorp/aws 5.100.0 cached in .terraform/providers
+
+EXIT=1
+

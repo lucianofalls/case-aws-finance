@@ -37,9 +37,9 @@ variable "habilitar_eventbridge_transacoes" {
 }
 
 variable "versao_kubernetes" {
-  type=string
-  description="EKS Auto Mode cluster version; conferir suporte sa-east-1 antes do plan"
-  default="1.34"
+  type        = string
+  description = "EKS Auto Mode cluster version; conferir suporte sa-east-1 antes do plan"
+  default     = "1.34"
 }
 
 # Segredo da role PostgreSQL de exportação: NUNCA usar o segredo master do RDS.

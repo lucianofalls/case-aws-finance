@@ -84,7 +84,7 @@ variable "expiracao" {
 }
 
 variable "rds_postgres" {
-  type=object({endereco=string, segredo_senha_arn=string, identificador=string})
-  default=null
-  description="RDS PostgreSQL Multi-AZ (não Aurora): host e Secret para exportação JDBC privada."
+  type        = object({ endereco = string, segredo_senha_arn = string, identificador = string })
+  default     = null
+  description = "RDS PostgreSQL Multi-AZ (não Aurora): host e Secret para exportação JDBC privada."
 }

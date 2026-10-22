@@ -44,3 +44,63 @@ bash local/derrubar.sh
 O cluster EKS real só pode ser validado com conta AWS previamente autorizada,
 e `k8s/render.py` gera YAML mas não aplica. Para simular Kubernetes local,
 precisa de kind/k3d e adaptações do template para não usar AWS TargetGroupBinding/Pod Identity.
+
+## Revisão da Fase 0 — 22/10/2026
+
+**Parcial. Não há aprovação de compilação, provider Terraform, LocalStack ou AWS.**
+Baseline local igual à `main` consultada no GitHub: `87551fe9b71ceb611a44d57b77fec4e3f2832ed8`.
+Histórico recuperado sem alterar arquivos de trabalho; diff `ad35be77..HEAD` inspecionado.
+
+### Correções e arquivos
+
+- `infra/terraform/modulos/dados/{main,variables}.tf`: atributos separados por ponto e vírgula e blocos multilinha inválidos corrigidos.
+- `infra/terraform/modulos/eks/{main,variables,outputs}.tf`: encryption_configuration, egress, health_check, default_action, variáveis e output sensível com sintaxe válida.
+- `infra/terraform/ambientes/prod/outputs.tf`: output sensível corrigido.
+- Somente formatação adicional em `ambientes/prod/{main,variables}.tf`, `modulos/dados/outputs.tf`, `modulos/conciliacao/{main,variables}.tf`, `modulos/eventos/{main,outputs}.tf`, `modulos/funcoes/{main,variables}.tf`.
+- `scripts/verificar-migracao-eks-rds.py`: checagem de atributos booleanos tolerante ao alinhamento do formatter; continua sendo inspeção textual, não parser HCL.
+- `PENDENCIAS-CODEX.md`, este status e `docs/evidencias/fase-0-2026-10-22.txt`: rastreabilidade.
+
+### Evidências efetivamente executadas
+
+[Log dos comandos e códigos de saída](evidencias/fase-0-2026-10-22.txt).
+
+| Verificação | Resultado |
+|---|---|
+| Verificador migração Python | 11 controles passaram |
+| Verificador estático local | Passou; sintaxe/estrutura apenas |
+| Terraform fmt recursivo | Inicialmente falhou por HCL inválido; após correção, exit 0 |
+| Terraform init -backend=false | Falhou: CLI 1.5.7, requisito >=1.9 |
+| Terraform validate | Falhou: pacote AWS 5.100.0 não instalado |
+| Maven clean verify / perfil integracao | Não executados: mvn ausente; Java disponível 17.0.6, projeto requer 21 |
+| Actions / deploy / plan / apply / E2E | Nenhum executado; workflows ausentes |
+
+### Inventário e riscos classificados
+
+- `compute/` já está identificado como histórico e não é chamado por prod. Não removido.
+- O lockfile de prod fixa AWS 5.100.0 / ~>5.80, enquanto main.tf exige >=6.15,<7.0. **Bloqueio P0:** regenerar com CLI compatível e revisar diff/checksums, sem editar hashes manualmente. Suporte dos recursos e dependências ainda não validado.
+- O checkout esparso inclui apenas `apresentacao-itau` e arquivos da raiz; `docs/MEMORIA.md` foi lido via `git show`. Ele ainda descreve ECS/Aurora e aprovações antigas: não constitui evidência da migração atual. Diagramas, custos e documentos históricos permanecem para a Fase 7.
+- PDF original ausente na árvore Git; busca em Documents/consultoria não encontrou PDF. Aderência direta ao enunciado continua pendente, sem inventar requisitos.
+- ADRs 026–031 estão no catálogo; 032–035 aparecem como conjunto ainda sem catalogação completa. Não declarar leitura de documentos inexistentes.
+- Referências de wiring de entitlement e exportador JDBC existem; não foram removidas classes como supostamente mortas sem compilação/análise completa. Revisão exaustiva de classes e contratos permanece pendente.
+- `aurora_exportacao` ainda nomeia a role IAM histórica da conciliação, embora a associação seja RDS convencional. Classificado para Fase 3; renomear exige avaliar estado/migração.
+- Autenticação interna, permissões SQL/TLS, consistência financeira e capacidade permanecem nos respectivos P0/P1 já listados. Nenhuma aprovação operacional inferida do formatter.
+
+### Retomada no Mac após disponibilizar ferramentas
+
+Com JDK 21, Maven e Terraform >=1.9, na pasta `apresentacao-itau`:
+
+```bash
+java -version
+mvn -version
+mvn clean verify
+# Exige Docker para Testcontainers; executar posteriormente conforme combinado:
+mvn verify -Pintegracao
+terraform -chdir=infra/terraform fmt -check -recursive
+# -upgrade necessário para resolver o lockfile antigo; sem backend, plan ou apply:
+terraform -chdir=infra/terraform/ambientes/prod init -backend=false -upgrade
+terraform -chdir=infra/terraform/ambientes/prod validate
+git diff -- infra/terraform/ambientes/prod/.terraform.lock.hcl
+```
+
+Anexar resultados e corrigir novos erros antes de encerrar a Fase 0. Compilação e validação do provider
+não foram substituídas por revisão estática. Commit da correção registrado abaixo após criação; sem push.
