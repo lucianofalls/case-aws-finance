@@ -125,3 +125,5 @@ diff desde `ad35be77` inspecionado (115 arquivos), marco preservado.
 - PDF não localizado; ADRs 026–031 lidos no catálogo, 036–044 em arquivos; 032–035 não possuem registros individuais e sua catalogação continua pendente. `docs/MEMORIA.md` consultado via Git porque o checkout é esparso.
 - Inventário, arquivos, riscos, comandos para o Mac e evidências: [STATUS-EKS-RDS](apresentacao-itau/docs/STATUS-EKS-RDS.md#revisão-da-fase-0--22102026).
 - Commit desta correção: registrado abaixo após criação do commit; sem push.
+
+Commit das correções e evidências da Fase 0: `d72c1075702929e226115867196b3607b8f445ba` (local, sem push).

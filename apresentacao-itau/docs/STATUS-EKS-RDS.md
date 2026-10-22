@@ -104,3 +104,5 @@ git diff -- infra/terraform/ambientes/prod/.terraform.lock.hcl
 
 Anexar resultados e corrigir novos erros antes de encerrar a Fase 0. Compilação e validação do provider
 não foram substituídas por revisão estática. Commit da correção registrado abaixo após criação; sem push.
+
+Commit das correções e evidências da Fase 0: `d72c1075702929e226115867196b3607b8f445ba` (local, sem push).

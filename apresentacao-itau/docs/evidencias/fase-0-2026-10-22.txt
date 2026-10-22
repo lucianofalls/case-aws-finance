@@ -73,4 +73,3 @@ $ terraform -chdir=infra/terraform/ambientes/prod validate -no-color
 Error: registry.terraform.io/hashicorp/aws: there is no package for registry.terraform.io/hashicorp/aws 5.100.0 cached in .terraform/providers
 
 EXIT=1
-
