@@ -1,3 +1,5 @@
+> **ATENÇÃO (migração 22/10/2026):** esta visão detalhada e seus PNGs descrevem o cenário histórico **ECS/Aurora**, e NÃO representam o desenho final. A versão vigente é [EKS Auto Mode + RDS PostgreSQL](visao-eks-rds.md), conforme [ADR-042](adr/042-eks-automode-rds-postgres.md). Os diagramas históricos permanecem por rastreabilidade, não para defesa da infraestrutura atual.
+
 # Visão da Solução e Aderência ao Desafio
 
 **Plataforma de Gestão de Limites e Autorização de Transações · Itaú Unibanco · POD99 — Nova Plataforma de Finanças**
