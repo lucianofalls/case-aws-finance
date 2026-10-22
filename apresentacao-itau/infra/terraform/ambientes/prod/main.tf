@@ -180,10 +180,12 @@ module "funcoes" {
     segredo_senha_arn = module.dados.rds_postgres.segredo_senha_arn
     identificador = module.dados.rds_postgres.identificador
   }
+  # Valores determinísticos, para NÃO criar ciclo funcoes ↔ conciliacao.
+  # A mesma convenção é usada pelo módulo de conciliação.
   conciliacao = {
-    bucket_nome = module.conciliacao.bucket.nome
-    bucket_arn  = module.conciliacao.bucket.arn
-    banco_glue  = module.conciliacao.banco_glue
+    bucket_nome = "conciliacao-financas-${data.aws_caller_identity.atual.account_id}"
+    bucket_arn  = "arn:aws:s3:::conciliacao-financas-${data.aws_caller_identity.atual.account_id}"
+    banco_glue  = "financas_conciliacao"
   }
   fila_corebanking_arn   = module.eventos.filas["corebanking-contratos"].arn
   fila_falhas_relay_arn  = module.eventos.fila_falhas_relay_arn
