@@ -23,7 +23,7 @@ run "rota_e_versao_vem_do_contrato" {
     error_message = "a rota versionada do contrato deve ser publicada como está"
   }
   assert {
-    condition     = output.versao_contrato == "1.0.0"
+    condition     = output.versao_contrato == yamldecode(file(var.contrato_openapi)).info.version
     error_message = "a versão do contrato deve ser exposta"
   }
 }

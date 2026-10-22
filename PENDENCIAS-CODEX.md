@@ -133,3 +133,9 @@ Commit das correções e evidências da Fase 0: `d72c1075702929e226115867196b360
 PDF original localizado em Downloads e lido integralmente (5 páginas). Parecer: **ainda não pronto para entrega final**. Demonstração Docker é aceita pelo §5; Aurora não é obrigatório. Revisão estática/documental, sem novos testes de runtime. Ver [relatório](apresentacao-itau/docs/REVISAO-PRONTIDAO-ENTREGA.md) para evidências, seis pilares, prioridades e critérios de liberação. Fase 0 permanece parcial.
 
 Os commits `d72c107` e `e2563e0` foram enviados a origin/main após o registro anterior; a anotação “sem push” acima é histórica.
+
+## Progresso Fase 0 — build e Terraform executados
+
+Em 22/10/2026, `mvn clean verify` passou com JDK 21/Maven 3.9.9 em cópia temporária do baseline `607fd65`; Terraform 1.9.8 inicializou e validou prod (com avisos de atributo deprecated) e local. Quatro testes do importador OpenAPI passaram. Evidência: `docs/evidencias/fase-0-build-2026-10-22.txt` dentro de apresentacao-itau.
+
+Alterados: lockfiles prod/local (AWS prod 6.70.0; checksum local), teste OpenAPI que esperava versão antiga, teste IT para falhar sem Docker e novo `local/verificar-build.sh`. Teste IT alterado ainda pendente de execução; demo E2E, segurança, capacidade e demais fases não concluídas. Commit de progresso solicitado pelo usuário, sem declarar encerramento da fase.

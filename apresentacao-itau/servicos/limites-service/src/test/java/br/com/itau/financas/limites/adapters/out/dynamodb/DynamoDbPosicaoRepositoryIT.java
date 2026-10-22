@@ -48,9 +48,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * TransactWriteItems e leitura dos CancellationReasons. Mesmos cenários do teste com o fake em memória —
  * prova que o fake e o DynamoDB têm a mesma semântica (LSP).
  * <p>
- * Roda só com Docker e no perfil de integração: {@code mvn verify -Pintegracao}. Sem Docker, é ignorado.
+ * Roda só com Docker e no perfil de integração: {@code mvn verify -Pintegracao}.
+ * Sem Docker, falha explicitamente: ausência de infraestrutura não é teste aprovado.
  */
-@Testcontainers(disabledWithoutDocker = true)
+@Testcontainers
 class DynamoDbPosicaoRepositoryIT {
 
     private static final String TABELA = "limites";

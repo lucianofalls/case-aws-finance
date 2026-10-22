@@ -1,0 +1,83 @@
+Fase 0 — execução em 22/10/2026
+JDK Temurin 21.0.13; Maven 3.9.9; Terraform 1.9.8. Ferramentas temporárias em /tmp.
+Maven executado em cópia git archive do baseline 607fd65, sem alteração de produção Java.
+Comando: mvn -B -ntp -Dmaven.repo.local=/tmp/itau-m2 clean verify
+Totais Surefire: tests=130 failures=0 errors=0 skipped=0
+
+[INFO] Reactor Summary for Plataforma de Limites e Autorização de Transações 1.0.0-SNAPSHOT:
+[INFO] 
+[INFO] Plataforma de Limites e Autorização de Transações .. SUCCESS [  0.315 s]
+[INFO] Shared Kernel (DDD) — value objects comuns aos contextos SUCCESS [  6.125 s]
+[INFO] Published Language (DDD) — CloudEvents e payloads versionados SUCCESS [  4.587 s]
+[INFO] Bounded Context Autorização (BIAN Transaction Authorization) SUCCESS [ 26.292 s]
+[INFO] Bounded Context Limites (BIAN Position Keeping + Limit and Exposure Management) SUCCESS [  9.074 s]
+[INFO] Bounded Context Contabilização (BIAN Financial Accounting) SUCCESS [ 21.390 s]
+[INFO] Lambda: outbox relay (DynamoDB Streams → Kinesis / EventBridge) SUCCESS [  5.496 s]
+[INFO] Lambda: reconciliador de autorizações incertas (contexto Autorização) SUCCESS [  4.303 s]
+[INFO] Lambda: Anti-Corruption Layer do core banking (BIAN Sales Product Agreement / produtos) SUCCESS [  2.191 s]
+[INFO] Lambdas stub: antifraude (BIAN Fraud Evaluation) e notificações (BIAN Correspondence) SUCCESS [  0.978 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:21 min
+[INFO] Finished at: 2026-10-22T12:50:49-03:00
+[INFO] ------------------------------------------------------------------------
+
+itau-tf-init.log
+Upgrading modules...
+- api in ../../modulos/api
+- api.contrato in ../../modulos/openapi-api-gateway
+- conciliacao in ../../modulos/conciliacao
+- dados in ../../modulos/dados
+- eks in ../../modulos/eks
+- eventos in ../../modulos/eventos
+- funcoes in ../../modulos/funcoes
+- observabilidade in ../../modulos/observabilidade
+- rede in ../../modulos/rede
+Initializing provider plugins...
+- Finding hashicorp/aws versions matching ">= 6.15.0, < 7.0.0"...
+- Installing hashicorp/aws v6.70.0...
+- Installed hashicorp/aws v6.70.0 (signed by HashiCorp)
+Terraform has made some changes to the provider dependency selections recorded
+in the .terraform.lock.hcl file. Review those changes and commit them to your
+version control system if they represent changes you intended to make.
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+
+itau-tf-validate.log
+
+Warning: Deprecated attribute
+
+  on ../../modulos/api/outputs.tf line 14, in output "token_endpoint":
+  14:   value = "https://${aws_cognito_user_pool_domain.clientes.domain}.auth.${data.aws_region.atual.name}.amazoncognito.com/oauth2/token"
+
+The attribute "name" is deprecated. Refer to the provider documentation for
+details.
+
+(and 7 more similar warnings elsewhere)
+Success! The configuration is valid, but there were some validation warnings
+as shown above.
+
+
+itau-tf-local-validate.log
+Success! The configuration is valid.
+
+
+itau-contract-test.log
+tests/corpo.tftest.hcl... in progress
+  run "rota_e_versao_vem_do_contrato"... pass
+  run "seguranca_e_validacao_na_borda"... pass
+  run "schema_externo_vira_model_importado"... pass
+  run "integracao_vpc_link_por_rota"... pass
+tests/corpo.tftest.hcl... tearing down
+tests/corpo.tftest.hcl... pass
+
+Success! 4 passed, 0 failed.
