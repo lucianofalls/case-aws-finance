@@ -38,6 +38,9 @@ fontes oficiais consultadas, está em `../../../docs/MEMORIA.md` §5.
 | **036** | [Hardening da compensação e conciliação](036-hardening-compensacao.md) | Confiabilidade, Segurança | Implementação revisada; testes integrais pendentes |
 | **037** | [Compatibilidade EventBridge vs Kinesis](037-eventbridge-contrato-vs-kinesis.md) | Confiabilidade, Custo, Performance | Gap aberto |
 | **038** | [Estratégia de testes locais e restrição de exposição](038-validacao-local-sem-actions.md) | Segurança, Operações | Estratégia adotada; E2E pendente |
+| **039** | [DLQ de Scheduler e quarentena fail-closed](039-protecao-agendamento-quarentena.md) | Confiabilidade, Segurança | Implementado; E2E pendente |
+| **040** | [Ponte opcional Kinesis→EventBridge + SNS/SQS](040-ponte-kinesis-eventbridge-opcional.md) | Performance, Custo, Confiabilidade | OFF por padrão; quota/plan pendente |
+| **041** | [Replay após TTL e evidências](041-replay-ttl-evidencias.md) | Confiabilidade, Operações | Manual; automação histórica pendente |
 
 ---
 
@@ -56,13 +59,13 @@ o mapeamento item → CloudEvent fica no relay, coberto por teste de contrato.
 **Contexto.** Gravar PENDENTE + índice de pendentes custava ~3 WRU em toda transação, para um caso raro
 (timeout depois de o Limites aplicar a operação).
 **Decisão.** `id_autorizacao = UUIDv5(cliente, Idempotency-Key)`. O Limites é idempotente pelo mesmo id e
-guarda a fotografia da posição. A decisão é gravada uma vez (`attribute_not_exists`). Em resultado incerto, a
-autorização agenda uma verificação (SQS, atraso 15 min). O reconciliador reverte a operação órfã. O Limites só
-aceita repetição até **10 min**: janelas disjuntas ⇒ retentativa do cliente e reversão nunca se cruzam.
-**Consequências.** + ~−3 WRU/aut.; caminho feliz com 1 escrita na autorização. − o limite de uma operação órfã
-fica preso até 15 min; clientes devem retentar resultados incertos em até 10 min com a mesma chave (documentado
-no OpenAPI). Queda abrupta da task antes de agendar a verificação: mitigada por shutdown gracioso; cobertura
-residual por reconciliação diária (trilha S3 × operações), fora do caminho crítico.
+guarda a fotografia da posição. A decisão é gravada uma vez (`attribute_not_exists`). Cada operação persistida no **Limites** produz INSERT no DynamoDB Streams; uma Lambda independente envia à
+SQS de verificação atrasada de 15 min. Mesmo se a task Autorização cair após o commit do Limites, o
+reconciliador consegue verificar e reverter a operação órfã de forma idempotente. O Limites só aceita
+repetição até **10 min**: janelas disjuntas reduzem, mas não eliminam, concorrência sob atraso prolongado.
+**Consequências.** + ~−3 WRU/aut.; caminho feliz com 1 escrita na autorização. − a operação órfã é **verificada a partir de 15 min**, mas falhas de Streams/Lambda/SQS podem postergar
+o desbloqueio. Clientes devem retentar resultados incertos em até 10 min com a mesma chave (OpenAPI).
+A reconciliação diária adicional usa exportações DynamoDB, Athena e Aurora, não somente trilha de eventos S3.
 
 ## 028 — Kinesis no fluxo transacional, EventBridge na integração
 
